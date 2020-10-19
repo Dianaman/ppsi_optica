@@ -2,7 +2,7 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 
-import { HomeComprador, Probador } from './pages';
+import { HomeComprador, Probador, Categoria } from './pages';
 import { Navbar, Nav } from 'react-bootstrap';
 import { Switch, Route, Redirect, NavLink } from 'react-router-dom';
 
@@ -26,6 +26,9 @@ function App() {
         </Route>
         <Route path="/probador">
           <Probador />
+        </Route>
+        <Route path="/categoria/:id">
+          <Categoria />
         </Route>
         <Route>
           <Redirect to={{pathname: '/'}} />
