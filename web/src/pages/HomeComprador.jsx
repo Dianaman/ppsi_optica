@@ -1,9 +1,5 @@
 import React from 'react';
-import ListGroup from 'react-bootstrap/ListGroup';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Container from 'react-bootstrap/Container';
-import { ImageText } from '../components/atoms';
+import Card from 'react-bootstrap/Card';
 import { Link } from 'react-router-dom';
 
 export const HomeComprador = () => {
@@ -12,42 +8,39 @@ export const HomeComprador = () => {
         {
             id: 1,
             descripcion: 'Anteojos',
-            foto: 'lentes.jpg'
+            foto: 'https://image.freepik.com/foto-gratis/hombre-guapo-hipster-gafas-sol-moda-chaqueta-jeans_149155-2150.jpg'
         },
         {
             id: 2,
             descripcion: 'Lentes de sol',
-            foto: 'lentes.jpg'
+            foto: 'https://image.freepik.com/foto-gratis/hombre-guapo-hipster-gafas-sol-moda-chaqueta-jeans_149155-2150.jpg'
         },
         {
             id: 3,
             descripcion: 'Otros lentes',
-            foto: 'lentes.jpg'
+            foto: 'https://image.freepik.com/foto-gratis/hombre-guapo-hipster-gafas-sol-moda-chaqueta-jeans_149155-2150.jpg'
         },
         {
             id: 4,
             descripcion: 'Otros',
-            foto: 'lentes.jpg'
+            foto: 'https://image.freepik.com/foto-gratis/hombre-guapo-hipster-gafas-sol-moda-chaqueta-jeans_149155-2150.jpg'
         }
-    ]
+    ];
     
     return (
-        <Container>
-            <Row>
-                <Col>
-                    <ListGroup horizontal="xl" className="my-2">
-                        {categorias.map((categoria) => {
-                            return (
-                                <ListGroup.Item key={categoria.id}>
-                                    <Link to={"categoria/" + categoria.id}>
-                                        <ImageText image={categoria.foto} text={categoria.descripcion}></ImageText>
-                                    </Link>
-                                </ListGroup.Item>
-                            );
-                        })}
-                    </ListGroup>
-                </Col>
-            </Row>
-        </Container>
+        <div className="flex spaced">
+            {categorias.map((categoria) => {
+                return (
+                    <Card key={categoria.id} className="spaced imagen-horizontal">
+                        <Link to={"categoria/" + categoria.id}>
+                        <Card.Img src={categoria.foto} alt={categoria.descripcion} style={{'width': '600px', 'height': '400px'}} className="image-text image" />
+                        <Card.ImgOverlay>
+                            <Card.Title className="image-text text">{categoria.descripcion}</Card.Title>
+                        </Card.ImgOverlay>
+                        </Link>
+                    </Card>
+                );
+            })}                    
+        </div>
     );
 };

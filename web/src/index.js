@@ -8,7 +8,9 @@ import  store  from './redux/store';
 import {
   BrowserRouter as Router
 } from "react-router-dom";
+
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'react-virtualized/styles.css';
 
 
 ReactDOM.render(

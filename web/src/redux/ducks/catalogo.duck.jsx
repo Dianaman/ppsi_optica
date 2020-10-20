@@ -7,17 +7,13 @@ const initialState = {
     results: [],
     error: null,
     isLoading: true,
-    url: 'https://pokeapi.co/api/v2/pokemon?offset=0&limit=15',
-    limit: 15,
-    offset: 0,
-    id: null,
-    detalle: null,
-    habilidades: []
+    producto: null
 };
 
 // Types
 export const GET_CATALOGUE = 'catalogo/GET';
 export const FETCHED_CATALOGUE = 'catalogo/GET_DONE';
+export const SEE_PRODUCT = 'catalogo/SEE_PRODUCT';
 
 // Reducer
 export function catalogoReducer(state = initialState, action) {
@@ -38,10 +34,14 @@ export function catalogoReducer(state = initialState, action) {
                 next,
                 previous,
                 results,
-                url,
-                limit,
-                offset
             };
+        case SEE_PRODUCT:
+            const {producto} = action.payload;
+
+            return {
+                ...state,
+                producto
+            }
         default:
             return state;
     }
@@ -71,5 +71,14 @@ export function fetched(response){
         payload: {
             response
         }        
+    }
+};
+
+export function verProducto(producto){
+    return {
+        type: SEE_PRODUCT,
+        payload: {
+            producto
+        }
     }
 };

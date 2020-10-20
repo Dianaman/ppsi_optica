@@ -4,8 +4,9 @@ export function ImageText(props) {
     const {image, text} = props;
 
     return (
-        <div style={{'backgroundImage': image}}>
-            <div>{text}</div>
-        </div>
+        <figure className="figure">
+            <img src={image} className="figure-img img-fluid rounded image-text image" alt={text} />
+            <figcaption className="image-text text">{text}</figcaption>
+        </figure>
     )
 }
