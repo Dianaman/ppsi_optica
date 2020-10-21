@@ -1,3 +1,4 @@
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
@@ -8,10 +9,14 @@ import  store  from './redux/store';
 import {
   BrowserRouter as Router
 } from "react-router-dom";
+import { createBrowserHistory } from 'history';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
-import 'react-virtualized/styles.css';
+require('dotenv').config()
 
+export const history = createBrowserHistory({
+  basename: process.env.PUBLIC_URL
+});
 
 ReactDOM.render(
   <React.StrictMode>

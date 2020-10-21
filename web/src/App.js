@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
@@ -7,6 +7,14 @@ import { Navbar, Nav } from 'react-bootstrap';
 import { Switch, Route, Redirect, NavLink } from 'react-router-dom';
 
 function App() {
+  useEffect(() => {
+    fetch(process.env.REACT_APP_API_URL + '/users')
+    .then(res => res.json())
+    .then(users => {
+      console.log('users', users);
+    })
+  });
+
   return (
     <div>
       <Navbar bg="light" expand="lg">
