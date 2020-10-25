@@ -1,3 +1,8 @@
+var debug = require('debug')('api:server');
+var https = require('https');
+var http = require('http');
+var fs = require('fs');
+
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -30,8 +35,6 @@ app.use("/testAPI", testAPIRouter);
 app.use(function(req, res, next) {
   next(createError(404));
 });
-
-console.log('listo');
 // error handler
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
@@ -43,4 +46,95 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-module.exports = app;
+
+
+/**
+ * Get port from environment and store in Express.
+ */
+var port = normalizePort(process.env.PORT || '9000');
+var portProd = normalizePort(process.env.PORT || '9001');
+
+var appProd = Object.assign(app);
+appProd.set('port', portProd);
+app.set('port', port);
+
+/**
+ * Create HTTP server.
+ */
+const options = {
+  key: fs.readFileSync("keys/key.pem"),
+  cert: fs.readFileSync("keys/cert.pem")
+};
+
+var serverProd = https.createServer(options, appProd);
+var server = http.createServer(app);
+
+/**
+ * Listen on provided port, on all network interfaces.
+ */
+
+server.listen(port);
+serverProd.listen(portProd);
+
+serverProd.on('error', onError);
+serverProd.on('listening', onListening);
+
+/**
+ * Normalize a port into a number, string, or false.
+ */
+
+function normalizePort(val) {
+  var port = parseInt(val, 10);
+
+  if (isNaN(port)) {
+    // named pipe
+    return val;
+  }
+
+  if (port >= 0) {
+    // port number
+    return port;
+  }
+
+  return false;
+}
+
+/**
+ * Event listener for HTTP serverProd "error" event.
+ */
+
+function onError(error) {
+  if (error.syscall !== 'listen') {
+    throw error;
+  }
+
+  var bind = typeof port === 'string'
+    ? 'Pipe ' + port
+    : 'Port ' + port;
+
+  // handle specific listen errors with friendly messages
+  switch (error.code) {
+    case 'EACCES':
+      console.error(bind + ' requires elevated privileges');
+      process.exit(1);
+      break;
+    case 'EADDRINUSE':
+      console.error(bind + ' is already in use');
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
+}
+
+/**
+ * Event listener for HTTPS serverProd "listening" event.
+ */
+
+function onListening() {
+  var addr = serverProd.address();
+  var bind = typeof addr === 'string'
+    ? 'pipe ' + addr
+    : 'port ' + addr.port;
+  debug('Listening on ' + bind);
+}
