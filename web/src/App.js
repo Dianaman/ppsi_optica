@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
-import { HomeComprador, Probador, Categoria } from './pages';
+import { HomeComprador, Probador, Categoria, Login, Registrar } from './pages';
 import { Navbar, Nav } from 'react-bootstrap';
 import { Switch, Route, Redirect, NavLink } from 'react-router-dom';
 
@@ -24,6 +24,8 @@ function App() {
           <Nav className="mr-auto">
             <Nav.Link as={NavLink} to="/">Home</Nav.Link>
             <Nav.Link as={NavLink} to="/probador">Probador</Nav.Link>
+            <Nav.Link as={NavLink} to="/registrar">Registrar</Nav.Link>
+            <Nav.Link as={NavLink} to="/login">Login</Nav.Link>
           </Nav>
         </Navbar.Collapse>
       </Navbar>
@@ -35,6 +37,12 @@ function App() {
         <Route path="/probador">
           <Probador />
         </Route>
+        <Route path="/registrar">
+          <Registrar />
+        </Route>         
+        <Route path="/login">
+          <Login />
+        </Route>        
         <Route path="/categoria/:id">
           <Categoria />
         </Route>
