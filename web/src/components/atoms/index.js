@@ -1,3 +1,4 @@
 import {ImageText} from './ImageText';
+import {IconNumber} from './IconNumber';
 
-export {ImageText};
+export {ImageText, IconNumber};
