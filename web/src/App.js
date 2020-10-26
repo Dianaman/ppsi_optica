@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import logo from './logo.svg';
+import { CarritoIcono } from './components/organisms';
 import './App.css';
 
 import { HomeComprador, Probador, Categoria, Login, Registrar } from './pages';
@@ -15,6 +15,10 @@ function App() {
     })
   });
 
+  /* TODO: 
+  -Hacer diferentes navs por rol
+  -Agregarle menú hamburguesa
+  */
   return (
     <div>
       <Navbar bg="light" expand="lg">
@@ -26,6 +30,10 @@ function App() {
             <Nav.Link as={NavLink} to="/probador">Probador</Nav.Link>
             <Nav.Link as={NavLink} to="/registrar">Registrar</Nav.Link>
             <Nav.Link as={NavLink} to="/login">Login</Nav.Link>
+          </Nav>
+          <Nav>
+            <Nav.Link as={NavLink} to="/"><CarritoIcono /></Nav.Link>
+            <Nav.Link as={NavLink} to="/">Salir</Nav.Link>
           </Nav>
         </Navbar.Collapse>
       </Navbar>
