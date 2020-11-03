@@ -2,7 +2,10 @@ import React, { useEffect } from 'react';
 import { CarritoIcono } from './components/organisms';
 import './App.css';
 
-import { HomeComprador, Probador, Categoria, Login, Registrar, Carrito } from './pages';
+import { 
+  HomeComprador, Probador, Categoria, Login, Registrar, Carrito,
+  AdmVentas, AdmProductos, AdmUsuarios
+} from './pages';
 import { Navbar, Nav } from 'react-bootstrap';
 import { Switch, Route, Redirect, NavLink } from 'react-router-dom';
 
@@ -30,6 +33,9 @@ function App() {
             <Nav.Link as={NavLink} to="/probador">Probador</Nav.Link>
             <Nav.Link as={NavLink} to="/registrar">Registrar</Nav.Link>
             <Nav.Link as={NavLink} to="/login">Login</Nav.Link>
+            <Nav.Link as={NavLink} to="/ventas">Ventas</Nav.Link>
+            <Nav.Link as={NavLink} to="/productos">Productos</Nav.Link>
+            <Nav.Link as={NavLink} to="/usuarios">Usuarios</Nav.Link>
           </Nav>
           <Nav>
             <Nav.Link as={NavLink} to="/carrito"><CarritoIcono /></Nav.Link>
@@ -57,6 +63,15 @@ function App() {
         <Route path="/categoria/:id">
           <Categoria />
         </Route>
+        <Route path="/ventas">
+          <AdmVentas />
+        </Route>        
+        <Route path="/productos">
+          <AdmProductos />
+        </Route>        
+        <Route path="/usuarios">
+          <AdmUsuarios />
+        </Route>        
         <Route>
           <Redirect to={{pathname: '/'}} />
         </Route>
