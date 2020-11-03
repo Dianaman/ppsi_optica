@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import { verProducto } from '../redux/ducks/catalogo.duck';
 import Container from 'react-bootstrap/Container';
 import Table from 'react-bootstrap/Table';
+import Button from 'react-bootstrap/Button';
 
 export function AdmUsuarios () {
 
@@ -30,6 +31,7 @@ export function AdmUsuarios () {
         <Container>
             <div className="seccion">
                 <div>Usuarios</div>
+                <Button variant="info">+</Button>
             </div>
 
             <div className="seccion">

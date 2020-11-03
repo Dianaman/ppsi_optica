@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import { verProducto } from '../redux/ducks/catalogo.duck';
 import Container from 'react-bootstrap/Container';
 import Table from 'react-bootstrap/Table';
+import Button from 'react-bootstrap/Button';
 
 export function AdmProductos () {
 
@@ -12,12 +13,14 @@ export function AdmProductos () {
             descripcion: 'Lentes RayBan X455',
             precio: 4633,
             cantidadStock: 2,
+            puntoReposicion: 3,
             estado: 'activo'
         }, {
             id: 1346,
             descripcion: 'Lentes RayBan X455',
             precio: 4633,
             cantidadStock: 2,
+            puntoReposicion: 1,
             estado: 'activo'
         }, 
     ]
@@ -26,6 +29,7 @@ export function AdmProductos () {
         <Container>
             <div className="seccion">
                 <div>Productos</div>
+                <Button variant="info">+</Button>
             </div>
 
             <div className="seccion">
@@ -47,7 +51,11 @@ export function AdmProductos () {
                                     <td>{producto.id}</td>
                                     <td>{producto.descripcion}</td>
                                     <td>{producto.precio}</td>
-                                    <td>{producto.cantidadStock}</td>
+                                    <td className={
+                                        producto.puntoReposicion <= producto.cantidadStock ? 'danger' : ''
+                                    }>
+                                        {producto.cantidadStock}
+                                    </td>
                                     <td>{producto.estado}</td>
                                     <td>Ver</td>
                                 </tr>

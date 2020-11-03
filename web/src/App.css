@@ -105,3 +105,7 @@
 h3 {
   font-weight: bold;
 }
+
+.danger {
+  color: #dc3545;
+}
