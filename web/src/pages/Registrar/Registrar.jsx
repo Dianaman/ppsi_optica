@@ -7,7 +7,7 @@ import {Button, Form, Container, Row, Col } from 'react-bootstrap'
 export default function Registrar () {
 
     return (
-        <div className="login-page">
+        <div className="registrar-page">
             <Container>
                 <div className="form">
                     <Form>
