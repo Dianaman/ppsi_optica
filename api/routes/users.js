@@ -12,4 +12,16 @@ router.get('/', (request, response) => {
   });
 });
 
+router.post('/add', (req, res) => {
+  console.log(req.body);
+  var sql = `INSERT INTO users (nombre, apellido, tipo, email, clave, usuario) VALUES ('${req.body.firstName}', '${req.body.lastName}', 'cliente', '${req.body.email}', '${req.body.password}', '${req.body.userName}')`;
+  console.log(sql);
+  pool.query(sql, (error, result) => {
+    if (error) throw error;
+
+    console.log("1 user inserted");
+    res.send(result);
+  });
+});
+
 module.exports = router;

@@ -3,11 +3,14 @@ import { CarritoIcono } from './components/organisms';
 import './App.css';
 
 import { 
-  HomeComprador, Probador, Categoria, Login, Registrar, Carrito,
+  HomeComprador, Probador, Categoria, Login, Registrar, Store, Carrito,
   AdmVentas, AdmProductos, AdmUsuarios
 } from './pages';
+
 import { Navbar, Nav } from 'react-bootstrap';
 import { Switch, Route, Redirect, NavLink } from 'react-router-dom';
+import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
 
 function App() {
   useEffect(() => {
@@ -55,7 +58,9 @@ function App() {
           <Carrito />
         </Route>
         <Route path="/registrar">
-          <Registrar />
+          <Provider store={ Store }>
+            <Registrar />
+          </Provider>
         </Route>         
         <Route path="/login">
           <Login />
