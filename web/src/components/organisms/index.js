@@ -1,4 +1,5 @@
 import { ProductoDetalle } from './ProductoDetalle';
+import { AdmProductoDetalle } from './AdmProductoDetalle';
 import { CarritoIcono } from './CarritoIcono';
 
-export {ProductoDetalle, CarritoIcono};
+export {ProductoDetalle, AdmProductoDetalle, CarritoIcono};
