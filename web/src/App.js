@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { CarritoIcono } from './components/organisms';
 import './App.css';
-
+import {  Compra, Envio, Pago, Confirmarcompra } from './pages/Procesocompra';
 import { 
   HomeComprador, Probador, Categoria, Login, Registrar, Store, Carrito,
   AdmVentas, AdmProductos, AdmUsuarios
@@ -39,6 +39,7 @@ function App() {
             <Nav.Link as={NavLink} to="/ventas">Ventas</Nav.Link>
             <Nav.Link as={NavLink} to="/productos">Productos</Nav.Link>
             <Nav.Link as={NavLink} to="/usuarios">Usuarios</Nav.Link>
+            <Nav.Link as={NavLink} to="/Compra">Compra</Nav.Link>
           </Nav>
           <Nav>
             <Nav.Link as={NavLink} to="/carrito"><CarritoIcono /></Nav.Link>
@@ -77,6 +78,18 @@ function App() {
         <Route path="/usuarios">
           <AdmUsuarios />
         </Route>        
+        <Route path="/Compra">
+          <Compra/>
+        </Route>
+        <Route path="/Envio">
+          <Envio/>
+        </Route>    
+        <Route path="/Pago">
+          <Pago/>
+        </Route>
+        <Route path="/Confirmarcompra">
+          <Confirmarcompra/>
+        </Route>
         <Route>
           <Redirect to={{pathname: '/'}} />
         </Route>

@@ -5,10 +5,17 @@ import Form from 'react-bootstrap/Form';
 import Col from 'react-bootstrap/Col';
 import carritoIcon from '../assets/icons/shopping_cart.svg';
 import { addToCart } from '../redux/ducks/carrito.duck';
+import {useHistory } from "react-router-dom";
+
 
 export function Carrito() {
     const dispatch = useDispatch();
-
+    
+    
+    let history = useHistory();
+    function handleClick() {
+        history.push("/Compra")
+     }
 
     let subtotal = 0;
 
@@ -115,7 +122,7 @@ export function Carrito() {
             
             <div className="flex-row justify-between">
                 <Button variant="info">Ver más productos</Button>
-                <Button variant="info">Comprar</Button>
+                <Button variant="info"   onClick={handleClick}>Comprar</Button>
             </div>
         </div>
     );
