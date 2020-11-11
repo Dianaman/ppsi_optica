@@ -12,7 +12,8 @@ class Registrar extends React.Component {
         this.state = {
             campo: {},
             error: {},
-            enviado: false 
+            enviado: false,
+            existe: false
         }
     }
 
@@ -62,11 +63,18 @@ class Registrar extends React.Component {
 
     mensajeEnviado() {
         const enviado = this.state.enviado;
+        const existe = this.state.existe;
 
         if (enviado === true) {
  
             return {
                 __html: '<div class="alert alert-success mt-3" role="alert">Usuario Registrado Correctamente!</div>'
+            };
+        }
+
+        if (existe === true){
+            return {
+                __html: '<div class="alert alert-danger mt-3" role="alert">Nombre de usuario ya existente!</div>'
             };
         }
     };
@@ -97,12 +105,19 @@ class Registrar extends React.Component {
         }
         )
         .then(res => res.json())
+        .then(user => {
+            if(user != false){
+                // Cambio el estado de 'enviado' a 'true'
+                this.setState({
+                    enviado: true
+                });
+            }else{
+                this.setState({
+                    existe: true
+                });
+            }
+        })
 
-        // Cambio el estado de 'enviado' a 'true'
-        this.setState({
-            enviado: true
-        });  
-        
         return this.mensajeEnviado();
       }
   }
