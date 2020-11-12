@@ -17,6 +17,11 @@ router.get('/byUsername/:username/:clave', (req, res) => {
   pool.query(sql, (error, result) => {
       if (error) throw error;
 
+      if(result[0] == null){
+        console.log("Usuario y/o contraseña invalidos!");
+        res.send(false);
+      }
+
       console.log('User: ', result);
       res.send(result[0]);
   });

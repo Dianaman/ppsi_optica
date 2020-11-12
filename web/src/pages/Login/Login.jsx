@@ -1,24 +1,53 @@
-import React, {useState, useEffect} from 'react';
-import { useLocation } from "wouter";
+import React, { useState } from 'react';
 import './Login.css';
-import useUser from '../../hooks/useUser'
+//import axios from 'axios';
 
 export default function Login() {
 
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [, navigate] = useLocation()
-    const {login, isLogged} = useUser()
+    const [user, setUser] = useState();
+    const [invalidUser, setInvalidUser] = useState(false);
 
-    useEffect(() => {
-        if (isLogged) navigate('/')
-    }, [isLogged, navigate])
+    function mensajeEnviado() {
+
+        if (invalidUser === true){
+            return {
+                __html: '<div class="alert alert-danger mt-3" role="alert">Usuario y/o contraseña invalidos!</div>'
+            };
+        }
+    };
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        login();
+        const userFront = { username, password };
+
+        fetch(process.env.REACT_APP_API_URL + '/users/byUsername/' + username + '/' + password)
+        .then(res => res.json())
+        .then(userBack => {
+
+            if(userBack != false){
+                setUser(userBack);
+                setInvalidUser(false);
+                localStorage.setItem('user', userBack)
+                console.log(userBack)
+            }else{
+                setInvalidUser(true);
+            }
+        })
+
         //alert(`${username}, ${password}`)
     };
+
+    if (user) {
+        return(
+            <div className="login-page">
+                <div className="form">
+                    <div> Bienvenido {user.nombre} !</div>
+                </div>
+            </div>            
+        );
+    }
 
     return (
         <div className="login-page">
@@ -29,6 +58,7 @@ export default function Login() {
                 <button>Iniciar</button>
                 <p className="message">Nuevo usuario? <a href="/registrar">Crear cuenta</a></p>
                 </form>
+                <div className="msgok" dangerouslySetInnerHTML={mensajeEnviado()} /> 
             </div>
         </div>
     );    

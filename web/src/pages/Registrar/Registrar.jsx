@@ -1,5 +1,5 @@
 import React from 'react';
-import { Control, Form, actions } from 'react-redux-form';
+import { Control, Form } from 'react-redux-form';
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './Registrar.css';
 
@@ -106,7 +106,7 @@ class Registrar extends React.Component {
         )
         .then(res => res.json())
         .then(user => {
-            if(user != false){
+            if(user !== false){
                 // Cambio el estado de 'enviado' a 'true'
                 this.setState({
                     enviado: true
