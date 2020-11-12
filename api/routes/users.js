@@ -20,10 +20,10 @@ router.get('/byUsername/:username/:clave', (req, res) => {
       if(result[0] == null){
         console.log("Usuario y/o contraseña invalidos!");
         res.send(false);
+      }else{
+        console.log('User: ', result);
+        res.send(result[0]);
       }
-
-      console.log('User: ', result);
-      res.send(result[0]);
   });
 });
 

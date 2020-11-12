@@ -87,8 +87,7 @@ class Registrar extends React.Component {
     
         this.setState({
             campo
-        });
-        
+        });  
     }    
 
   handleSubmit(user) {
@@ -102,12 +101,10 @@ class Registrar extends React.Component {
             headers:{
               'Content-Type': 'application/json'
             }
-        }
-        )
+        })
         .then(res => res.json())
         .then(user => {
             if(user !== false){
-                // Cambio el estado de 'enviado' a 'true'
                 this.setState({
                     enviado: true
                 });

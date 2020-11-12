@@ -1,13 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useHistory } from "react-router-dom";
 import './Login.css';
 //import axios from 'axios';
 
 export default function Login() {
 
+    const history = useHistory();
+
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [user, setUser] = useState();
     const [invalidUser, setInvalidUser] = useState(false);
+
+    useEffect(() => {
+        const loggedInUser = localStorage.getItem("user");
+        console.log("loggedInUser: " + loggedInUser);
+        if (loggedInUser !== false) {
+            console.log('1');
+            setUser(loggedInUser);
+        }
+    }, []);
 
     function mensajeEnviado() {
 
@@ -20,18 +32,17 @@ export default function Login() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        const userFront = { username, password };
 
         fetch(process.env.REACT_APP_API_URL + '/users/byUsername/' + username + '/' + password)
         .then(res => res.json())
         .then(userBack => {
 
-            if(userBack != false){
+            if(userBack !== false){
                 setUser(userBack);
                 setInvalidUser(false);
-                localStorage.setItem('user', userBack)
-                console.log(userBack)
+                localStorage.setItem('user', userBack);
             }else{
+                localStorage.setItem('user', false);
                 setInvalidUser(true);
             }
         })
@@ -39,11 +50,20 @@ export default function Login() {
         //alert(`${username}, ${password}`)
     };
 
+    const handleLogout = () => {
+        setUser({});
+        setUsername("");
+        setPassword("");
+        localStorage.clear();
+        history.push("/");
+    };
+
     if (user) {
         return(
             <div className="login-page">
                 <div className="form">
                     <div> Bienvenido {user.nombre} !</div>
+                    <button onClick={handleLogout}>logout</button>
                 </div>
             </div>            
         );
