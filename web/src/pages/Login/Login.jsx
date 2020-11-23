@@ -13,8 +13,8 @@ export default function Login() {
     const [invalidUser, setInvalidUser] = useState(false);
 
     useEffect(() => {
-        const loggedInUser = localStorage.getItem("user");
-        console.log("loggedInUser: " + loggedInUser);
+        const loggedInUser = JSON.parse(localStorage.getItem("user"));
+        console.log("loggedInUser: ", loggedInUser);
         if (loggedInUser !== false) {
             console.log('1');
             setUser(loggedInUser);
@@ -40,7 +40,7 @@ export default function Login() {
             if(userBack !== false){
                 setUser(userBack);
                 setInvalidUser(false);
-                localStorage.setItem('user', userBack);
+                localStorage.setItem('user', JSON.stringify(userBack));
             }else{
                 localStorage.setItem('user', false);
                 setInvalidUser(true);
