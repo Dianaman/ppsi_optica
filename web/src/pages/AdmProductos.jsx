@@ -1,10 +1,10 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { seeAdmProduct } from '../redux/ducks/adm-producto.duck';
+import { seeAdmProduct, showAddProduct } from '../redux/ducks/adm-producto.duck';
 import Container from 'react-bootstrap/Container';
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
-import { AdmProductoDetalle } from '../components/organisms'; 
+import { AdmProductoDetalle, AdmProductoNuevo } from '../components/organisms'; 
 
 export function AdmProductos () {
 
@@ -29,12 +29,18 @@ export function AdmProductos () {
     ];
 
 
-    const [modalShow, setModalShow] = React.useState(false);
+    const [modalAddShow, setModalAddShow] = React.useState(false);
+    const [modalEditShow, setModalEditShow] = React.useState(false);
     const dispatch = useDispatch();
 
     function mostrarProducto(producto) {
         dispatch(seeAdmProduct(producto));
-        setModalShow(true);
+        setModalEditShow(true);
+    }
+
+    function agregarProducto() {
+        dispatch(showAddProduct());
+        setModalAddShow(true);
     }
 
     return (
@@ -42,7 +48,7 @@ export function AdmProductos () {
             <Container>
                 <div className="seccion">
                     <div>Productos</div>
-                    <Button variant="info">+</Button>
+                    <Button variant="info" onClick={() => agregarProducto()}>+</Button>
                 </div>
 
                 <div className="seccion">
@@ -80,8 +86,13 @@ export function AdmProductos () {
             </Container>
 
             <AdmProductoDetalle
-                show={modalShow}
-                onHide={() => setModalShow(false)}
+                show={modalEditShow}
+                onHide={() => setModalEditShow(false)}
+            />
+
+            <AdmProductoNuevo
+                show={modalAddShow}
+                onHide={() => setModalAddShow(false)}
             />
         </>
     );

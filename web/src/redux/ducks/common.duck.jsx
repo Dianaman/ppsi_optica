@@ -12,9 +12,10 @@ export const SHOW_ERROR = 'common/SHOW_ERROR';
 export function commonReducer(state = initialState, action) {
     switch (action.type) {
         case SHOW_LOADING:
+            const { show } = action.payload;
             return {
                 ...state,
-                isLoading: true,
+                isLoading: show,
                 error: null
             }
             case SHOW_ERROR:
@@ -31,10 +32,11 @@ export function commonReducer(state = initialState, action) {
 } 
 
 // Actions
-export function showLoading(){
+export function showLoading(show){
     return {
         type: SHOW_LOADING,
         payload: {
+            show
         }        
     }
 }
@@ -47,3 +49,28 @@ export function showError(error){
         }        
     }
 }
+
+
+export function fetchApi(url, options, callback) {
+    return (dispatch, getState) => {
+        return dispatch(fetchApiInner(url, options, callback))
+    }
+}
+
+export function fetchApiInner(url, options, callback) {
+    return (dispatch, getState) => {
+        dispatch(showLoading(true));
+        return fetch(url, {
+            method: options.method || 'GET',
+            body: options.body,
+            headers: options.headers
+        })
+        .then(response => response.json())
+        .then(json => {
+            dispatch(showLoading(false))
+            dispatch(callback(json, url))
+        })
+        .catch(error => dispatch(showError(error)))
+    }
+}
+

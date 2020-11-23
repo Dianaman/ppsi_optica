@@ -1,103 +1,93 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Modal from 'react-bootstrap/Modal';
-import Form from 'react-bootstrap/Form';
+import {Form as FormBs} from 'react-bootstrap';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import { useSelector, useDispatch } from 'react-redux';
 import Image from 'react-bootstrap/Image';
-import { modificarPrecio } from '../../redux/ducks/adm-producto.duck';
+import { modificarPrecio, switchEditingPrice } from '../../redux/ducks/adm-producto.duck';
+import { Field, Form, Control, actions } from 'react-redux-form';
+
 
 export function AdmProductoDetalle(props) {
     const app = useSelector(state => state);
-    const { productoParaVer } = app.admProductoReducer;
+    const { productoParaVer, modificandoPrecio } = app.admProductoReducer;
+
     
     const dispatch = useDispatch();
 
-    const preventSubmit = (event) => {
-        event.preventDefault();
+
+    function verEdicionPrecio(ver) {
+        dispatch(switchEditingPrice(ver));
     }
-
-
-
-    let modificandoPrecio = false;
-    let precio = productoParaVer.precio;
-
 
     function Precio() {
         return (
             <div className="flex-row align-items-center">
-                <div>Precio: <b>$ {precio}</b></div>
-                <Button className="margin-x-10px" onClick={() => verEdicionPrecio() }>Modificar precio</Button>
-                
+                <div>Precio: <b>$ {productoParaVer.precio}</b></div>
+                <Button className="margin-x-10px" onClick={() => verEdicionPrecio(true) }>Modificar precio</Button>
             </div>
         );
     }
 
-    function verEdicionPrecio() {
-        modificandoPrecio = true;
-    }
+    const changePrecio = () => {
+        const nuevPrecio = parseInt(app.prod.precio, 10);
 
-    function EdicionPrecio() {
-        return (
-            <div className="flex-row align-items-center">
-                <div>Precio: $</div> 
-                <Form onSubmit={preventSubmit}>
-                    <Form.Row>
-                        <Form.Group as={Col} md="4">
-                        <Form.Control type="number" min="0" value={precio} onChange={changePrecio}/>
-                        </Form.Group>
-                    </Form.Row>
-                </Form>
-            </div>
-
-        );
-    }
-
-  const changePrecio = (event) => {
-    const nuevPrecio = parseInt(event.target.value, 10);
-    precio = nuevPrecio;
-
-    dispatch(modificarPrecio(productoParaVer.id, nuevPrecio));
-    modificandoPrecio = false;
-  }
-
-  return (
-    <>
-        { productoParaVer && <Modal
-            {...props}
-            size="lg"
-            aria-labelledby="contained-modal-title-vcenter"
-            centered
-        >
-        <Modal.Header closeButton>
-          <Image src={productoParaVer.foto} alt={productoParaVer.titulo} fluid/>
-        </Modal.Header>
-        <Modal.Body>
-            <h4>{productoParaVer.titulo}</h4>
-            <p>
-                {productoParaVer.detalle}
-            </p>
-
-            <hr />
-
-            <div className="flex-row align-items-center">
-                <div>Cantidad en stock: &nbsp;
-                    <b className={productoParaVer.puntoReposicion <= productoParaVer.cantidadStock  ? 'danger' : ''}>
-                        {productoParaVer.cantidadStock}
-                    </b>
-                </div>
-                {productoParaVer.puntoReposicion <= productoParaVer.cantidadStock  &&
-                    <Button className="margin-x-10px">Reponer stock</Button>
-                }
-            </div>
-            {modificandoPrecio ? <EdicionPrecio /> : <Precio /> }
+        dispatch(modificarPrecio(productoParaVer.id, nuevPrecio));
+        verEdicionPrecio(false);
         
-        </Modal.Body>
-        <Modal.Footer>
+    }
 
-        </Modal.Footer>
-      </Modal>
-      }
-    </>
-  );
+    return (
+        <>
+            { productoParaVer && <Modal
+                {...props}
+                size="lg"
+                aria-labelledby="contained-modal-title-vcenter"
+                centered
+            >
+                <Modal.Header closeButton>
+                <Image src={productoParaVer.foto} alt={productoParaVer.titulo} fluid/>
+                </Modal.Header>
+                <Modal.Body>
+                    <h4>{productoParaVer.titulo}</h4>
+                    <p>
+                        {productoParaVer.detalle}
+                    </p>
+
+                    <hr />
+
+                    <div className="flex-row align-items-center">
+                        <div>Cantidad en stock: &nbsp;
+                            <b className={productoParaVer.puntoReposicion <= productoParaVer.cantidadStock  ? 'danger' : ''}>
+                                {productoParaVer.cantidadStock}
+                            </b>
+                        </div>
+                        {productoParaVer.puntoReposicion <= productoParaVer.cantidadStock  &&
+                            <Button className="margin-x-10px">Reponer stock</Button>
+                        }
+                    </div>
+                    {
+                        modificandoPrecio 
+                        ? 
+                        <div className="flex-row align-items-center">
+                            <Form model="form.prod" onSubmit={() => changePrecio()}>
+                                <label htmlFor="form.producto.articulo">Precio: $</label>
+                                <Control.text model="form.prod.precio" id="form.prod.precio" />
+
+
+                                <Button className="margin-x-10px" type="submit">v</Button>
+                            </Form>
+                        </div>
+                        :
+                        <Precio />
+                    }
+                </Modal.Body>
+                <Modal.Footer>
+
+                </Modal.Footer>
+            </Modal>
+        }
+        </>
+    );
 }

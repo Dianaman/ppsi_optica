@@ -80,6 +80,11 @@
   margin-left: 10px;
 }
 
+.margin-y-10px {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
 .justify-between {
   justify-content: space-between;
 }

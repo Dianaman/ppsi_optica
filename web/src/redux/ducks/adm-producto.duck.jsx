@@ -1,32 +1,44 @@
-
+import { fetchApi } from './common.duck';
 
 // State
 const initial_state = {
     productos: [],
-    productoParaVer: {}
+    productoParaVer: {},
+    addProduct: false,
+    modificandoPrecio: false
 }
 
 // Types
 export const ADD_PRODUCT = 'adm_producto/ADD_PRODUCT';
+export const ADDED_PRODUCT = 'adm_producto/ADDED_PRODUCT';
 export const EDIT_PRODUCT = 'adm_producto/EDIT_PRODUCT';
 export const REMOVE_PRODUCT = 'adm_producto/REMOVE_PRODUCT';
 export const SEE_ADM_PRODUCT = 'adm_producto/SEE_PRODUCT';
 export const EDIT_PRICE_PRODUCT = 'adm_producto/EDIT_PRICE_PRODUCT';
+export const EDITING_PRICE_PRODUCT = 'adm_producto/EDITING_PRICE_PRODUCT';
+export const SHOW_ADD_PRODUCT = 'adm_producto/SHOW_ADD_PRODUCT';
 
 // Reducer
 export function admProductoReducer(state = initial_state, action) { 
     switch (action.type) {
         case ADD_PRODUCT:
             const {productToAdd} = action.payload;
+
+            fetchAddProduct(productToAdd);
+
+            return {
+                ...state
+            };
+        case ADDED_PRODUCT:
+            const {productAdded} = action.payload;
             const storedProducts = state.productos;
 
-            this.storedProducts.push(productToAdd);
+            storedProducts.push(productAdded);
 
             return {
                 ...state,
                 productos: storedProducts
             };
-
         case EDIT_PRODUCT:
             const {editId, editedProduct} = action.payload;
             const productsToEdit = state.productos;
@@ -61,13 +73,20 @@ export function admProductoReducer(state = initial_state, action) {
                 ...state,
                 productoParaVer: productToSee
             }
+        case EDITING_PRICE_PRODUCT:
+            const {editingPrice} = action.payload;
+
+            return {
+                ...state,
+                modificandoPrecio: editingPrice
+            }
         case EDIT_PRICE_PRODUCT:
             const {priceProdId, newPrice} = action.payload;
             const productsToEditPrice = state.productos;
 
             const priceProdIndex = productsToEditPrice.findIndex(product => product.id === priceProdId);
             if (priceProdIndex > -1) {
-                productsToRemove[priceProdIndex].precio = newPrice;
+                productsToEditPrice[priceProdIndex].precio = newPrice;
             }   
 
             return {
@@ -117,6 +136,15 @@ export function seeAdmProduct(productToSee) {
     }
 }
 
+export function switchEditingPrice(modificando) {
+    return {
+        type: EDITING_PRICE_PRODUCT,
+        payload: {
+            editingPrice: modificando
+        }
+    }
+}
+
 export function modificarPrecio(priceProdId, newPrice) {
     return {
         type: EDIT_PRICE_PRODUCT,
@@ -125,4 +153,33 @@ export function modificarPrecio(priceProdId, newPrice) {
             newPrice
         }
     }
+}
+
+export function showAddProduct(show) {
+    return {
+        type: SHOW_ADD_PRODUCT,
+        payload: {
+            addProduct: show
+        }
+    }
+}
+
+export function fetchAddProduct(product) {
+    return (dispatch, getState) => {
+        dispatch(fetchApi(
+            process.env.REACT_APP_API_URL + '/products', 
+            {
+                method: 'POST',
+                body: JSON.stringify({producto: product}),
+                headers:{
+                    'Content-Type': 'application/json'
+                }
+            },
+            (json, url) => fetchedAddProduct(json, url)
+        ));
+    }
+}
+
+export function fetchedAddProduct(json, url) {
+
 }
