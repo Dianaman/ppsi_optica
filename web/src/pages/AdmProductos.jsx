@@ -1,37 +1,28 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
-import { seeAdmProduct, showAddProduct } from '../redux/ducks/adm-producto.duck';
+import { useDispatch, useSelector } from 'react-redux';
+import { seeAdmProduct, showAddProduct, fetchGetProducts } from '../redux/ducks/adm-producto.duck';
+import { fetchGetCategories } from '../redux/ducks/categoria.duck';
 import Container from 'react-bootstrap/Container';
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import { AdmProductoDetalle, AdmProductoNuevo } from '../components/organisms'; 
+import { useEffect } from 'react';
 
 export function AdmProductos () {
 
-    const productos = [
-        {
-            id: 1344,
-            titulo: 'Lentes RayBan X455',
-            detalle: 'Lentes con armazón metálicos y cristal orgánico RayBan',
-            precio: 4633,
-            cantidadStock: 2,
-            puntoReposicion: 3,
-            estado: 'activo'
-        }, {
-            id: 1346,
-            titulo: 'Lentes RayBan X455',
-            detalle: 'Lentes con armazón metálicos y cristal orgánico RayBan',
-            precio: 4633,
-            cantidadStock: 2,
-            puntoReposicion: 1,
-            estado: 'activo'
-        }, 
-    ];
-
+    const app = useSelector(state => state);
+    const { productos } = app.admProductoReducer;
+    const { categorias } = app.categoriaReducer;
 
     const [modalAddShow, setModalAddShow] = React.useState(false);
     const [modalEditShow, setModalEditShow] = React.useState(false);
     const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(fetchGetCategories());
+        dispatch(fetchGetProducts());
+    }, [dispatch]);
+
 
     function mostrarProducto(producto) {
         dispatch(seeAdmProduct(producto));
@@ -68,12 +59,12 @@ export function AdmProductos () {
                                 return (
                                     <tr key={producto.id}>
                                         <td>{producto.id}</td>
-                                        <td>{producto.descripcion}</td>
+                                        <td>{producto.nombre}</td>
                                         <td>{producto.precio}</td>
                                         <td className={
-                                            producto.puntoReposicion <= producto.cantidadStock ? 'danger' : ''
+                                            producto.puntoDeReposicion >= producto.stock ? 'danger' : ''
                                         }>
-                                            {producto.cantidadStock}
+                                            {producto.stock}
                                         </td>
                                         <td>{producto.estado}</td>
                                         <td><Button  onClick={() => mostrarProducto(producto) }>Ver</Button></td>

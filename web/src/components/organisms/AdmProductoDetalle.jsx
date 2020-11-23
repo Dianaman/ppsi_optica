@@ -47,23 +47,23 @@ export function AdmProductoDetalle(props) {
                 centered
             >
                 <Modal.Header closeButton>
-                <Image src={productoParaVer.foto} alt={productoParaVer.titulo} fluid/>
+                <Image src={productoParaVer.foto} alt={productoParaVer.nombre} fluid/>
                 </Modal.Header>
                 <Modal.Body>
-                    <h4>{productoParaVer.titulo}</h4>
+                    <h4>{productoParaVer.nombre}</h4>
                     <p>
-                        {productoParaVer.detalle}
+                        {productoParaVer.descripcion}
                     </p>
 
                     <hr />
 
                     <div className="flex-row align-items-center">
                         <div>Cantidad en stock: &nbsp;
-                            <b className={productoParaVer.puntoReposicion <= productoParaVer.cantidadStock  ? 'danger' : ''}>
-                                {productoParaVer.cantidadStock}
+                            <b className={productoParaVer.puntoDeReposicion >= productoParaVer.stock  ? 'danger' : ''}>
+                                {productoParaVer.stock}
                             </b>
                         </div>
-                        {productoParaVer.puntoReposicion <= productoParaVer.cantidadStock  &&
+                        {productoParaVer.puntoDeReposicion >= productoParaVer.stock  &&
                             <Button className="margin-x-10px">Reponer stock</Button>
                         }
                     </div>

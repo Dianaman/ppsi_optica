@@ -7,11 +7,11 @@ import { fetchAddProduct } from '../../redux/ducks/adm-producto.duck';
 
 export function AdmProductoNuevo(props) {
     const app = useSelector(state => state);
+    const { categorias } = app.categoriaReducer;
     
     const dispatch = useDispatch();
 
     const handleSubmit = () => {
-        console.log('producto', app.producto);
         const producto = app.producto;
 
         dispatch(fetchAddProduct(producto));
@@ -19,6 +19,10 @@ export function AdmProductoNuevo(props) {
 
     const required = (val) => {
         return !val;
+    }
+
+    const quantityFormat = (val) => {
+        return !val || val < 0 || !val.match('^[0-9]+$')
     }
 
     return (
@@ -57,6 +61,17 @@ export function AdmProductoNuevo(props) {
                             }}
                         /><br />
 
+                        <label htmlFor="form.producto.idCategoria">Categoría</label>
+                        <Control.select model="form.producto.idCategoria" id="form.producto.idCategoria">
+                            {categorias && categorias.map((categoria, index) => {
+                                return (
+                                    <option value={categoria.id} key={categoria.id}>
+                                        {categoria.descripcion}
+                                    </option>
+                                );
+                            }) }
+                        </Control.select>
+
                         <label htmlFor="form.producto.marca">Marca</label>
                         <Control.text model="form.producto.marca" id="form.producto.marca" 
                         errors={{ required: required }}/>
@@ -80,8 +95,29 @@ export function AdmProductoNuevo(props) {
                         <label htmlFor="form.producto.imagen">Imagen</label>
                         <Control.file model="form.producto.imagen" id="form.producto.imagen" /><br />
 
+
+                        <label htmlFor="form.producto.stock">Stock</label>
+                        <Control.text model="form.producto.stock" id="form.producto.stock" 
+                        errors={{ quantityFormat: quantityFormat }}/>
+                        <Errors
+                            model="form.producto.stock"
+                            messages={{
+                                quantityFormat: 'Debe ingresar un valor entero mayor o igual a 0'
+                            }}
+                        /><br />
+
+                        <label htmlFor="form.producto.puntoDeReposicion">Punto de reposición</label>
+                        <Control.text model="form.producto.puntoDeReposicion" id="form.producto.puntoDeReposicion" 
+                        errors={{ quantityFormat: quantityFormat }}/>
+                        <Errors
+                            model="form.producto.puntoDeReposicion"
+                            messages={{
+                                quantityFormat: 'Debe ingresar un valor entero mayor o igual a 0'
+                            }}
+                        /><br />                        
+
                         <Button type="submit" className="margin-y-10px" variant="info">
-                        Registrarme
+                        Añadir producto
                         </Button>
                     </Form>
                 </Modal.Body>

@@ -9,8 +9,10 @@ const initial_state = {
 }
 
 // Types
+
+export const GET_PRODUCTS = 'adm_producto/GET_PRODUCTS';
+export const FINISH_GET_PRODUCTS = 'adm_producto/FINISH_GET_PRODUCTS';
 export const ADD_PRODUCT = 'adm_producto/ADD_PRODUCT';
-export const ADDED_PRODUCT = 'adm_producto/ADDED_PRODUCT';
 export const EDIT_PRODUCT = 'adm_producto/EDIT_PRODUCT';
 export const REMOVE_PRODUCT = 'adm_producto/REMOVE_PRODUCT';
 export const SEE_ADM_PRODUCT = 'adm_producto/SEE_PRODUCT';
@@ -21,15 +23,15 @@ export const SHOW_ADD_PRODUCT = 'adm_producto/SHOW_ADD_PRODUCT';
 // Reducer
 export function admProductoReducer(state = initial_state, action) { 
     switch (action.type) {
-        case ADD_PRODUCT:
-            const {productToAdd} = action.payload;
-
-            fetchAddProduct(productToAdd);
+        case GET_PRODUCTS:
+            const productos = action.payload.productos;
 
             return {
-                ...state
-            };
-        case ADDED_PRODUCT:
+                ...state,
+                productos
+            }
+
+        case ADD_PRODUCT:
             const {productAdded} = action.payload;
             const storedProducts = state.productos;
 
@@ -99,11 +101,27 @@ export function admProductoReducer(state = initial_state, action) {
 }
 
 // Actions
-export function addProduct(productToAdd) {
+
+export function fetchGetProducts() {
+    return (dispatch, getState) => {
+        dispatch(fetchApi(
+            process.env.REACT_APP_API_URL + '/products', 
+            {
+                method: 'GET',
+                headers:{
+                    'Content-Type': 'application/json'
+                }
+            },
+            (json, url) => dispatch(fetchFinishGetProducts(json, url))
+        ));
+    }
+}
+
+export function fetchFinishGetProducts(json, url) {
     return {
-        type: ADD_PRODUCT,
+        type: GET_PRODUCTS,
         payload: {
-            productToAdd
+            productos: json
         }
     };
 }
@@ -175,11 +193,16 @@ export function fetchAddProduct(product) {
                     'Content-Type': 'application/json'
                 }
             },
-            (json, url) => fetchedAddProduct(json, url)
+            (json, url) => fetchFinishAddProduct(json, url)
         ));
     }
 }
 
-export function fetchedAddProduct(json, url) {
-
+export function fetchFinishAddProduct(json, url) {
+    return {
+        type: ADD_PRODUCT,
+        payload: {
+            productAdded: json
+        }
+    }
 }

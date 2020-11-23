@@ -68,7 +68,7 @@ export function fetchApiInner(url, options, callback) {
         .then(response => response.json())
         .then(json => {
             dispatch(showLoading(false))
-            dispatch(callback(json, url))
+            callback(json, url)
         })
         .catch(error => dispatch(showError(error)))
     }
