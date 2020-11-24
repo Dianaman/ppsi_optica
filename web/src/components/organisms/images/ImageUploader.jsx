@@ -1,5 +1,4 @@
-import React, { Component } from 'react';
-import Spinner from './Spinner';
+import React from 'react';
 import Images from './Images';
 import Buttons from './Buttons';
 import { useDispatch, useSelector } from 'react-redux';
@@ -31,7 +30,7 @@ export function ImageUploader() {
     const content = () => {
         switch(true) {
             case loading:
-                return <Spinner />
+                return <></>
             case files.length > 0:
                 return <Images images={files} removeImage={removeImage} />
             default:

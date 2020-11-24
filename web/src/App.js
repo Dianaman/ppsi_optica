@@ -9,8 +9,8 @@ import {
 
 import { Navbar, Nav } from 'react-bootstrap';
 import { Switch, Route, Redirect, NavLink } from 'react-router-dom';
-import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
+import { Spinner } from './components/atoms';
 
 function App() {
 
@@ -31,6 +31,8 @@ function App() {
   */
   return (
     <div>
+      <Spinner />
+      
       <Navbar bg="light" expand="lg">
         <Navbar.Brand href="/">Focus</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />

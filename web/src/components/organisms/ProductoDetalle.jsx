@@ -9,8 +9,8 @@ import { addToCart } from '../../redux/ducks/carrito.duck';
 export function ProductoDetalle(props) {
   let productoMostrado, carrito, cantidad, prodEnCarrito;
 
-  productoMostrado = props.productoMostrado;
   carrito = props.carrito;
+  productoMostrado = props.productoMostrado;
 
   prodEnCarrito = carrito?.find(item => item.id === productoMostrado.idProducto);
   cantidad = prodEnCarrito ? prodEnCarrito.quantity : 0;

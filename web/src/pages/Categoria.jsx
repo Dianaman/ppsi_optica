@@ -34,7 +34,7 @@ export function Categoria () {
     return (
         <>
             <Container className="spaced">
-                <Row>
+                <Row className="margin-y-10px">
                     <Col>
                         <CardDeck>
                         {

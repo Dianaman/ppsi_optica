@@ -15,7 +15,7 @@ export function commonReducer(state = initialState, action) {
             const { show } = action.payload;
             return {
                 ...state,
-                isLoading: show,
+                showLoading: show,
                 error: null
             }
             case SHOW_ERROR:
@@ -23,7 +23,7 @@ export function commonReducer(state = initialState, action) {
 
                 return {
                     ...state,
-                    isLoading: false,
+                    showLoading: false,
                     error
                 }
         default: 
@@ -33,6 +33,7 @@ export function commonReducer(state = initialState, action) {
 
 // Actions
 export function showLoading(show){
+    console.log('show loading', show);
     return {
         type: SHOW_LOADING,
         payload: {
