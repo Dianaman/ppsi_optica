@@ -57,8 +57,8 @@ export function AdmProductos () {
                         <tbody>
                             {productos && productos.map(producto => {
                                 return (
-                                    <tr key={producto.id}>
-                                        <td>{producto.id}</td>
+                                    <tr key={producto.idProducto}>
+                                        <td>{producto.idProducto}</td>
                                         <td>{producto.nombre}</td>
                                         <td>{producto.precio}</td>
                                         <td className={

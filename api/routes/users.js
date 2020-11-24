@@ -7,7 +7,6 @@ router.get('/', (request, response) => {
   pool.query('SELECT * FROM users', (error, result) => {
       if (error) throw error;
 
-      console.log('users', result);
       response.send(result);
   });
 });

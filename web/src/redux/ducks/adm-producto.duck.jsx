@@ -16,7 +16,6 @@ export const ADD_PRODUCT = 'adm_producto/ADD_PRODUCT';
 export const EDIT_PRODUCT = 'adm_producto/EDIT_PRODUCT';
 export const REMOVE_PRODUCT = 'adm_producto/REMOVE_PRODUCT';
 export const SEE_ADM_PRODUCT = 'adm_producto/SEE_PRODUCT';
-export const EDIT_PRICE_PRODUCT = 'adm_producto/EDIT_PRICE_PRODUCT';
 export const EDITING_PRICE_PRODUCT = 'adm_producto/EDITING_PRICE_PRODUCT';
 export const SHOW_ADD_PRODUCT = 'adm_producto/SHOW_ADD_PRODUCT';
 
@@ -81,19 +80,6 @@ export function admProductoReducer(state = initial_state, action) {
             return {
                 ...state,
                 modificandoPrecio: editingPrice
-            }
-        case EDIT_PRICE_PRODUCT:
-            const {priceProdId, newPrice} = action.payload;
-            const productsToEditPrice = state.productos;
-
-            const priceProdIndex = productsToEditPrice.findIndex(product => product.id === priceProdId);
-            if (priceProdIndex > -1) {
-                productsToEditPrice[priceProdIndex].precio = newPrice;
-            }   
-
-            return {
-                ...state,
-                productos: productsToEditPrice
             }
         default:
             return state;
@@ -163,13 +149,35 @@ export function switchEditingPrice(modificando) {
     }
 }
 
-export function modificarPrecio(priceProdId, newPrice) {
-    return {
-        type: EDIT_PRICE_PRODUCT,
-        payload: {
-            priceProdId,
-            newPrice
-        }
+export function editPrice(priceProdId, newPrice) {
+    return (dispatch, getState) => {
+        dispatch(fetchApi(
+            process.env.REACT_APP_API_URL + '/products/change-price', 
+            {
+                method: 'POST',
+                body: JSON.stringify({price: newPrice, id: priceProdId}),
+                headers:{
+                    'Content-Type': 'application/json'
+                }
+            },
+            (json, url) => {dispatch(fetchGetProducts())}
+        ));
+    }
+}
+
+export function restock(stockProdId, newStock) {
+    return (dispatch, getState) => {
+        dispatch(fetchApi(
+            process.env.REACT_APP_API_URL + '/products/change-stock', 
+            {
+                method: 'PUT',
+                body: JSON.stringify({stock: newStock, id: stockProdId}),
+                headers:{
+                    'Content-Type': 'application/json'
+                }
+            },
+            (json, url) => {dispatch(fetchGetProducts())}
+        ));
     }
 }
 
@@ -193,7 +201,7 @@ export function fetchAddProduct(product) {
                     'Content-Type': 'application/json'
                 }
             },
-            (json, url) => fetchFinishAddProduct(json, url)
+            (json, url) => dispatch(fetchFinishAddProduct(json, url))
         ));
     }
 }

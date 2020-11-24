@@ -25,6 +25,20 @@ export function AdmProductoNuevo(props) {
         return !val || val < 0 || !val.match('^[0-9]+$')
     }
 
+    const currencyFormat = (val) => {
+        const num = Number.parseFloat(val);
+
+        return !val || Number.isNaN(num) || num < 0;
+    }
+
+    const stockMaximoMenorMinimo = (val) => {
+        const minimo = Number.parseInt(app.producto.puntoDeReposicion, 10);
+        const stockMaximo = Number.parseInt(val, 10);
+
+        return stockMaximo < minimo;
+
+    }
+
     return (
         <>
             { <Modal
@@ -65,8 +79,8 @@ export function AdmProductoNuevo(props) {
                         <Control.select model="form.producto.idCategoria" id="form.producto.idCategoria">
                             {categorias && categorias.map((categoria, index) => {
                                 return (
-                                    <option value={categoria.id} key={categoria.id}>
-                                        {categoria.descripcion}
+                                    <option value={categoria.idCategoria} key={categoria.idCategoria}>
+                                        {categoria.descripcion}.
                                     </option>
                                 );
                             }) }
@@ -115,6 +129,27 @@ export function AdmProductoNuevo(props) {
                                 quantityFormat: 'Debe ingresar un valor entero mayor o igual a 0'
                             }}
                         /><br />                        
+
+                        <label htmlFor="form.producto.stockMaximo">Stock máximo</label>
+                        <Control.text model="form.producto.stockMaximo" id="form.producto.stockMaximo" 
+                        errors={{ quantityFormat: quantityFormat, stockMaximoMenorMinimo: stockMaximoMenorMinimo}}/>
+                        <Errors
+                            model="form.producto.stockMaximo"
+                            messages={{
+                                quantityFormat: 'Debe ingresar un valor entero mayor o igual a 0',
+                                stockMaximoMenorMinimo: 'El stock máximo debe ser mayor al punto de reposición'
+                            }}
+                        /><br />   
+
+                        <label htmlFor="form.producto.precio">Precio</label>
+                        <Control.text model="form.producto.precio" id="form.producto.precio" 
+                        errors={{ currencyFormat: currencyFormat }}/>
+                        <Errors
+                            model="form.producto.precio"
+                            messages={{
+                                currencyFormat: 'Debe ingresar un valor entero mayor o igual a 0'
+                            }}
+                        /><br />        
 
                         <Button type="submit" className="margin-y-10px" variant="info">
                         Añadir producto

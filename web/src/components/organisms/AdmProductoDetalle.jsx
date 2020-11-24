@@ -1,12 +1,10 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import Modal from 'react-bootstrap/Modal';
-import {Form as FormBs} from 'react-bootstrap';
-import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import { useSelector, useDispatch } from 'react-redux';
 import Image from 'react-bootstrap/Image';
-import { modificarPrecio, switchEditingPrice } from '../../redux/ducks/adm-producto.duck';
-import { Field, Form, Control, actions } from 'react-redux-form';
+import { editPrice, switchEditingPrice, restock } from '../../redux/ducks/adm-producto.duck';
+import { Form, Control } from 'react-redux-form';
 
 
 export function AdmProductoDetalle(props) {
@@ -31,11 +29,17 @@ export function AdmProductoDetalle(props) {
     }
 
     const changePrecio = () => {
-        const nuevPrecio = parseInt(app.prod.precio, 10);
+        const nuevoPrecio = parseInt(app.prod.precio, 10);
 
-        dispatch(modificarPrecio(productoParaVer.id, nuevPrecio));
+        dispatch(editPrice(productoParaVer.idProducto, nuevoPrecio));
         verEdicionPrecio(false);
-        
+    }
+
+    const reponerStock = () => {
+        const id = productoParaVer.idProducto;
+        const nuevoStock = productoParaVer.stockMaximo;
+
+        dispatch(restock(id, nuevoStock));
     }
 
     return (
@@ -64,7 +68,7 @@ export function AdmProductoDetalle(props) {
                             </b>
                         </div>
                         {productoParaVer.puntoDeReposicion >= productoParaVer.stock  &&
-                            <Button className="margin-x-10px">Reponer stock</Button>
+                            <Button className="margin-x-10px" onClick={() => reponerStock()}>Reponer stock</Button>
                         }
                     </div>
                     {
