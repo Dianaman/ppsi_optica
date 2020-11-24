@@ -8,6 +8,7 @@ var express = require('express');
 var path = require('path');
 var cors = require("cors");
 var bodyParser = require('body-parser');
+const formData = require('express-form-data')
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
@@ -15,6 +16,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var productsRouter = require('./routes/products');
 var categoriesRouter = require('./routes/categories');
+var filesRouter = require('./routes/files');
 
 var app = express();
 
@@ -36,6 +38,10 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/products', productsRouter);
 app.use('/categories', categoriesRouter);
+
+app.use(formData.parse());
+
+app.use('/files', filesRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

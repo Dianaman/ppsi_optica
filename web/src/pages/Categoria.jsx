@@ -4,7 +4,7 @@ import Card from 'react-bootstrap/Card';
 import CardDeck from 'react-bootstrap/CardDeck';
 import { ProductoDetalle } from '../components/organisms';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchGetProductsCategory, fetchGetProduct } from '../redux/ducks/categoria.duck';
+import { fetchGetProductsCategory, showProduct } from '../redux/ducks/categoria.duck';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
@@ -26,7 +26,7 @@ export function Categoria () {
 
 
     function mostrarProducto(producto) {
-        dispatch(fetchGetProduct(producto.idProducto));
+        dispatch(showProduct(producto));
         setModalShow(true);
     }
 
@@ -43,7 +43,7 @@ export function Categoria () {
 
                                 return (
                                     <Card style={{ width: '18rem' }} onClick={() => mostrarProducto(prod) } key={prod.idProducto}>
-                                        <Card.Img variant="top" src={prod.foto} />
+                                        <Card.Img variant="top" src={prod.pathImagen} />
                                         <Card.Body>
                                             <Card.Title>{prod.nombre}</Card.Title>
                                             <Card.Text>{prod.descripcion}</Card.Text>

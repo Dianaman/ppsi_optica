@@ -7,8 +7,6 @@ import Image from 'react-bootstrap/Image';
 import { addToCart } from '../../redux/ducks/carrito.duck';
 
 export function ProductoDetalle(props) {
-  console.log(props);
-  const app = useSelector(state => state);
   let productoMostrado, carrito, cantidad, prodEnCarrito;
 
   productoMostrado = props.productoMostrado;
@@ -25,7 +23,7 @@ export function ProductoDetalle(props) {
     const nuevaCantidad = parseInt(event.target.value, 10);
     cantidad = nuevaCantidad;
 
-    dispatch(addToCart(productoMostrado.idProducto, nuevaCantidad, {}));
+    dispatch(addToCart(productoMostrado.idProducto, nuevaCantidad, productoMostrado, {}));
   }
 
   const preventSubmit = (event) => {
@@ -41,12 +39,15 @@ export function ProductoDetalle(props) {
         centered
       >
         <Modal.Header closeButton>
-          <Image src={productoMostrado.foto} alt={productoMostrado.nombre} fluid/>
+          <Image src={productoMostrado.pathImagen} alt={productoMostrado.nombre} fluid/>
         </Modal.Header>
         <Modal.Body>
           <h4>{productoMostrado.nombre}</h4>
           <p>
             {productoMostrado.descripcion}
+          </p>
+          <p>
+            $ {productoMostrado.precio}
           </p>
         </Modal.Body>
         <Modal.Footer>

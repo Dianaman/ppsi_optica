@@ -122,3 +122,11 @@ h3 {
 .mw-900 {
   max-width: 900px !important;
 }
+
+.wpx-100 {
+  width: 100px;
+}
+
+.hpx-100 {
+  height: 100px;
+}

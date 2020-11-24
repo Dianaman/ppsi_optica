@@ -51,7 +51,7 @@ export function AdmProductoDetalle(props) {
                 centered
             >
                 <Modal.Header closeButton>
-                <Image src={productoParaVer.foto} alt={productoParaVer.nombre} fluid/>
+                <Image src={productoParaVer.pathImagen} alt={productoParaVer.nombre} fluid/>
                 </Modal.Header>
                 <Modal.Body>
                     <h4>{productoParaVer.nombre}</h4>

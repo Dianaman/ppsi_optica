@@ -21,7 +21,7 @@ export const HomeComprador = () => {
                 return (
                     <Card key={categoria.idCategoria} className="spaced imagen-horizontal">
                         <Link to={"categoria/" + categoria.idCategoria}>
-                        <Card.Img src={categoria.foto} alt={categoria.descripcion} style={{'width': '600px', 'height': '400px'}} className="image-text image" />
+                        <Card.Img src={categoria.pathImagen} alt={categoria.descripcion} style={{'width': '600px', 'height': '400px'}} className="image-text image" />
                         <Card.ImgOverlay>
                             <Card.Title className="image-text text">{categoria.descripcion}</Card.Title>
                         </Card.ImgOverlay>

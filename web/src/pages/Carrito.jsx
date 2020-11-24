@@ -19,36 +19,6 @@ export function Carrito() {
 
     let subtotal = 0;
 
-    const productos =  [
-        {
-            id: 1,
-            titulo:  'Rayban C494',
-            descripcion: 'Antojos Rayban redondos metálicos',
-            foto: 'https://d26lpennugtm8s.cloudfront.net/stores/113/564/products/anteojos-de-madera-con-lentes-de-sol-polarizadas-numag-harrison-black-two-tone-roble-foto-perspectiva1-6c63b5d67d91be702715425038276453-1024-1024.jpg',
-            precio: 4299
-        }, 
-        {
-            id: 2,
-            titulo: 'Rayban C494',
-            descripcion: 'Antojos Rayban redondos metálicos',
-            foto: 'https://d26lpennugtm8s.cloudfront.net/stores/113/564/products/anteojos-de-madera-con-lentes-de-sol-polarizadas-numag-harrison-black-two-tone-roble-foto-perspectiva1-6c63b5d67d91be702715425038276453-1024-1024.jpg',
-            precio: 4355
-        }, 
-        {
-            id: 3,
-            titulo: 'Rayban C494',
-            descripcion: 'Antojos Rayban redondos metálicos',
-            foto: 'https://d26lpennugtm8s.cloudfront.net/stores/113/564/products/anteojos-de-madera-con-lentes-de-sol-polarizadas-numag-harrison-black-two-tone-roble-foto-perspectiva1-6c63b5d67d91be702715425038276453-1024-1024.jpg',
-            precio: 4355
-        }, 
-        {
-            id: 4,
-            titulo: 'Rayban C494',
-            descripcion: 'Antojos Rayban redondos metálicos',
-            foto: 'https://d26lpennugtm8s.cloudfront.net/stores/113/564/products/anteojos-de-madera-con-lentes-de-sol-polarizadas-numag-harrison-black-two-tone-roble-foto-perspectiva1-6c63b5d67d91be702715425038276453-1024-1024.jpg',
-            precio: 4355
-        }
-    ];
 
     const app = useSelector(state => state);
     const {carrito} = app.carritoReducer;
@@ -76,16 +46,20 @@ export function Carrito() {
                 {carrito && carrito.map((item) => {
                     return (
                     <div className="app-card" key={item.id}>
-                        <div className="img"><img src ="" /></div>
+                        <div className="img">
+                            <img src={item.producto.pathImagen} style={
+                                {'width': '130px', 'height': '130px', 'margin': '10px'}
+                                }/>
+                        </div>
 
                         <div className="text">
                             <div className="flex-row justify-between">
-                                <h3>Lentes de sol Rayban</h3>
-                                <h3>$4000</h3>
+                                <h3>{item.producto.nombre}</h3>
+                                <h3>$ {item.producto.precio}</h3>
                             </div>
                             <div className="flex-row justify-between">
                                 <div className="col-descripcion">
-                                    Código KDIGR334
+                                    Código {item.id}
                                 </div>
                                 <div>
                                     <Form onSubmit={preventSubmit}>

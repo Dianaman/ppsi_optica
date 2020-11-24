@@ -10,7 +10,7 @@ const initial_state = {
 // Types
 export const GET_CATEGORIES = 'categoria/GET_CATEGORIES';
 export const GET_PRODUCTS_CATEGORY = 'categoria/GET_PRODUCTS_CATEGORY';
-export const GET_PRODUCT = 'categoria/GET_PRODUCT';
+export const SHOW_PRODUCT = 'categoria/SHOW_PRODUCT';
 
 // Reducer
 export function categoriaReducer(state = initial_state, action) { 
@@ -29,7 +29,7 @@ export function categoriaReducer(state = initial_state, action) {
                 ...state,
                 productosEnCategoria
             }  
-        case GET_PRODUCT:
+        case SHOW_PRODUCT:
             const {productoMostrado} = action.payload;
 
             return {
@@ -92,26 +92,11 @@ export function fetchFinishGetProductsCategory(json, url) {
     }
 }
 
-export function fetchGetProduct(id) {
-    return (dispatch, getState) => {
-        dispatch(fetchApi(
-            process.env.REACT_APP_API_URL + '/products/'+ id, 
-            {
-                method: 'GET',
-                headers:{
-                    'Content-Type': 'application/json'
-                }
-            },
-            (json, url) => dispatch(fetchFinishGetProduct(json, url))
-        ));
-    }
-}
-
-export function fetchFinishGetProduct(json, url) {
+export function showProduct(product) {
     return {
-        type: GET_PRODUCT,
+        type: SHOW_PRODUCT,
         payload: {
-            productoMostrado: json && json.length ? json[0] : json
+            productoMostrado: product
         }
     }
 }

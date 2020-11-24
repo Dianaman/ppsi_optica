@@ -68,6 +68,7 @@ router.post('/change-price', (req, res) => {
 
 router.post('/', (req, res) => {
     const producto = req.body.producto;
+    const imageUrl = req.body.imageUrl;
     
     const values = [
         producto.idCategoria,
@@ -75,7 +76,7 @@ router.post('/', (req, res) => {
         producto.descripcion,
         producto.stock,
         producto.puntoDeReposicion,
-        producto.imagen,
+        imageUrl,
         producto.modelo,
         producto.marca
     ];

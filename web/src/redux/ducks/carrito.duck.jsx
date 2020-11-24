@@ -14,7 +14,7 @@ export const CLEAR_CART = 'carrito/CLEAR_CART';
 export function carritoReducer(state = initial_state, action) { 
     switch (action.type) {
         case ADD_CART:
-            const {addId, newQuantity, extras} = action.payload;
+            const {addId, newQuantity, producto, extras} = action.payload;
             const carritoToAdd = state.carrito;
 
             const itemEnCarrito = carritoToAdd.find(carritoItem => carritoItem.id === addId);
@@ -25,6 +25,7 @@ export function carritoReducer(state = initial_state, action) {
                 const item = {
                     id: addId,
                     quantity: newQuantity,
+                    producto,
                     extras
                 };
 
@@ -62,12 +63,13 @@ export function carritoReducer(state = initial_state, action) {
 }
 
 // Actions
-export function addToCart(id, quantity, extras) {
+export function addToCart(id, quantity, producto, extras) {
     return {
         type: ADD_CART,
         payload: {
             addId: id,
             newQuantity: quantity,
+            producto,
             extras
         }
     };

@@ -4,6 +4,7 @@ import Button from 'react-bootstrap/Button';
 import { Control, Form, Errors } from 'react-redux-form';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchAddProduct } from '../../redux/ducks/adm-producto.duck';
+import { ImageUploader } from './images/ImageUploader';
 
 export function AdmProductoNuevo(props) {
     const app = useSelector(state => state);
@@ -13,8 +14,12 @@ export function AdmProductoNuevo(props) {
 
     const handleSubmit = () => {
         const producto = app.producto;
+        const {files} = app.filesReducer;
 
-        dispatch(fetchAddProduct(producto));
+        if (files && files.length) {
+            dispatch(fetchAddProduct(producto, files[0].url));
+        }
+
     }
 
     const required = (val) => {
@@ -106,10 +111,6 @@ export function AdmProductoNuevo(props) {
                             }}
                         /><br />
 
-                        <label htmlFor="form.producto.imagen">Imagen</label>
-                        <Control.file model="form.producto.imagen" id="form.producto.imagen" /><br />
-
-
                         <label htmlFor="form.producto.stock">Stock</label>
                         <Control.text model="form.producto.stock" id="form.producto.stock" 
                         errors={{ quantityFormat: quantityFormat }}/>
@@ -149,7 +150,9 @@ export function AdmProductoNuevo(props) {
                             messages={{
                                 currencyFormat: 'Debe ingresar un valor entero mayor o igual a 0'
                             }}
-                        /><br />        
+                        /><br />   
+                        
+                        <ImageUploader></ImageUploader>     
 
                         <Button type="submit" className="margin-y-10px" variant="info">
                         Añadir producto

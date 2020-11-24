@@ -190,13 +190,13 @@ export function showAddProduct(show) {
     }
 }
 
-export function fetchAddProduct(product) {
+export function fetchAddProduct(product, imageUrl) {
     return (dispatch, getState) => {
         dispatch(fetchApi(
             process.env.REACT_APP_API_URL + '/products', 
             {
                 method: 'POST',
-                body: JSON.stringify({producto: product}),
+                body: JSON.stringify({producto: product, imageUrl}),
                 headers:{
                     'Content-Type': 'application/json'
                 }
