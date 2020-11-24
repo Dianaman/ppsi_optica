@@ -13,11 +13,15 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 
 function App() {
+
+  const loggedInUser = JSON.parse(localStorage.getItem("user"));
+
   useEffect(() => {
     fetch(process.env.REACT_APP_API_URL + '/users')
     .then(res => res.json())
     .then(users => {
-      console.log('users', users);
+      //console.log('users', users);
+      console.log("loggedInUser: ", loggedInUser);
     })
   });
 
@@ -33,17 +37,17 @@ function App() {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="mr-auto">
             <Nav.Link as={NavLink} to="/">Home</Nav.Link>
-            <Nav.Link as={NavLink} to="/probador">Probador</Nav.Link>
-            <Nav.Link as={NavLink} to="/registrar">Registrar</Nav.Link>
-            <Nav.Link as={NavLink} to="/login">Login</Nav.Link>
-            <Nav.Link as={NavLink} to="/ventas">Ventas</Nav.Link>
-            <Nav.Link as={NavLink} to="/productos">Productos</Nav.Link>
-            <Nav.Link as={NavLink} to="/usuarios">Usuarios</Nav.Link>
+            { loggedInUser != null && (loggedInUser.tipo == "admin" ? <Nav.Link as={NavLink} to="/probador">Probador</Nav.Link> : "")}
+            { loggedInUser == null && <Nav.Link as={NavLink} to="/registrar">Registrar</Nav.Link> }
+            { loggedInUser != null && (loggedInUser.tipo == "admin" ? <Nav.Link as={NavLink} to="/ventas">Ventas</Nav.Link> : "")}
+            { loggedInUser != null && (loggedInUser.tipo == "admin" ? <Nav.Link as={NavLink} to="/productos">Productos</Nav.Link> : "")}
+            { loggedInUser != null && (loggedInUser.tipo == "admin" ? <Nav.Link as={NavLink} to="/usuarios">Usuarios</Nav.Link> : "")}
             <Nav.Link as={NavLink} to="/Compra">Compra</Nav.Link>
           </Nav>
           <Nav>
             <Nav.Link as={NavLink} to="/carrito"><CarritoIcono /></Nav.Link>
-            <Nav.Link as={NavLink} to="/">Salir</Nav.Link>
+            {loggedInUser && <Nav.Link as={NavLink} to="/login">Salir</Nav.Link>}
+            {!loggedInUser && <Nav.Link as={NavLink} to="/login">Entrar</Nav.Link>}
           </Nav>
         </Navbar.Collapse>
       </Navbar>

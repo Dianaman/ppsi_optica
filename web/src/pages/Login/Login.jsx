@@ -46,8 +46,6 @@ export default function Login() {
                 setInvalidUser(true);
             }
         })
-
-        //alert(`${username}, ${password}`)
     };
 
     const handleLogout = () => {
@@ -62,7 +60,7 @@ export default function Login() {
         return(
             <div className="login-page">
                 <div className="form">
-                    <div> Bienvenido {user.nombre} !</div>
+                    <div> Bienvenido/a {user.nombre} !</div>
                     <button onClick={handleLogout}>logout</button>
                 </div>
             </div>            
