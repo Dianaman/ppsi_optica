@@ -92,8 +92,8 @@ export function AdmUsuarioNuevo(props) {
                             }}
                         /><br />
 
-                        <label htmlFor="form.producto.idCategoria">Tipo</label>
-                        <Control.select model="form.producto.idCategoria" id="form.producto.idCategoria">
+                        <label htmlFor="form.user.tipo">Tipo</label>
+                        <Control.select model="form.user.tipo" id="form.user.tipo">
                             {tipos.map((tipo, index) => {
                                 return (
                                     <option value={tipo} key={tipo}>

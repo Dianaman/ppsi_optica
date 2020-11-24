@@ -1,4 +1,4 @@
-import { fetchApi } from './common.duck';
+import { fetchApi, setModalOpen } from './common.duck';
 
 // State
 const initial_state = {
@@ -160,7 +160,10 @@ export function editPrice(priceProdId, newPrice) {
                     'Content-Type': 'application/json'
                 }
             },
-            (json, url) => {dispatch(fetchGetProducts())}
+            (json, url) => {
+                dispatch(setModalOpen(false))
+                dispatch(fetchGetProducts())
+            }
         ));
     }
 }
@@ -176,7 +179,10 @@ export function restock(stockProdId, newStock) {
                     'Content-Type': 'application/json'
                 }
             },
-            (json, url) => {dispatch(fetchGetProducts())}
+            (json, url) => {
+                dispatch(setModalOpen(false))
+                dispatch(fetchGetProducts())
+            }
         ));
     }
 }
@@ -201,7 +207,10 @@ export function fetchAddProduct(product, imageUrl) {
                     'Content-Type': 'application/json'
                 }
             },
-            (json, url) => dispatch(fetchFinishAddProduct(json, url))
+            (json, url) => {         
+                dispatch(setModalOpen(false))
+                dispatch(fetchFinishAddProduct(json, url))
+            }
         ));
     }
 }

@@ -5,6 +5,7 @@ import Button from 'react-bootstrap/Button';
 import { fetchGetUsers, fetchGetUser } from '../redux/ducks/users.duck';
 import { useSelector, useDispatch } from 'react-redux';
 import { AdmUsuarioNuevo } from '../components/organisms';
+import { setModalOpen } from '../redux/ducks/common.duck';
 
 export function AdmUsuarios () {
 
@@ -12,15 +13,21 @@ export function AdmUsuarios () {
 
     const app = useSelector(state => state);
     const { usuarios } = app.usuariosReducer;
+    const { modalOpen } = app.commonReducer;
 
     const dispatch = useDispatch();
 
     React.useEffect(() => {
         dispatch(fetchGetUsers());
-    }, [dispatch]);
+
+        if(!modalOpen) {
+            setModalAddShow(false);
+        }
+    }, [dispatch, modalOpen]);
 
 
     function nuevoUsuario() {
+        dispatch(setModalOpen(true));
         setModalAddShow(true);
     }
 

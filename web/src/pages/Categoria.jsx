@@ -8,6 +8,7 @@ import { fetchGetProductsCategory, showProduct } from '../redux/ducks/categoria.
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
+import { setModalOpen } from '../redux/ducks/common.duck';
 
 export function Categoria () {
     const { id } = useParams();
@@ -18,15 +19,21 @@ export function Categoria () {
     const app = useSelector(state => state);
     const { productosEnCategoria, productoMostrado } = app.categoriaReducer;
     const { carrito } = app.carritoReducer;
+    const { modalOpen } = app.commonReducer;
 
 
     useEffect(() => {
         dispatch(fetchGetProductsCategory(id));
+
+        if(!modalOpen) {
+            setModalShow(false);
+        }
     }, [dispatch]);
 
 
     function mostrarProducto(producto) {
         dispatch(showProduct(producto));
+        dispatch(setModalOpen(true));
         setModalShow(true);
     }
 

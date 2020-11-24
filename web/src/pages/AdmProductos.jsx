@@ -7,12 +7,14 @@ import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import { AdmProductoDetalle, AdmProductoNuevo } from '../components/organisms'; 
 import { useEffect } from 'react';
+import { setModalOpen } from '../redux/ducks/common.duck';
 
 export function AdmProductos () {
 
     const app = useSelector(state => state);
     const { productos } = app.admProductoReducer;
     const { categorias } = app.categoriaReducer;
+    const { modalOpen } = app.commonReducer;
 
     const [modalAddShow, setModalAddShow] = React.useState(false);
     const [modalEditShow, setModalEditShow] = React.useState(false);
@@ -21,16 +23,23 @@ export function AdmProductos () {
     useEffect(() => {
         dispatch(fetchGetCategories());
         dispatch(fetchGetProducts());
-    }, [dispatch]);
+
+        if(!modalOpen) {
+            setModalEditShow(false);
+            setModalAddShow(false);
+        }
+    }, [dispatch, modalOpen]);
 
 
     function mostrarProducto(producto) {
         dispatch(seeAdmProduct(producto));
+        dispatch(setModalOpen(true));
         setModalEditShow(true);
     }
 
     function agregarProducto() {
         dispatch(showAddProduct());
+        dispatch(setModalOpen(true));
         setModalAddShow(true);
     }
 

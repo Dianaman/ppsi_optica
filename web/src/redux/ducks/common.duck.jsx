@@ -1,12 +1,14 @@
 // State
 const initialState = {
     showLoading: false,
-    error: null
+    error: null,
+    modalOpen: false
 };
 
 // Types
 export const SHOW_LOADING = 'common/SHOW_LOADING';
 export const SHOW_ERROR = 'common/SHOW_ERROR';
+export const SET_MODAL_OPEN = 'common/SET_MODAL_OPEN';
 
 // Reducer
 export function commonReducer(state = initialState, action) {
@@ -25,6 +27,13 @@ export function commonReducer(state = initialState, action) {
                     ...state,
                     showLoading: false,
                     error
+                }
+            case SET_MODAL_OPEN:
+                const { open } = action.payload;
+
+                return {
+                    ...state,
+                    modalOpen: open
                 }
         default: 
             return state;
@@ -48,6 +57,15 @@ export function showError(error){
         payload: {
             error
         }        
+    }
+}
+
+export function setModalOpen(open) {
+    return {
+        type: SET_MODAL_OPEN,
+        payload: {
+            open
+        }
     }
 }
 
