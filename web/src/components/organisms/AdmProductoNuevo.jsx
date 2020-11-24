@@ -1,7 +1,7 @@
 import React from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
-import { Control, Form, Field, Errors, isRequired } from 'react-redux-form';
+import { Control, Form, Errors } from 'react-redux-form';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchAddProduct } from '../../redux/ducks/adm-producto.duck';
 

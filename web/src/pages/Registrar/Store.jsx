@@ -7,6 +7,8 @@ const initialUser = {
   userName: '',
   email: '',
   password: '',
+  tipo: 'cliente',
+  estado: 'pendiente'
 };
 
 const Store = createStore(combineForms({

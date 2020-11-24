@@ -11,6 +11,15 @@ router.get('/', (request, response) => {
   });
 });
 
+router.get('/:id', (req, res) => {
+  const id = req.params.id;
+  pool.query('SELECT * FROM users WHERE id = '+ id , (error, result) => {
+      if (error) throw error;
+
+      res.send(result);
+  });
+});
+
 router.get('/byUsername/:username/:clave', (req, res) => {
   var sql = `SELECT * FROM users WHERE usuario='${req.params.username}' AND clave = '${req.params.clave}' LIMIT 1`;
   pool.query(sql, (error, result) => {
@@ -30,14 +39,17 @@ router.post('/add', (req, res) => {
 
   var sql = "";
 
+  const { user, estado } = req.body;
+
   // Consultamos si el usuario ya existe.
-  sql = `SELECT * FROM users WHERE usuario='${req.body.userName}'`;
+  sql = `SELECT * FROM users WHERE usuario='${user.userName}'`;
   pool.query(sql, (error, result) => {
     if (error) throw error;
 
     // Si el usuario no existe AGREGAMOS NUEVO USUARIO
     if(result[0] == null){
-      sql = `INSERT INTO users (nombre, apellido, tipo, email, clave, usuario) VALUES ('${req.body.firstName}', '${req.body.lastName}', 'cliente', '${req.body.email}', '${req.body.password}', '${req.body.userName}')`;
+      sql = 'INSERT INTO users (nombre, apellido, tipo, email, clave, usuario, fechaRegistro, estado)';
+      sql += `VALUES ("${user.firstName}", "${user.lastName}", "${user.tipo}", "${user.email}", "${user.password}", "${user.userName}", CURRENT_TIMESTAMP, "${estado}")`;
       pool.query(sql, (error, result) => {
         if (error) throw error;
     

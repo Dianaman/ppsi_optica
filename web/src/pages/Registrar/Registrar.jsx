@@ -91,13 +91,16 @@ class Registrar extends React.Component {
     }    
 
   handleSubmit(user) {
-      console.log(user);
+      const body = {
+        user,
+        estado: 'pendiente'
+      }
 
       if(this.validarForm()){
         fetch(process.env.REACT_APP_API_URL + '/users/add',
         {
             method: 'POST',
-            body: JSON.stringify(user),
+            body: JSON.stringify(body),
             headers:{
               'Content-Type': 'application/json'
             }
