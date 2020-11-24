@@ -21,6 +21,15 @@ router.get('/', (request, response) => {
     });
 });
 
+router.get('/:id', (req, res) => {
+    const id = req.params.id;
+    pool.query('SELECT * FROM productos WHERE idProducto = '+ id , (error, result) => {
+        if (error) throw error;
+  
+        res.send(result);
+    });
+});
+
 router.put('/change-stock', (req, res) => {
     const data = req.body;
     const values = [data.stock, data.id];

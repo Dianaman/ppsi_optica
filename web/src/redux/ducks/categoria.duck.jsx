@@ -4,12 +4,13 @@ import { fetchApi } from './common.duck';
 const initial_state = {
     categorias: [],
     productosEnCategoria: [],
-    categoriaMostrada: null
+    productoMostrado: null
 }
 
 // Types
 export const GET_CATEGORIES = 'categoria/GET_CATEGORIES';
 export const GET_PRODUCTS_CATEGORY = 'categoria/GET_PRODUCTS_CATEGORY';
+export const GET_PRODUCT = 'categoria/GET_PRODUCT';
 
 // Reducer
 export function categoriaReducer(state = initial_state, action) { 
@@ -27,6 +28,13 @@ export function categoriaReducer(state = initial_state, action) {
             return {
                 ...state,
                 productosEnCategoria
+            }  
+        case GET_PRODUCT:
+            const {productoMostrado} = action.payload;
+
+            return {
+                ...state,
+                productoMostrado
             }  
         default:
             return state;
@@ -80,6 +88,30 @@ export function fetchFinishGetProductsCategory(json, url) {
         type: GET_PRODUCTS_CATEGORY,
         payload: {
             productosEnCategoria: json
+        }
+    }
+}
+
+export function fetchGetProduct(id) {
+    return (dispatch, getState) => {
+        dispatch(fetchApi(
+            process.env.REACT_APP_API_URL + '/products/'+ id, 
+            {
+                method: 'GET',
+                headers:{
+                    'Content-Type': 'application/json'
+                }
+            },
+            (json, url) => dispatch(fetchFinishGetProduct(json, url))
+        ));
+    }
+}
+
+export function fetchFinishGetProduct(json, url) {
+    return {
+        type: GET_PRODUCT,
+        payload: {
+            productoMostrado: json && json.length ? json[0] : json
         }
     }
 }

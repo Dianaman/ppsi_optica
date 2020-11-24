@@ -7,12 +7,16 @@ import Image from 'react-bootstrap/Image';
 import { addToCart } from '../../redux/ducks/carrito.duck';
 
 export function ProductoDetalle(props) {
+  console.log(props);
   const app = useSelector(state => state);
-  const { producto } = app.catalogoReducer;
-  const { carrito } = app.carritoReducer;
+  let productoMostrado, carrito, cantidad, prodEnCarrito;
 
-  const prodEnCarrito = carrito.find(item => item.id === producto.id);
-  let cantidad = prodEnCarrito ? prodEnCarrito.quantity : 0;
+  productoMostrado = props.productoMostrado;
+  carrito = props.carrito;
+
+  prodEnCarrito = carrito?.find(item => item.id === productoMostrado.idProducto);
+  cantidad = prodEnCarrito ? prodEnCarrito.quantity : 0;
+
 
   const dispatch = useDispatch();
 
@@ -21,7 +25,7 @@ export function ProductoDetalle(props) {
     const nuevaCantidad = parseInt(event.target.value, 10);
     cantidad = nuevaCantidad;
 
-    dispatch(addToCart(producto.id, nuevaCantidad, {}));
+    dispatch(addToCart(productoMostrado.idProducto, nuevaCantidad, {}));
   }
 
   const preventSubmit = (event) => {
@@ -30,28 +34,26 @@ export function ProductoDetalle(props) {
 
   return (
     <>
-      {producto && <Modal
+      {productoMostrado && <Modal
         {...props}
         size="lg"
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
         <Modal.Header closeButton>
-          <Image src={producto.foto} alt={producto.titulo} fluid/>
+          <Image src={productoMostrado.foto} alt={productoMostrado.nombre} fluid/>
         </Modal.Header>
         <Modal.Body>
-          <h4>Centered Modal</h4>
+          <h4>{productoMostrado.nombre}</h4>
           <p>
-            Cras mattis consectetur purus sit amet fermentum. Cras justo odio,
-            dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac
-            consectetur ac, vestibulum at eros.
+            {productoMostrado.descripcion}
           </p>
         </Modal.Body>
         <Modal.Footer>
           <Form onSubmit={preventSubmit}>
             <Form.Row>
               <Form.Group as={Col} md="4">
-                <Form.Control type="number" min="0" value={cantidad} onChange={handleChange}/>
+                <Form.Control type="number" min="0" defaultValue={cantidad} onChange={handleChange}/>
               </Form.Group>
             </Form.Row>
           </Form>

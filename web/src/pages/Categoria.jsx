@@ -4,9 +4,7 @@ import Card from 'react-bootstrap/Card';
 import CardDeck from 'react-bootstrap/CardDeck';
 import { ProductoDetalle } from '../components/organisms';
 import { useDispatch, useSelector } from 'react-redux';
-import { verProducto } from '../redux/ducks/catalogo.duck';
-
-import { fetchGetProductsCategory } from '../redux/ducks/categoria.duck';
+import { fetchGetProductsCategory, fetchGetProduct } from '../redux/ducks/categoria.duck';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
@@ -18,7 +16,8 @@ export function Categoria () {
 
 
     const app = useSelector(state => state);
-    const { productosEnCategoria } = app.categoriaReducer;
+    const { productosEnCategoria, productoMostrado } = app.categoriaReducer;
+    const { carrito } = app.carritoReducer;
 
 
     useEffect(() => {
@@ -27,7 +26,7 @@ export function Categoria () {
 
 
     function mostrarProducto(producto) {
-        dispatch(verProducto(producto));
+        dispatch(fetchGetProduct(producto.idProducto));
         setModalShow(true);
     }
 
@@ -39,16 +38,16 @@ export function Categoria () {
                     <Col>
                         <CardDeck>
                         {
-                            productosEnCategoria && productosEnCategoria.map(res => {
+                            productosEnCategoria && productosEnCategoria.map(prod => {
 
 
                                 return (
-                                    <Card style={{ width: '18rem' }} onClick={() => mostrarProducto(res) } key={res.id}>
-                                        <Card.Img variant="top" src={res.foto} />
+                                    <Card style={{ width: '18rem' }} onClick={() => mostrarProducto(prod) } key={prod.idProducto}>
+                                        <Card.Img variant="top" src={prod.foto} />
                                         <Card.Body>
-                                            <Card.Title>{res.nombre}</Card.Title>
-                                            <Card.Text>{res.descripcion}</Card.Text>
-                                            <Card.Title>$ {res.precio}</Card.Title>
+                                            <Card.Title>{prod.nombre}</Card.Title>
+                                            <Card.Text>{prod.descripcion}</Card.Text>
+                                            <Card.Title>$ {prod.precio}</Card.Title>
                                         </Card.Body>
                                     </Card>                        
                                 );
@@ -64,6 +63,8 @@ export function Categoria () {
             <ProductoDetalle
                 show={modalShow}
                 onHide={() => setModalShow(false)}
+                productoMostrado={productoMostrado}
+                carrito={carrito}
             />
         </>
     );

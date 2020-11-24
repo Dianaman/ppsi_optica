@@ -1,6 +1,5 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { verProducto } from '../redux/ducks/catalogo.duck';
 import Container from 'react-bootstrap/Container';
 import Table from 'react-bootstrap/Table';
 
