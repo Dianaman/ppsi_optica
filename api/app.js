@@ -3,7 +3,7 @@ var https = require('https');
 var http = require('http');
 var fs = require('fs');
 
-var createError = require('http-errors');
+//var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cors = require("cors");
@@ -17,6 +17,8 @@ var usersRouter = require('./routes/users');
 var productsRouter = require('./routes/products');
 var categoriesRouter = require('./routes/categories');
 var filesRouter = require('./routes/files');
+var compraRouter = require('./routes/compras');
+
 
 var app = express();
 
@@ -38,6 +40,8 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/products', productsRouter);
 app.use('/categories', categoriesRouter);
+app.use('/compra', compraRouter);
+
 
 app.use(formData.parse());
 

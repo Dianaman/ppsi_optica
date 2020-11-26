@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { CarritoIcono } from './components/organisms';
 import './App.css';
-import {  Compra, Envio, Pago, Confirmarcompra } from './pages/Procesocompra';
+import {  Procesocompra, Envio, Pago, Confirmarcompra, Compra } from './pages/Procesocompra';
 import { 
   HomeComprador, Probador, Categoria, Login, Registrar, Store, Carrito,
   AdmVentas, AdmProductos, AdmUsuarios
@@ -39,12 +39,13 @@ function App() {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="mr-auto">
             <Nav.Link as={NavLink} to="/">Home</Nav.Link>
-            { loggedInUser != null && (loggedInUser.tipo == "admin" ? <Nav.Link as={NavLink} to="/probador">Probador</Nav.Link> : "")}
-            { loggedInUser == null && <Nav.Link as={NavLink} to="/registrar">Registrar</Nav.Link> }
-            { loggedInUser != null && (loggedInUser.tipo == "admin" ? <Nav.Link as={NavLink} to="/ventas">Ventas</Nav.Link> : "")}
-            { loggedInUser != null && (loggedInUser.tipo == "admin" ? <Nav.Link as={NavLink} to="/productos">Productos</Nav.Link> : "")}
-            { loggedInUser != null && (loggedInUser.tipo == "admin" ? <Nav.Link as={NavLink} to="/usuarios">Usuarios</Nav.Link> : "")}
-            <Nav.Link as={NavLink} to="/Compra">Compra</Nav.Link>
+            <Nav.Link as={NavLink} to="/probador">Probador</Nav.Link>
+            <Nav.Link as={NavLink} to="/registrar">Registrar</Nav.Link>
+            <Nav.Link as={NavLink} to="/login">Login</Nav.Link>
+            <Nav.Link as={NavLink} to="/ventas">Ventas</Nav.Link>
+            <Nav.Link as={NavLink} to="/productos">Productos</Nav.Link>
+            <Nav.Link as={NavLink} to="/usuarios">Usuarios</Nav.Link>
+   
           </Nav>
           <Nav>
             <Nav.Link as={NavLink} to="/carrito"><CarritoIcono /></Nav.Link>
@@ -84,6 +85,9 @@ function App() {
         <Route path="/usuarios">
           <AdmUsuarios />
         </Route>        
+        <Route path="/Procesocompra">
+          <Procesocompra/>
+        </Route>
         <Route path="/Compra">
           <Compra/>
         </Route>

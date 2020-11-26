@@ -14,7 +14,7 @@ export function Carrito() {
     
     let history = useHistory();
     function handleClick() {
-        history.push("/Compra")
+        history.push("/Procesocompra")
      }
 
     let subtotal = 0;

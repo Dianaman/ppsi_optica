@@ -4,44 +4,37 @@ import { Menucompra } from './Menucompra';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Col from 'react-bootstrap/Col';
-
-const preventSubmit = (event) => {
-    event.preventDefault();
-}
-
-const handleChange = (event, item) => {
-    //const nuevaCantidad = parseInt(event.target.value, 10);
-  //  item.quantity = nuevaCantidad;
-
-    // dispatch(addToCart(item.id, nuevaCantidad, {}));
-}
-
-export const Compra = () => {
+import { Control,  actions } from 'react-redux-form';
 
 
 
-    return (
+export function Compra() {
 
-        <div class="row" style={{ margin: '10px' }}>
+    const handleSubmit= (event)=>{
+        event.preventDefault();
+        const loggedInUser = JSON.parse(localStorage.getItem("user"));
+ 
+        fetch(process.env.REACT_APP_API_URL + '/compra/add',
+        {
+            method: 'POST',
+            body: JSON.stringify({idusuario:loggedInUser["id"]}),
+            headers:{
+              'Content-Type': 'application/json'
+            }
+        }
+        )
+        .then(res => res.json())
+    }
 
-
-
-            <div class="container" style={{ backgroundColor: '#fff4' }}>
-                <div className="seccion">
-                    <div>Compra</div>
-                </div>
-                <div><Menucompra></Menucompra></div>
-
-                <div className="container" style={{ backgroundColor: '#eceef0', width: 'auto' }}>
-
-
-                    <div class="col">
-                        <ul className="list-group" >
-
-                            <Form onSubmit={preventSubmit}>
+              return (
+                <div className="comprar-page">
+                        <ul className="form" >
+                       
+                            <Form model="pedido" onSubmit={handleSubmit} >
                                 <Form.Row style={{ margin: '15px' }}>
                                     <Form.Group as={Col} >
-                                        <Form.Control type="text" placeholder="Nombre  y apellido" />
+                                   
+                                    <Form.Control type="text" model="pedido.idusuario" placeholder="Nombre" />
                                     </Form.Group>
 
                                     <Form.Group as={Col} >
@@ -75,14 +68,13 @@ export const Compra = () => {
                                     </Form.Group>
 
                                 </Form.Row>
-
-                                <Form.Row style={{ margin: '15px' }}>
+                                <Form.Row style={{ margin: '10px' }}>
                                     <Form.Group as={Col} >
-                                        <Button variant="info" type="submit">Volver</Button>
+                                        <Button variant="info" type="">Volver</Button>
                                     </Form.Group>
 
                                     <Form.Group as={Col} >
-                                        <Button variant="info" type="submit">Continuar</Button>
+                                        <Button variant="info" type="submit">Confirmar</Button>
                                     </Form.Group>
                                 </Form.Row>
 
@@ -90,41 +82,13 @@ export const Compra = () => {
                         </ul>
                     </div>
 
-                </div>
-
-
-                <div class="container" style={{ backgroundColor: '#fff', width: 'auto', margin: '4px' }}>
-
-
-                    <div class="col" >
-
-                        <div class="card horizontal">
-                            <div class="card-image">
-
-                                <div class="card-stacked">
-                                    <div class="card-content">
-                                        <h3>Lentes de sol Rayban</h3>
-                                        <p>Código KDIGR334 </p>
-                                        <p> $4000 </p>
-                                    </div>
-                                </div>
-                            </div>
-
-
-
-
-                        </div>
-                    </div>
-
-
-                </div>
-
-            </div>
-
-        </div>
 
     )
 
 
 
+
+
 }
+
+export default Compra;

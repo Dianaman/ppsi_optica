@@ -22,6 +22,7 @@ export const Pago = () => {
 
 
 
+
     return (
 
         <div class="row" style={{ margin: '10px' }}>
