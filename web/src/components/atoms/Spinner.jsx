@@ -27,7 +27,7 @@ export function Spinner() {
                 'margin': 'auto',
                 'backgroundColor':'rgba(255,255,255,0.7)',
                 'position':'fixed',
-                'z-index':'1060'
+                'zIndex':'1060'
             }}>
                 <ScaleLoader
                 width={'10px'}

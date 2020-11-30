@@ -6,6 +6,7 @@ import { admProductoReducer } from './adm-producto.duck';
 import { categoriaReducer } from './categoria.duck';
 import { usuariosReducer } from './users.duck';
 import { filesReducer } from './files.duck';
+import { ventaReducer } from './venta.duck';
 
 import { createForms } from 'react-redux-form';
 
@@ -42,6 +43,7 @@ export default combineReducers({
     categoriaReducer,
     usuariosReducer,
     filesReducer,
+    ventaReducer,
     ...createForms({
         producto: initialProductState,
         prod: initialProdState,
