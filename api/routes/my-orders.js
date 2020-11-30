@@ -3,13 +3,11 @@ var router = express.Router();
 const pool = require('../config');
 
 
-router.get('/', (request, response) => {
-    let query = 'SELECT *, u.email, p.idPedido as idPedido, ';
-    query += 'p.monto as monto, f.monto as montoTotal, ';
-    query += 'p.estado as estado, f.estado as estadoFactura ';
-    query += 'FROM pedidos as p ';
-    query += 'LEFT JOIN users as u ON p.idUsuario = u.id ';
-    query += 'LEFT JOIN facturas as f ON f.idPedido = f.idPedido ';
+router.get('/:userId', (request, response) => {
+    const userId = request.params.userId;
+
+    let query = 'SELECT * FROM pedidos as p ';
+    query += 'WHERE idUsuario = ' + userId;
 
     pool.query(query, (error, result) => {
         if (error) throw error;
@@ -18,13 +16,14 @@ router.get('/', (request, response) => {
     });
 });
 
-router.get('/:id', (request, response) => {
-    const id = request.params.id;
+router.get('/:userId/:orderId', (request, response) => {
+    const userId = request.params.userId;
+    const orderId = request.params.orderId;
 
     let query = 'SELECT dp.*, p.*, df.* FROM detallePedidos as dp ';
     query += 'LEFT JOIN detalleFactura as df ON dp.idDetalleFactura = df.idDetalleFactura ';
     query += 'LEFT JOIN productos as p ON dp.idProducto = p.idProducto ';
-    query += 'WHERE dp.idPedido = '+ id;
+    query += 'WHERE dp.idPedido = '+ orderId;
 
     pool.query(query, (error, result) => {
         if (error) throw error;
@@ -33,18 +32,19 @@ router.get('/:id', (request, response) => {
     });
 });
 
-router.put('/:id', (req, res) => {
-    const id = req.params.id;
+router.put('/:userId/:orderId', (req, res) => {
+    const orderId = req.params.orderId;
+    const userId = req.params.userId;
     const estado = req.body.estado;
     
     const values = [
         estado,
-        id
+        orderId
     ];
 
     var sql = 'UPDATE pedidos ';
     sql += 'SET estado = ? ';
-    sql += 'WHERE idPedido = ? ';
+    sql += 'WHERE idPedido = ?';
 
     pool.query(sql, values, (error, result) => {
         if (error) throw error;

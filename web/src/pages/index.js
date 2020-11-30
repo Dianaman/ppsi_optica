@@ -8,8 +8,9 @@ import { Carrito } from './Carrito';
 import { AdmVentas } from './AdmVentas';
 import { AdmProductos } from './AdmProductos';
 import { AdmUsuarios } from './AdmUsuarios';
+import { MisPedidos } from './MisPedidos';
 
 export { 
     HomeComprador, Probador, Categoria, Login, Registrar, Store, Carrito,
-    AdmVentas, AdmProductos, AdmUsuarios
+    AdmVentas, AdmProductos, AdmUsuarios, MisPedidos
 };

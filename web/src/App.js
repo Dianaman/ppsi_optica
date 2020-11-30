@@ -4,7 +4,7 @@ import './App.css';
 import {  Procesocompra, Envio, Pago, Confirmarcompra, Compra } from './pages/Procesocompra';
 import { 
   HomeComprador, Probador, Categoria, Login, Registrar, Store, Carrito,
-  AdmVentas, AdmProductos, AdmUsuarios
+  AdmVentas, AdmProductos, AdmUsuarios, MisPedidos
 } from './pages';
 
 import { Navbar, Nav } from 'react-bootstrap';
@@ -41,10 +41,10 @@ function App() {
             <Nav.Link as={NavLink} to="/">Home</Nav.Link>
             <Nav.Link as={NavLink} to="/probador">Probador</Nav.Link>
             <Nav.Link as={NavLink} to="/registrar">Registrar</Nav.Link>
-            <Nav.Link as={NavLink} to="/login">Login</Nav.Link>
             <Nav.Link as={NavLink} to="/ventas">Ventas</Nav.Link>
             <Nav.Link as={NavLink} to="/productos">Productos</Nav.Link>
             <Nav.Link as={NavLink} to="/usuarios">Usuarios</Nav.Link>
+            <Nav.Link as={NavLink} to="/mis-pedidos">Mis Pedidos</Nav.Link>
    
           </Nav>
           <Nav>
@@ -90,6 +90,9 @@ function App() {
         </Route>
         <Route path="/Compra">
           <Compra/>
+        </Route>
+        <Route path="/mis-pedidos">
+          <MisPedidos/>
         </Route>
         <Route path="/Envio">
           <Envio/>

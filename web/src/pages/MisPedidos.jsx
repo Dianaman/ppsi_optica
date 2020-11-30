@@ -1,25 +1,25 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import Table from 'react-bootstrap/Table';
-import { fetchGetSales, fetchGetDetails } from '../redux/ducks/venta.duck';
-import { AdmVentaDetalle } from '../components/organisms';
-import Button from 'react-bootstrap/Button';
 import { setModalOpen } from '../redux/ducks/common.duck';
+import { fetchGetMyOrders, fetchGetDetails } from '../redux/ducks/my-orders.duck';
+import { MiPedidoDetalle } from '../components/organisms';
 
-export function AdmVentas () {
+export function MisPedidos() {
 
 
     const [modalShow, setModalShow] = React.useState(false);
 
     const app = useSelector(state => state);
-    const { ventas } = app.ventaReducer;
+    const { misPedidos } = app.misPedidosReducer;
     const { modalOpen } = app.commonReducer;
 
     const dispatch = useDispatch();
 
     React.useEffect(() => {
-        dispatch(fetchGetSales());
+        dispatch(fetchGetMyOrders());
     }, [dispatch]);
 
     React.useEffect(() => {
@@ -28,7 +28,7 @@ export function AdmVentas () {
         }
     }, [modalOpen]);
 
-    function mostrarVenta(venta) {
+    function mostrarPedido(venta) {
         dispatch(fetchGetDetails(venta));
         dispatch(setModalOpen(true));
         setModalShow(true);
@@ -36,9 +36,9 @@ export function AdmVentas () {
 
     return (
         <>
-            <Container className="mw-900">
+            <Container>
                 <div className="seccion">
-                    <div>Ventas</div>
+                    <div>Mis Pedidos</div>
                 </div>
 
 
@@ -47,25 +47,21 @@ export function AdmVentas () {
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Email</th>
-                                <th>Monto</th>
                                 <th>Fecha de compra</th>
-                                <th>Última actualización</th>
+                                <th>Total</th>
                                 <th>Estado</th>
                                 <th></th>
                             </tr>
                         </thead>
                         <tbody>
-                            {ventas && ventas.map(venta => {
+                            {misPedidos && misPedidos.map(pedido => {
                                 return (
-                                    <tr key={venta.idPedido}>
-                                        <td>{venta.idPedido}</td>
-                                        <td>{venta.email}</td>
-                                        <td>$ {venta.monto}</td>
-                                        <td>{new Date(venta.fechaCreacion).toLocaleDateString()}</td>
-                                        <td>{new Date(venta.fechaUltimaActualizacion).toLocaleDateString()}</td>
-                                        <td>{venta.estado}</td>
-                                        <td><Button variant="info" onClick={() => mostrarVenta(venta)}>Ver</Button></td>
+                                    <tr key={pedido.idPedido}>
+                                        <td>{pedido.idPedido}</td>
+                                        <td>{new Date(pedido.fechaCreacion).toLocaleDateString()}</td>
+                                        <td>$ {pedido.monto}</td>
+                                        <td>{pedido.estado}</td>
+                                        <td><Button variant="info" onClick={() => mostrarPedido(pedido)}>Ver</Button></td>
                                     </tr>
                                 );
                             })}
@@ -76,8 +72,7 @@ export function AdmVentas () {
                 
             </Container>
 
-
-            <AdmVentaDetalle
+            <MiPedidoDetalle
                 show={modalShow}
                 onHide={() => setModalShow(false)}
             />

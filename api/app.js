@@ -19,6 +19,7 @@ var categoriesRouter = require('./routes/categories');
 var filesRouter = require('./routes/files');
 var compraRouter = require('./routes/compras');
 var salesRouter = require('./routes/sales');
+var myOrdersRouter = require('./routes/my-orders');
 
 
 var app = express();
@@ -43,6 +44,7 @@ app.use('/products', productsRouter);
 app.use('/categories', categoriesRouter);
 app.use('/compra', compraRouter);
 app.use('/sales', salesRouter);
+app.use('/my-orders', myOrdersRouter);
 
 
 app.use(formData.parse());

@@ -2,19 +2,18 @@ import React from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import { useSelector, useDispatch } from 'react-redux';
-import { changeStateSale } from '../../redux/ducks/venta.duck';
+import { changeStateMyOrder } from '../../redux/ducks/my-orders.duck';
 
-
-export function AdmVentaDetalle(props) {
+export function MiPedidoDetalle(props) {
     const app = useSelector(state => state);
-    const { ventaMostrada, detalles } = app.ventaReducer;
+    const { miPedidoMostrado, detalles } = app.misPedidosReducer;
     
     const dispatch = useDispatch();
 
     const cambiarEstado = (nuevoEstado) => {
-        const id = ventaMostrada.idPedido;
+        const id = miPedidoMostrado.idPedido;
 
-        dispatch(changeStateSale(id, nuevoEstado));
+        dispatch(changeStateMyOrder(id, nuevoEstado));
     }
 
     const user = JSON.parse(localStorage.getItem('user'));
@@ -25,35 +24,7 @@ export function AdmVentaDetalle(props) {
             case 'pendiente':
                 return (
                     <>
-                        <Button variant="success" onClick={()=>cambiarEstado('aprobado')}>Aprobar</Button>
-                        <Button variant="warning" onClick={()=>cambiarEstado('revisando')}>Poner en revisión</Button>
-                    </>
-                );
-            case 'revisando':
-                return (
-                    <>
-                        <Button variant="success" onClick={()=>cambiarEstado('aprobado')}>Aprobar</Button>
-                        <Button variant="danger" onClick={()=>cambiarEstado('rechazado')}>Rechazar</Button>
-                    </>
-                );
-            case 'aprobado':
-                return (
-                    <>
-                        <Button variant="success" onClick={()=>cambiarEstado('enviando')}>Enviar</Button>
-                    </>
-                );
-            case 'enviando':
-                return (
-                    <>
-                        <Button variant="success" onClick={()=>cambiarEstado('enviado')}>Finalizar envío</Button>
-                    </>
-                );
-            case 'enviado':
-                return (
-                    <>
-                    {
-                        user.tipo === 'admin' && <Button variant="success" onClick={()=>cambiarEstado('cerrado')}>Finalizar venta</Button>
-                    }
+                        <Button variant="danger" onClick={()=>cambiarEstado('cancelado')}>Cancelar pedido</Button>
                     </>
                 );
             default:
@@ -65,7 +36,7 @@ export function AdmVentaDetalle(props) {
 
     return (
         <>
-            { ventaMostrada && <Modal
+            { miPedidoMostrado && <Modal
                 {...props}
                 size="lg"
                 aria-labelledby="contained-modal-title-vcenter"
@@ -74,21 +45,20 @@ export function AdmVentaDetalle(props) {
                 <Modal.Header closeButton>
                 </Modal.Header>
                 <Modal.Body>
-                    <h4>Pedido #{ventaMostrada.idPedido} - {ventaMostrada.apellido}, {ventaMostrada.nombre}</h4>
+                    <h4>Pedido #{miPedidoMostrado.idPedido}</h4>
                     <p>
-                        <div>Fecha de compra: {new Date(ventaMostrada.fechaCreacion).toLocaleDateString()}</div>
-                        <div>Email: {ventaMostrada.email} </div>
-                        <div>Estado: {ventaMostrada.estado}</div>
-                        <div>Última actualización: {new Date(ventaMostrada.fechaUltimaActualizacion).toLocaleDateString()}</div>
-                        <div>Estado de pago: {ventaMostrada.estadoFactura} </div>
-                        <div>Tipo de pago: {ventaMostrada.tipoPago}</div>
+                        <div>Fecha de compra: {new Date(miPedidoMostrado.fechaCreacion).toLocaleDateString()}</div>
+                        <div>Estado: {miPedidoMostrado.estado}</div>
+                        <div>Última actualización: {new Date(miPedidoMostrado.fechaUltimaActualizacion).toLocaleDateString()}</div>
+                        <div>Estado de pago: {miPedidoMostrado.estadoFactura} </div>
+                        <div>Tipo de pago: {miPedidoMostrado.tipoPago}</div>
                     </p>
 
                     <hr />
-                        <div>Tipo de envío: {ventaMostrada.tipoEnvio}</div>
+                        <div>Tipo de envío: {miPedidoMostrado.tipoEnvio}</div>
 
                         {
-                            ventaMostrada.idDomicilio &&
+                            miPedidoMostrado.idDomicilio &&
                             <div>
                                 
                             </div>
@@ -121,7 +91,7 @@ export function AdmVentaDetalle(props) {
                 </Modal.Body>
                 <Modal.Footer>
                     {
-                        renderBotones(ventaMostrada.estado)
+                        renderBotones(miPedidoMostrado.estado)
                     }
                 </Modal.Footer>
             </Modal>
