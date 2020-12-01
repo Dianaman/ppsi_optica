@@ -32,7 +32,7 @@ const handleChange = (event) => {
 
 
 export const Procesocompra = () => {
-
+    const dispatch = useDispatch();
 
     const app = useSelector(state => state);
     const { carrito } = app.carritoReducer;
