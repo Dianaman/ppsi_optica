@@ -6,13 +6,16 @@ import { Envio } from './Envio';
 import { Pago } from './Pago';
 import { Confirmarcompra } from './Confirmarcompra';
 import { useDispatch, useSelector } from 'react-redux';
-import {useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 import Button from 'react-bootstrap/Button';
+import ModalHeader from 'react-bootstrap/ModalHeader';
+import ModalBody from 'react-bootstrap/ModalBody';
 import Form from 'react-bootstrap/Form';
 import Col from 'react-bootstrap/Col';
 import If from 'react-bootstrap';
-
+import Modal from 'react-bootstrap/Modal';
+import 'bootstrap/dist/css/bootstrap.css';
 
 const preventSubmit = (event) => {
     event.preventDefault();
@@ -32,40 +35,48 @@ export const Procesocompra = () => {
 
     const app = useSelector(state => state);
     const { carrito } = app.carritoReducer;
+    const [costoenvio, setcostoenvio] = useState(false);
+    const loggedInUser = JSON.parse(localStorage.getItem("user"));
+    const nomyape = loggedInUser["nombre"] + ' ' + loggedInUser["apellido"];
+    const email = loggedInUser["email"] ;
+ 
+
 
     const handleSubmit = (event, item) => {
         event.preventDefault();
-        const loggedInUser = JSON.parse(localStorage.getItem("user"));
+     
         let productos = [];
+        let cantidad = [];
+        let precUnit = [];
         let ind = 0;
+        let tipoEnv = "";
+
 
         carrito && carrito.map((item) => {
             return (
 
                 <div className="col-descripcion">
                     {productos.push(item.producto.idProducto)}
+                    {cantidad.push(item.quantity)}
+                    {precUnit.push(item.producto.precio)}
                     {ind++}
+
 
                 </div>)
 
 
         })
-        function darProductos() {
-            productos && productos.map((item) => {
-                return (
-                    <div className="col-descripcion">
-                        { console.log(item)
-                        }
-                    </div>)
-            })
-        }
+
+        if (!noEnvio) { tipoEnv = "Envio a domicilio" }
+        if (!noRetiro) { tipoEnv = "Retiro en sucursal" }
+
 
 
 
         fetch(process.env.REACT_APP_API_URL + '/compra/add',
             {
                 method: 'POST',
-                body: JSON.stringify({ idusuario: loggedInUser["id"], idproductos: productos }),
+                body: JSON.stringify({ idusuario: loggedInUser["id"], idproductos: productos, precioUnitario: precUnit, cantprod: cantidad, tipoEnvio: tipoEnv, monto: total }),
                 headers: {
                     'Content-Type': 'application/json'
                 }
@@ -73,24 +84,61 @@ export const Procesocompra = () => {
         )
             .then(res => res.json())
     }
+
+    let [CP, setCP] = useState(0);
+    const calcularEnvio = (event, item) => {
+        event.preventDefault();
+
+
+
+        fetch(process.env.REACT_APP_API_URL + '/compra/' + `${CP}`,
+            {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }
+        )
+            .then(res => res.json())
+            .then(costoEnvio => {
+                const { Precio } = costoEnvio;
+                setcostoenvio(Precio);
+                console.log(Precio);
+
+            })
+
+
+    }
+
+
+
     var total = 0;
     var subtotal = 0;
     let history = useHistory();
     function Cancelar() {
         history.push("/")
-     }
-     //let [confir, setConfir] = useState(false);
-    
-     function Confirmar(){
-         return{
-
-            __html: '<div class="alert alert-danger mt-3" role="alert">¡Compra exitosa!</div>'
-
-//        <div class="alert alert-warning alert-dismissable">
-  //      <button type="button" class="close" data-dismiss="alert">&times;</button>
-    //    <strong>¡Compra exitosa!</strong> Podrás ver el detalle en el listado de pedidos.  </div>
     }
-     }
+
+
+    const [show, setShow] = useState(false);
+    const handleShow = () => setShow(true);
+    const handleClose = () => {
+        setShow(false);
+        Cancelar();
+    }
+
+    const [noEnvio, setNoEnvio] = useState(true);
+    const [noRetiro, setNoRetiro] = useState(false);
+    const handleNoEnvio = () => {
+        setNoEnvio(false);
+        setNoRetiro(true);
+    }
+
+    const handleNoRetiro = () => {
+        setNoEnvio(true);
+        setNoRetiro(false);
+    }
+
 
     return (
 
@@ -104,14 +152,12 @@ export const Procesocompra = () => {
 
 
                 <div className="comprar-page">
-
                     <ul className="list-group" >
-
                         <Form model="pedido" onSubmit={handleSubmit} >
                             <Form.Row style={{ margin: '15px' }}>
                                 <Form.Group as={Col} >
 
-                                    <Form.Control type="text" model="pedido.idusuario" placeholder="Nombre" />
+                                    <Form.Control disabled="true" type="text" model="pedido.idusuario" placeholder="Nombre y Apellido" value={nomyape}/>
                                 </Form.Group>
 
                                 <Form.Group as={Col} >
@@ -122,7 +168,7 @@ export const Procesocompra = () => {
 
                             <Form.Row style={{ margin: '15px' }}>
                                 <Form.Group as={Col} >
-                                    <Form.Control type="email" placeholder="Correo Electrónico" />
+                                    <Form.Control disabled="true" type="email" placeholder="Correo Electrónico" value={email} />
                                 </Form.Group>
 
                                 <Form.Group as={Col} >
@@ -144,7 +190,19 @@ export const Procesocompra = () => {
                                     <Form.Control type="text" placeholder="Provincia" />
                                 </Form.Group>
                             </Form.Row>
-
+                            <label class="font-weight-bold" style={{ margin: '10px' }}>Elegir forma de envío:</label>
+                            <div class="card horizontal">
+                                <Form onSubmit={preventSubmit}>
+                                    <Form.Row style={{ margin: '15px' }}>
+                                        {['radio'].map((type) => (
+                                            <div class="custom-control custom-radio custom-control-inline">
+                                                <Form.Check type="radio" inline label="Envio a Domicilio" id="customRadioInline2" name="customRadioInline1" class="custom-control-input" checked={noRetiro} onChange={handleNoEnvio} />
+                                                <Form.Check type="radio" inline label="Retirar en Sucursal" id="customRadioInline2" name="customRadioInline1" class="custom-control-input" checked={noEnvio} onChange={handleNoRetiro} />
+                                            </div>
+                                        ))}
+                                    </Form.Row>
+                                </Form>
+                            </div>
                             <div className="container" style={{ width: '30rem', backgroundColor: '#eceef0', width: 'auto' }}>
                                 <ul className="list-group" >
                                     <label class="font-weight-bold" style={{ margin: '10px' }}>Envío a domicilio:</label>
@@ -152,26 +210,34 @@ export const Procesocompra = () => {
                                         <Form onSubmit={preventSubmit}>
                                             <Form.Row style={{ margin: '15px' }}>
                                                 <Form.Group as={Col} >
-                                                    <Form.Control type="text" placeholder="Calle" />
+                                                    <Form.Control disabled={noEnvio} type="text" placeholder="Calle" />
                                                 </Form.Group>
 
                                                 <Form.Group as={Col} >
-                                                    <Form.Control type="text" placeholder="Altura" />
+                                                    <Form.Control disabled={noEnvio} type="text" placeholder="Altura" />
                                                 </Form.Group>
 
                                                 <Form.Group as={Col} >
-                                                    <Form.Control type="text" placeholder="Código Postal" />
+                                                    <Form.Control disabled={noEnvio} type="text" placeholder="Código Postal" onChange={(e) => setCP(e.target.value)} value={CP} />
                                                 </Form.Group>
 
                                             </Form.Row>
 
                                             <Form.Row style={{ margin: '15px' }}>
                                                 <Form.Group as={Col} >
-                                                    <Form.Control type="text" placeholder="Localidad" />
+                                                    <Form.Control disabled={noEnvio} type="text" placeholder="Localidad" />
                                                 </Form.Group>
 
                                                 <Form.Group as={Col} >
-                                                    <Form.Control type="text" placeholder="Provincia" />
+                                                    <Form.Control disabled={noEnvio} type="text" placeholder="Provincia" />
+                                                </Form.Group>
+                                            </Form.Row>
+
+                                            <Form.Row style={{ margin: '15px' }}>
+                                                <Form.Group as={Col} >
+                                                    <Button disabled={noEnvio} variant="info" onClick={calcularEnvio} >Calcular Envio</Button>
+                                                 <label show={noEnvio} class="font-weight-bold" style={{ margin: '10px' }}>Costo de envío: $  {costoenvio}</label>
+ 
                                                 </Form.Group>
                                             </Form.Row>
                                         </Form>
@@ -181,24 +247,21 @@ export const Procesocompra = () => {
                                     <label class="font-weight-bold" style={{ margin: '10px' }}>Retirar por sucursal:</label>
 
 
-                                    <Form onSubmit={preventSubmit}>
+                                    <Form onSubmit={preventSubmit} >
                                         <div class="card horizontal">
                                             <Form.Row style={{ margin: '15px' }}>
-                                                <Form.Group as={Col} >
+                                                <Form.Group as={Col}  >
 
                                                     <label style={{ margin: '10px' }} class="text-dark">Elegir sucursal más cercana:</label>
-                                                    <select class="form-control" >
-                                                        <option>Sucursal 1</option>
+                                                    <select disabled={noRetiro} class="form-control" >
+                                                        <option >Sucursal 1</option>
                                                         <option>Sucursal 2</option>
                                                         <option>Sucursal 3</option>
                                                     </select>
-
-
                                                 </Form.Group>
 
 
                                             </Form.Row>
-
                                             <Form.Row style={{ margin: '15px' }}>
                                                 {/*<label  style={{ margin: '10px' }} class="text-dark">Elegir sucursal del mapa:</label>*/}
 
@@ -221,7 +284,6 @@ export const Procesocompra = () => {
                                                 <Form.Row style={{ margin: '15px' }}>
                                                     {['radio'].map((type) => (
                                                         <div class="custom-control custom-radio custom-control-inline">
-                                                            <Form.Check type="radio" inline label="Efectivo" id="customRadioInline1" name="customRadioInline1" class="custom-control-input" />
                                                             <Form.Check type="radio" inline label="Tarjeta de Crédito" id="customRadioInline2" name="customRadioInline1" class="custom-control-input" />
                                                             <Form.Check type="radio" inline label="Tarjeta de débito" id="customRadioInline2" name="customRadioInline1" class="custom-control-input" />
                                                             <Form.Check type="radio" inline label="Mercado Pago" id="customRadioInline2" name="customRadioInline1" class="custom-control-input" />
@@ -246,7 +308,7 @@ export const Procesocompra = () => {
                                                         <div className="flex-row justify-between">
                                                             <h3>{item.producto.nombre}</h3>
                                                             <h3>$ {item.producto.precio}</h3>
-                                                            
+
                                                             {subtotal = item.producto.precio * item.quantity}
                                                             {total = total + subtotal}
                                                         </div>
@@ -266,7 +328,7 @@ export const Procesocompra = () => {
                                                         </div>
 
                                                         <div className="col-descripcion">
-                                                         SUBTOTAL        {subtotal}
+                                                            SUBTOTAL        {subtotal}
                                                         </div>
 
 
@@ -276,83 +338,53 @@ export const Procesocompra = () => {
                                         })
                                         }
 
-
-                                        <h3 className="col-descripcion" style={{ margin: '10px'}}>
-                                             TOTAL                                $ {total}
+                                          
+                                        <h3 className="col-descripcion" style={{ margin: '10px' }}>
+                                           
+                                            TOTAL                                $ {total = total + costoenvio}
                                         </h3>
 
 
 
                                         <Form.Row style={{ margin: '15px' }}>
                                             <Form.Group as={Col} >
-                                                <Button variant="info"  onClick={Cancelar}>Cancelar</Button>
+                                                <Button variant="info" onClick={Cancelar}>Cancelar</Button>
                                             </Form.Group>
 
                                             <Form.Group as={Col} >
-                                                <Button variant="info" type="submit"  onClick={Confirmar} >Confirmar</Button>
-                                              {/*
-                                                {confir && <div class="alert alert-warning alert-dismissable">
-        <button type="button" class="close" data-dismiss="alert">&times;</button>
-        <strong>¡Compra exitosa!</strong> Podrás ver el detalle en el listado de pedidos.
-                                              </div>}*/}
-                                                
+                                                <Button variant="info" type="submit" onClick={handleShow} >Confirmar</Button>
+
+
                                             </Form.Group>
                                         </Form.Row>
 
-                                    </Form>
+                                        <Modal show={show} onHide={handleClose}>
+                                            <Modal.Header closeButton>
+                                                <Modal.Title>Estado de Compra</Modal.Title>
+                                            </Modal.Header>
 
-                                   
-                                    
+                                            <Modal.Body>
+                                                <p>¡Compra exitosa!.</p>
+                                            </Modal.Body>
+
+                                            <Modal.Footer>
+                                                <Button variant="secondary" onClick={handleClose}> Close</Button>
+
+                                            </Modal.Footer>
+                                        </Modal>
+
+                                    </Form>
 
                                 </ul>
 
                             </div>
 
-
-
-
-
                         </Form>
                     </ul>
                 </div>
 
-
-
-
-    )
-
-
-  {/*        
-
-                <div>
-
-                    <nav className="nav nav-tabs nav-justified"  >
-                   
-                        <Button variant="info" onClick={mostrar1}>Datos Facturación</Button>
-                        <Button variant="info" onClick={mostrar2} >Elegir envío</Button>
-                        <Button variant="info" onClick={mostrar3}>Realizar Pago</Button>
-                        <Button variant="info" onClick={mostrar4}>Confirmar Compra</Button>
-
-                    </nav>              
-
-                </div>
-             
-
-                <div className="container" style={{ backgroundColor: '#eceef0', width: 'auto' }}>
-                   { console.log(flag)}
-                {flag === 1 &&  <div>{<Compra></Compra>}</div> }
-                {flag === 2 &&  <div>{<Envio></Envio>}</div> }
-                {flag === 3 &&  <div>{<Pago></Pago>}</div> }
-                {flag === 4 &&  <div>{<Confirmarcompra></Confirmarcompra>}</div> }
-             
-                </div>
-*/}
-
-
-
-
+    
             </div>
-
         </div>
 
     )

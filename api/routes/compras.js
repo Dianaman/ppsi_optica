@@ -16,7 +16,7 @@ router.get('/', (request, response) => {
 
 router.post('/add', (req, res) => {
 
-  var sql = `INSERT INTO pedidos (Idusuario, estado, tipoEnvio) VALUES ('${req.body.idusuario}','activo', 'envío a domicilio')`;
+  var sql = `INSERT INTO pedidos (Idusuario, estado, tipoEnvio, monto) VALUES ('${req.body.idusuario}','activo', '${req.body.tipoEnvio}', '${req.body.monto}')`;
 
   pool.query(sql, (error, result) => {
     if (error) throw error;
@@ -24,13 +24,14 @@ router.post('/add', (req, res) => {
     const idPedido = result.insertId;
     let ind = 0;
     var val = (`('${idPedido}', '1', `)
-    var sqldet = (`INSERT INTO detallePedidos ( idPedido, Iddetallefactura, idproducto)  VALUES `);
+    var sqldet = (`INSERT INTO detallePedidos ( idPedido, Iddetallefactura, idproducto, cantidad, precioUnitario)  VALUES `);
 
 
     req.body.idproductos && req.body.idproductos.map((item) => {
       console.log(req.body.idproductos[ind]);
-      if (ind === 0) sqldet = sqldet + val + `'${req.body.idproductos[ind]}')`;
-      else sqldet = sqldet + ',' + val + `'${req.body.idproductos[ind]}')`;
+      console.log(req.body.cantprod[ind]);
+      if (ind === 0) sqldet = sqldet + val + `'${req.body.idproductos[ind]}'`+ ','+`'${req.body.cantprod[ind]}'`+ ','+`'${req.body.precioUnitario[ind]}')`;
+      else sqldet = sqldet + ',' + val + `'${req.body.idproductos[ind]}'`+ ','+ `'${req.body.cantprod[ind]}'`+ ','+`'${req.body.precioUnitario[ind]}')`;
       ind++;
       console.log(sqldet);
     })
@@ -42,16 +43,19 @@ router.post('/add', (req, res) => {
     });
 
 
-
-
-
   });
 
 
+});
 
-
-
-
+router.get('/:CP', (req, res) => {
+  const CP = req.params.CP;
+  console.log('cp api  ', CP)
+  pool.query('SELECT Precio FROM envios WHERE codigoPostal = '+ CP , (error, result) => {
+      if (error) throw error;
+console.log(result[0]);
+      res.send(result[0]);
+  });
 });
 
 module.exports = router;
