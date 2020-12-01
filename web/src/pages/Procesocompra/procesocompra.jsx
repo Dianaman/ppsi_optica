@@ -16,6 +16,7 @@ import Col from 'react-bootstrap/Col';
 import If from 'react-bootstrap';
 import Modal from 'react-bootstrap/Modal';
 import 'bootstrap/dist/css/bootstrap.css';
+import { clearCart } from '../../redux/ducks/carrito.duck';
 
 const preventSubmit = (event) => {
     event.preventDefault();
@@ -39,7 +40,8 @@ export const Procesocompra = () => {
     const loggedInUser = JSON.parse(localStorage.getItem("user"));
     const nomyape = loggedInUser["nombre"] + ' ' + loggedInUser["apellido"];
     const email = loggedInUser["email"] ;
- 
+
+    const dispatch = useDispatch();
 
 
     const handleSubmit = (event, item) => {
@@ -54,17 +56,13 @@ export const Procesocompra = () => {
 
         carrito && carrito.map((item) => {
             return (
-
                 <div className="col-descripcion">
                     {productos.push(item.producto.idProducto)}
                     {cantidad.push(item.quantity)}
                     {precUnit.push(item.producto.precio)}
                     {ind++}
-
-
-                </div>)
-
-
+                </div>
+            )
         })
 
         if (!noEnvio) { tipoEnv = "Envio a domicilio" }
@@ -82,7 +80,8 @@ export const Procesocompra = () => {
                 }
             }
         )
-            .then(res => res.json())
+        .then(res => res.json())
+        .then(() => dispatch(clearCart()))
     }
 
     let [CP, setCP] = useState(0);
