@@ -39,20 +39,50 @@ export const Procesocompra = () => {
     const [costoenvio, setcostoenvio] = useState(false);
     const loggedInUser = JSON.parse(localStorage.getItem("user"));
     const nomyape = loggedInUser["nombre"] + ' ' + loggedInUser["apellido"];
-    const email = loggedInUser["email"] ;
+    const email = loggedInUser["email"];
 
-    const dispatch = useDispatch();
+    let [dni, setDni] = useState('');
+    let [celular, setCelular] = useState('');
+   
+    let [calle, setCalle] = useState('');
+    let [altura, setAltura] = useState('');
+    let [CP, setCP] = useState('');
+    let [localidad, setLocalidad] = useState(""); 
+    let [provincia, setProvincia] = useState("");
+    let direccion = new Object();
+      direccion.calle = calle;
+      direccion.altura = altura;
+      direccion.CP = CP;
+      direccion.localidad = localidad;
+      direccion.provincia = provincia;
+      
+ 
+    var total = 0;
+    var subtotal = 0;
+    let history = useHistory();
+    const [validated, setValidated] = useState(false);
+
+
 
 
     const handleSubmit = (event, item) => {
-        event.preventDefault();
      
+
+        const form = event.currentTarget;
+        if (form.checkValidity() === false) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+        setValidated(true);
+
+  // event.preventDefault();
         let productos = [];
         let cantidad = [];
         let precUnit = [];
         let ind = 0;
         let tipoEnv = "";
-
+         let tipoPago = "";
+         
 
         carrito && carrito.map((item) => {
             return (
@@ -61,20 +91,27 @@ export const Procesocompra = () => {
                     {cantidad.push(item.quantity)}
                     {precUnit.push(item.producto.precio)}
                     {ind++}
+<<<<<<< Updated upstream
                 </div>
             )
+=======
+                </div>)
+
+
+>>>>>>> Stashed changes
         })
 
         if (!noEnvio) { tipoEnv = "Envio a domicilio" }
         if (!noRetiro) { tipoEnv = "Retiro en sucursal" }
-
-
-
-
+        if (tarjDeb) { tipoPago = "Tarjeta de débito" }
+        if (tarjCred) { tipoPago = "Tarjeta de crédito" }
+        if (mercadoPago) { tipoPago = "Mercado Pago" }
+console.log(tipoPago);
+console.log(direccion);
         fetch(process.env.REACT_APP_API_URL + '/compra/add',
             {
                 method: 'POST',
-                body: JSON.stringify({ idusuario: loggedInUser["id"], idproductos: productos, precioUnitario: precUnit, cantprod: cantidad, tipoEnvio: tipoEnv, monto: total }),
+                body: JSON.stringify({ idusuario: loggedInUser["id"], idproductos: productos, precioUnitario: precUnit, cantprod: cantidad, tipoEnvio: tipoEnv, monto: total, TipoPago: tipoPago, dir: direccion }),
                 headers: {
                     'Content-Type': 'application/json'
                 }
@@ -84,12 +121,9 @@ export const Procesocompra = () => {
         .then(() => dispatch(clearCart()))
     }
 
-    let [CP, setCP] = useState(0);
+
     const calcularEnvio = (event, item) => {
         event.preventDefault();
-
-
-
         fetch(process.env.REACT_APP_API_URL + '/compra/' + `${CP}`,
             {
                 method: 'GET',
@@ -103,24 +137,19 @@ export const Procesocompra = () => {
                 const { Precio } = costoEnvio;
                 setcostoenvio(Precio);
                 console.log(Precio);
-
             })
-
-
     }
 
 
-
-    var total = 0;
-    var subtotal = 0;
-    let history = useHistory();
     function Cancelar() {
         history.push("/")
     }
 
 
     const [show, setShow] = useState(false);
-    const handleShow = () => setShow(true);
+    const handleShow = () => 
+    { if (validated)
+    setShow(true);}
     const handleClose = () => {
         setShow(false);
         Cancelar();
@@ -131,36 +160,57 @@ export const Procesocompra = () => {
     const handleNoEnvio = () => {
         setNoEnvio(false);
         setNoRetiro(true);
+       
     }
 
     const handleNoRetiro = () => {
         setNoEnvio(true);
         setNoRetiro(false);
+         setcostoenvio(0);
     }
+
+    const [tarjDeb, setTarjDeb] = useState(true);
+    const [tarjCred, setTarjCreb] = useState(false);
+    const [mercadoPago, setMercadoPago] = useState(false);
+    const handleTD = () => {
+        setTarjDeb(true);
+        setTarjCreb(false);
+        setMercadoPago(false);
+    }
+
+    const handleTC = () => {
+        setTarjDeb(false);
+        setTarjCreb(true);
+        setMercadoPago(false);
+    }
+    const handleMC = () => {
+        setTarjDeb(false);
+        setTarjCreb(false);
+        setMercadoPago(true);
+    }
+
+
 
 
     return (
 
         <div className="row" style={{ margin: '10px' }}>
-
             <div className="container" style={{ backgroundColor: '#fff4' }}>
                 <div className="seccion">
                     <div>Compra</div>
                 </div>
 
-
-
                 <div className="comprar-page">
                     <ul className="list-group" >
-                        <Form model="pedido" onSubmit={handleSubmit} >
+                        <Form model="pedido" noValidate validated={validated} onSubmit={handleSubmit} >
                             <Form.Row style={{ margin: '15px' }}>
-                                <Form.Group as={Col} >
+                                <Form.Group as={Col} controlId="validationCustom02" >
 
-                                    <Form.Control disabled="true" type="text" model="pedido.idusuario" placeholder="Nombre y Apellido" value={nomyape}/>
+                                    <Form.Control disabled="true" type="text" model="pedido.idusuario" placeholder="Nombre y Apellido" value={nomyape} />
                                 </Form.Group>
 
                                 <Form.Group as={Col} >
-                                    <Form.Control type="text" placeholder="DNI" />
+                                    <Form.Control required minlength="8" maxlength="8"  type="number" placeholder="DNI" onChange={(e) => setDni(e.target.value)} value={dni} />
                                 </Form.Group>
 
                             </Form.Row>
@@ -169,34 +219,22 @@ export const Procesocompra = () => {
                                 <Form.Group as={Col} >
                                     <Form.Control disabled="true" type="email" placeholder="Correo Electrónico" value={email} />
                                 </Form.Group>
-
+                                
                                 <Form.Group as={Col} >
-                                    <Form.Control type="number" placeholder="Celular" />
+                                    <Form.Control required type="number" minlength="10" maxlength="10" placeholder="Celular" onChange={(e) => setCelular(e.target.value)} value={celular}  />
                                 </Form.Group>
 
                             </Form.Row>
 
-                            <Form.Row style={{ margin: '15px' }}>
-                                <Form.Group as={Col} >
-                                    <Form.Control type="text" placeholder="Código postal" />
-                                </Form.Group>
-
-                                <Form.Group as={Col} >
-                                    <Form.Control type="text" placeholder="Ciudad" />
-                                </Form.Group>
-
-                                <Form.Group as={Col} >
-                                    <Form.Control type="text" placeholder="Provincia" />
-                                </Form.Group>
-                            </Form.Row>
+ 
                             <label class="font-weight-bold" style={{ margin: '10px' }}>Elegir forma de envío:</label>
                             <div class="card horizontal">
                                 <Form onSubmit={preventSubmit}>
                                     <Form.Row style={{ margin: '15px' }}>
                                         {['radio'].map((type) => (
                                             <div class="custom-control custom-radio custom-control-inline">
-                                                <Form.Check type="radio" inline label="Envio a Domicilio" id="customRadioInline2" name="customRadioInline1" class="custom-control-input" checked={noRetiro} onChange={handleNoEnvio} />
-                                                <Form.Check type="radio" inline label="Retirar en Sucursal" id="customRadioInline2" name="customRadioInline1" class="custom-control-input" checked={noEnvio} onChange={handleNoRetiro} />
+                                                <Form.Check type="radio" inline label="Envio a Domicilio" id="customRadioInline0" name="customRadioInline1" class="custom-control-input" checked={noRetiro} onChange={handleNoEnvio} />
+                                                <Form.Check type="radio" inline label="Retirar en Sucursal" id="customRadioInline1" name="customRadioInline1" class="custom-control-input" checked={noEnvio} onChange={handleNoRetiro} />
                                             </div>
                                         ))}
                                     </Form.Row>
@@ -209,34 +247,34 @@ export const Procesocompra = () => {
                                         <Form onSubmit={preventSubmit}>
                                             <Form.Row style={{ margin: '15px' }}>
                                                 <Form.Group as={Col} >
-                                                    <Form.Control disabled={noEnvio} type="text" placeholder="Calle" />
+                                                    <Form.Control required disabled={noEnvio} type="text" placeholder="Calle y altura" onChange={(e) => setCalle(e.target.value)} value={calle} />
                                                 </Form.Group>
 
                                                 <Form.Group as={Col} >
-                                                    <Form.Control disabled={noEnvio} type="text" placeholder="Altura" />
+                                                    <Form.Control required disabled={noEnvio} type="text" placeholder="Piso/Depto" onChange={(e) => setAltura(e.target.value)} value={altura}/>
                                                 </Form.Group>
 
                                                 <Form.Group as={Col} >
-                                                    <Form.Control disabled={noEnvio} type="text" placeholder="Código Postal" onChange={(e) => setCP(e.target.value)} value={CP} />
+                                                    <Form.Control required disabled={noEnvio} minlength="4" maxlength="4" isValid={CP === 1676 || CP === 1663} type="text" placeholder="Código Postal" onChange={(e) => setCP(e.target.value)} value={CP} />
                                                 </Form.Group>
 
                                             </Form.Row>
 
                                             <Form.Row style={{ margin: '15px' }}>
                                                 <Form.Group as={Col} >
-                                                    <Form.Control disabled={noEnvio} type="text" placeholder="Localidad" />
+                                                    <Form.Control required disabled={noEnvio} type="text" placeholder="Localidad" onChange={(e) => setLocalidad(e.target.value)} value={localidad}/>
                                                 </Form.Group>
 
                                                 <Form.Group as={Col} >
-                                                    <Form.Control disabled={noEnvio} type="text" placeholder="Provincia" />
+                                                    <Form.Control required disabled={noEnvio} type="text" placeholder="Provincia" onChange={(e) => setProvincia(e.target.value)} value={provincia} />
                                                 </Form.Group>
                                             </Form.Row>
 
                                             <Form.Row style={{ margin: '15px' }}>
                                                 <Form.Group as={Col} >
                                                     <Button disabled={noEnvio} variant="info" onClick={calcularEnvio} >Calcular Envio</Button>
-                                                 <label show={noEnvio} class="font-weight-bold" style={{ margin: '10px' }}>Costo de envío: $  {costoenvio}</label>
- 
+                                                    <label show={noEnvio} class="font-weight-bold" style={{ margin: '10px' }}>Costo de envío: $  {costoenvio}</label>
+
                                                 </Form.Group>
                                             </Form.Row>
                                         </Form>
@@ -283,9 +321,9 @@ export const Procesocompra = () => {
                                                 <Form.Row style={{ margin: '15px' }}>
                                                     {['radio'].map((type) => (
                                                         <div class="custom-control custom-radio custom-control-inline">
-                                                            <Form.Check type="radio" inline label="Tarjeta de Crédito" id="customRadioInline2" name="customRadioInline1" class="custom-control-input" />
-                                                            <Form.Check type="radio" inline label="Tarjeta de débito" id="customRadioInline2" name="customRadioInline1" class="custom-control-input" />
-                                                            <Form.Check type="radio" inline label="Mercado Pago" id="customRadioInline2" name="customRadioInline1" class="custom-control-input" />
+                                                            <Form.Check type="radio" inline label="Tarjeta de Crédito" id="customRadioInline2" name="customRadioInline1" class="custom-control-input" checked={tarjDeb} onChange={handleTD}  />
+                                                            <Form.Check type="radio" inline label="Tarjeta de débito" id="customRadioInline2" name="customRadioInline1" class="custom-control-input"  checked={tarjCred} onChange={handleTC} />
+                                                            <Form.Check type="radio" inline label="Mercado Pago" id="customRadioInline2" name="customRadioInline1" class="custom-control-input" checked={mercadoPago} onChange={handleMC}  />
                                                         </div>
                                                     ))}
                                                 </Form.Row>
@@ -336,10 +374,10 @@ export const Procesocompra = () => {
                                             );
                                         })
                                         }
+                               
 
-                                          
                                         <h3 className="col-descripcion" style={{ margin: '10px' }}>
-                                           
+
                                             TOTAL                                $ {total = total + costoenvio}
                                         </h3>
 
@@ -382,7 +420,7 @@ export const Procesocompra = () => {
                     </ul>
                 </div>
 
-    
+
             </div>
         </div>
 
