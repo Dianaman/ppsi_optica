@@ -72,10 +72,8 @@ app.use(function(err, req, res, next) {
  * Get port from environment and store in Express.
  */
 var port = normalizePort(process.env.PORT || '9000');
-var portProd = normalizePort(process.env.PORT || '9001');
+process.env['PORT'] = process.env.PORT || '9001';
 
-var appProd = Object.assign(app);
-appProd.set('port', portProd);
 app.set('port', port);
 
 /**
@@ -86,18 +84,22 @@ const options = {
   cert: fs.readFileSync("keys/cert.pem")
 };
 
-var serverProd = https.createServer(options, appProd);
-var server = http.createServer(app);
 
 /**
  * Listen on provided port, on all network interfaces.
  */
 
+//if (process.env.NODE_ENV != 'production') {
+var server = http.createServer(app);
 server.listen(port);
-serverProd.listen(portProd);
+/*} else {
+  var serverProd = https.createServer(options, app);
+  serverProd.listen(port);
+  serverProd.on('error', onError);
+  serverProd.on('listening', onListening);
+}*/
 
-serverProd.on('error', onError);
-serverProd.on('listening', onListening);
+
 
 /**
  * Normalize a port into a number, string, or false.
