@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from "react-router-dom";
 import './Login.css';
 import { setActualUser } from '../../redux/ducks/users.duck';
-//import axios from 'axios';
+import { clearCart } from '../../redux/ducks/carrito.duck';
 
 export default function Login() {
 
@@ -59,6 +59,7 @@ export default function Login() {
         setUsername("");
         setPassword("");
         dispatch(setActualUser(null));
+        dispatch(clearCart());
         localStorage.clear();
         history.push("/");
     };

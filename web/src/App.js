@@ -20,12 +20,12 @@ function App() {
   const loggedInUser = app.usuariosReducer.usuarioActual;
 
   useEffect(() => {
-      const storedUser = JSON.parse(localStorage.getItem("user"));
+      const storedUser = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")): null;
       if (storedUser) {
         dispatch(setActualUser(storedUser));
       }
 
-      const carrito = JSON.parse(localStorage.getItem('carrito'));
+      const carrito = localStorage.getItem('carrito') ? JSON.parse(localStorage.getItem('carrito')): null;
       if (carrito) {
         dispatch(setCart(carrito));
       }

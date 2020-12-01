@@ -16,7 +16,7 @@ router.get('/', (request, response) => {
 
 router.post('/add', (req, res) => {
 
-  var sql = `INSERT INTO pedidos (Idusuario, estado, tipoEnvio, monto) VALUES ('${req.body.idusuario}','activo', '${req.body.tipoEnvio}', '${req.body.monto}')`;
+  var sql = `INSERT INTO pedidos (Idusuario, estado, tipoEnvio, monto) VALUES ('${req.body.idusuario}','pendiente', '${req.body.tipoEnvio}', '${req.body.monto}')`;
 
   pool.query(sql, (error, result) => {
     if (error) throw error;
