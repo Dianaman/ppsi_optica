@@ -79,8 +79,8 @@ export default function Login() {
         <div className="login-page">
             <div className="form">
                 <form className="login-form" onSubmit={handleSubmit}>
-                    <input type="text" placeholder='Usuario' onChange={(e) => setUsername(e.target.value)} value={username}/>
-                    <input type="password" placeholder='Contraseña' onChange={(e) => setPassword(e.target.value)} value={password}/>
+                    <input required="required" type="text" placeholder='Usuario' onChange={(e) => setUsername(e.target.value)} value={username}/>
+                    <input required="required" type="password" placeholder='Contraseña' onChange={(e) => setPassword(e.target.value)} value={password}/>
                 <button>Iniciar</button>
                 <p className="message">Nuevo usuario? <a href="/registrar">Crear cuenta</a></p>
                 </form>
