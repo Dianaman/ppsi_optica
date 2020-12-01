@@ -2,7 +2,8 @@
 
 // State
 const initial_state = {
-    carrito: []
+    carrito: [],
+    extras: []
 }
 
 // Types
@@ -10,6 +11,7 @@ export const ADD_CART = 'carrito/ADD_CART';
 export const REMOVE_CART = 'carrito/REMOVE_CART';
 export const CLEAR_CART = 'carrito/CLEAR_CART';
 export const SET_CART = 'carrito/SET_CART';
+export const SET_EXTRA = 'carrito/SET_EXTRA';
 
 // Reducer
 export function carritoReducer(state = initial_state, action) { 
@@ -68,6 +70,13 @@ export function carritoReducer(state = initial_state, action) {
                 ...state,
                 carrito: carritoDefault
             }
+        case SET_EXTRA:
+            const { extrasToAdd } = action.payload;
+
+            return {
+                ...state,
+                extras: extrasToAdd
+            }     
         default:
             return state;
     }
@@ -106,6 +115,15 @@ export function setCart(carrito) {
         type: SET_CART,
         payload: {
             carritoDefault: carrito
+        }
+    }
+}
+
+export function setExtra(extras) {
+    return {
+        type: SET_EXTRA,
+        payload: {
+            extrasToAdd: extras
         }
     }
 }

@@ -6,8 +6,6 @@ export function Spinner() {
     const app = useSelector(state => state);
     const {showLoading} = app.commonReducer;
 
-    console.log('loading', showLoading);
-
     const override = `
     display: flex;
     flex-direction: row;

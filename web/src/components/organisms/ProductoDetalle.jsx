@@ -2,30 +2,39 @@ import React from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
+import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { useSelector, useDispatch } from 'react-redux';
 import Image from 'react-bootstrap/Image';
-import { addToCart } from '../../redux/ducks/carrito.duck';
+import { addToCart, setExtra } from '../../redux/ducks/carrito.duck';
 import { ImageUploader } from './images/ImageUploader';
-import { Control, Form } from 'react-redux-form';
 import { clearImages } from '../../redux/ducks/files.duck';
-import { Form as Fr } from 'react-bootstrap';
 import { setModalOpen } from '../../redux/ducks/common.duck';
+import { Multiselect } from 'multiselect-react-dropdown';
 
 export function ProductoDetalle(props) {
   let carrito, prodEnCarrito, cantidad = 1;
 
   const app = useSelector(state => state);
   const productoMostrado = app.categoriaReducer.productoMostrado;
+  const extras = app.carritoReducer.extras;
 
   carrito = props.carrito;
 
   prodEnCarrito = carrito?.find(item => item.id === productoMostrado?.idProducto);
 
+  let data = [
+    { value: 'multifocales', desc: 'Multifocales' },
+    { value: 'antireflex', desc: 'Anti-reflex' },
+    { value: 'blueblock', desc: 'Blue-block' }
+  ]
+  
   const dispatch = useDispatch();
 
   React.useEffect(() => {
     dispatch(clearImages());
+    dispatch(setExtra([]));
+
     cantidad = 1;
   }, []);
 
@@ -39,23 +48,29 @@ export function ProductoDetalle(props) {
       if (files.length) {
         productoAgregar.filePath = files[0].url;
       }
-      if (app.item.extras.indexOf('multifocales') > -1) {
+
+      if (extras?.find((obj) => obj.value === 'multifocales')) {
         productoAgregar.multifocales = true;
       }
-      if (app.item.extras.indexOf('antireflex') > -1) {
+      if (extras?.find((obj) => obj.value === 'antireflex')) {
         productoAgregar.antireflex = true;
       }
-      if (app.item.extras.indexOf('blueblock') > -1) {
+      if (extras?.find((obj) => obj.value === 'blueblock')) {
         productoAgregar.blueblock = true;
       }
     }
 
     dispatch(addToCart(productoMostrado.idProducto, cantidad, productoMostrado, productoAgregar));
     dispatch(setModalOpen(false));
+
   }
 
   function changeCantidad(event) {
     cantidad = Number.parseInt(event.target.value, 10);
+  }
+
+  function selectChange(selectedList, modifiedItem) {
+    dispatch(setExtra(selectedList));
   }
 
   return (
@@ -86,25 +101,25 @@ export function ProductoDetalle(props) {
         </Modal.Body>
         <Modal.Footer>
 
-          <Form style={{'width':'100%'}}
-            model="form.item"
-            onSubmit={() => agregarAlCarrito()}
-            >
+          <Form style={{'width':'100%'}}>
 
                {productoMostrado.idCategoria !== 3 &&
                   <>
                     <Row>
-                      <Col md="4" className="spaced">
-                        <Control.select multiple={true} model="form.item.extras" id="form.item.extras">
-                          <option value="multifocales">Multifocales</option>
-                          <option value="antireflex">Anti-reflex</option>
-                          <option value="blueblock">Blue-block</option>
-                        </Control.select>
-                      </Col>
+                      <Form.Group as={Col} md="4">
+                        <label>Extras</label>
+                        <Multiselect multiple 
+                        options={data} 
+                        onSelect={selectChange} 
+                        onRemove={selectChange} 
+                        displayValue="desc"/>
+                        
+                      </Form.Group>
 
-                      <Col md="4">
+                      <Form.Group as={Col} md="4">
+                        <label>Receta</label>
                         <ImageUploader></ImageUploader>
-                      </Col>
+                      </Form.Group>
 
                     </Row>
                     <hr />
@@ -113,16 +128,16 @@ export function ProductoDetalle(props) {
 
 
               <Row className="flex-row justify-end">
-                <Col md="2">
+                <Form.Group as={Col} md="2">
                 {
                   productoMostrado.idCategoria === 3 &&
-                    <Fr.Control type="number" defaultValue={cantidad} onChange={changeCantidad} style={{'width':'50px'}}/>
+                    <Form.Control type="number" defaultValue={cantidad} onChange={changeCantidad} style={{'width':'50px'}}/>
                   
                 }
-                </Col>
-                <Col md="2">
-                  <Button variant="info" type="submit">Agregar</Button>
-                </Col>                
+                </Form.Group>
+                <Form.Group as={Col} md="2">
+                  <Button variant="info" onClick={() => agregarAlCarrito()}>Agregar</Button>
+                </Form.Group>                
               </Row>
 
             </Form>

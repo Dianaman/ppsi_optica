@@ -42,7 +42,6 @@ export function commonReducer(state = initialState, action) {
 
 // Actions
 export function showLoading(show){
-    console.log('show loading', show);
     return {
         type: SHOW_LOADING,
         payload: {

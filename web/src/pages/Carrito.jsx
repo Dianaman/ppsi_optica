@@ -34,6 +34,16 @@ export function Carrito() {
       event.preventDefault();
     }
 
+    function renderSubtotal() {
+        let subtotal = 0;
+        if (carrito && carrito.length) {
+            carrito.map(item => {subtotal += item.producto.precio * item.quantity});
+        }
+        return (
+            <div>$ {subtotal}</div>
+        );
+    }
+
     return (
         <div className="container">
             <div className="seccion">
@@ -55,7 +65,7 @@ export function Carrito() {
                         <div className="text">
                             <div className="flex-row justify-between">
                                 <h3>#{item.id} - {item.producto.nombre}</h3>
-                                <h3>$ {item.producto.precio}</h3>
+                                <h3>$ {item.producto.precio * item.quantity}</h3>
                             </div>
                             <div className="flex-row justify-between">
                                 <div className="col-descripcion flex-column">
@@ -63,7 +73,8 @@ export function Carrito() {
                                     {item.extras?.antireflex && <span>Anti-reflex</span>}
                                     {item.extras?.blueblock && <span>Blue-block</span>}
                                 </div>
-                                <div>
+                                <div className="flex-column">
+                                    <div>$ {item.producto.precio}</div>
                                     {item.extras?.filePath && <p><a href={item.extras.filePath} target="_blank">Receta</a></p>}
                                     {item.producto.idCategoria === 3 && <Form onSubmit={preventSubmit}>
                                         <Form.Row>
@@ -92,7 +103,7 @@ export function Carrito() {
 
             <div className="flex-row justify-end margin-x-10px">
                 <b className="margin-x-10px">Subtotal</b>
-                <b>${subtotal}</b>
+                <b>{renderSubtotal()}</b>
             </div>
 
             <br />
