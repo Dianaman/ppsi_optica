@@ -10,17 +10,22 @@ import {useHistory } from "react-router-dom";
 
 export function Carrito() {
     const dispatch = useDispatch();
+    const app = useSelector(state => state);
+    const loggedInUser = app.usuariosReducer.usuarioActual;
+    
     
     
     let history = useHistory();
     function handleClick() {
-        history.push("/Procesocompra")
+        if(loggedInUser){
+            history.push("/Procesocompra")
+        }else{
+            history.push("/login")
+        }
      }
 
     let subtotal = 0;
 
-
-    const app = useSelector(state => state);
     const {carrito} = app.carritoReducer;
 
     const handleChange = (event, item) => {
