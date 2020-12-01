@@ -17,7 +17,7 @@ export function Categoria () {
 
 
     const app = useSelector(state => state);
-    const { productosEnCategoria, productoMostrado } = app.categoriaReducer;
+    const { productosEnCategoria } = app.categoriaReducer;
     const { carrito } = app.carritoReducer;
     const { modalOpen } = app.commonReducer;
 
@@ -28,7 +28,7 @@ export function Categoria () {
         if(!modalOpen) {
             setModalShow(false);
         }
-    }, [dispatch]);
+    }, [dispatch, modalOpen]);
 
 
     function mostrarProducto(producto) {
@@ -70,7 +70,6 @@ export function Categoria () {
             <ProductoDetalle
                 show={modalShow}
                 onHide={() => setModalShow(false)}
-                productoMostrado={productoMostrado}
                 carrito={carrito}
             />
         </>

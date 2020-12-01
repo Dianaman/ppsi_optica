@@ -35,7 +35,13 @@ const initialUser = {
     email: '',
     password: '',
     tipo: 'cliente'
-  };
+};
+
+const initialItemCarrito = {
+    cantidad: 1,
+    receta: null,
+    extras: []
+}
 
 export default combineReducers({
     carritoReducer,
@@ -49,6 +55,7 @@ export default combineReducers({
     ...createForms({
         producto: initialProductState,
         prod: initialProdState,
-        user: initialUser
+        user: initialUser,
+        item: initialItemCarrito
     }, 'form')
 });

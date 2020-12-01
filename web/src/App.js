@@ -12,6 +12,7 @@ import { Switch, Route, Redirect, NavLink } from 'react-router-dom';
 import { Provider, useDispatch, useSelector } from 'react-redux';
 import { Spinner } from './components/atoms';
 import { setActualUser } from './redux/ducks/users.duck';
+import { setCart } from './redux/ducks/carrito.duck';
 
 function App() {
   const dispatch = useDispatch();
@@ -22,6 +23,11 @@ function App() {
       const storedUser = JSON.parse(localStorage.getItem("user"));
       if (storedUser) {
         dispatch(setActualUser(storedUser));
+      }
+
+      const carrito = JSON.parse(localStorage.getItem('carrito'));
+      if (carrito) {
+        dispatch(setCart(carrito));
       }
   }, []);
 

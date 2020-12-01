@@ -4,7 +4,7 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Col from 'react-bootstrap/Col';
 import carritoIcon from '../assets/icons/shopping_cart.svg';
-import { addToCart } from '../redux/ducks/carrito.duck';
+import { addToCart, removeFromCart } from '../redux/ducks/carrito.duck';
 import {useHistory } from "react-router-dom";
 
 
@@ -27,7 +27,7 @@ export function Carrito() {
         const nuevaCantidad = parseInt(event.target.value, 10);
         item.quantity = nuevaCantidad;
     
-        dispatch(addToCart(item.id, nuevaCantidad, {}));
+        dispatch(addToCart(item.id, nuevaCantidad, item.producto, item.extras));
     }
     
     const preventSubmit = (event) => {
@@ -54,26 +54,29 @@ export function Carrito() {
 
                         <div className="text">
                             <div className="flex-row justify-between">
-                                <h3>{item.producto.nombre}</h3>
+                                <h3>#{item.id} - {item.producto.nombre}</h3>
                                 <h3>$ {item.producto.precio}</h3>
                             </div>
                             <div className="flex-row justify-between">
-                                <div className="col-descripcion">
-                                    Código {item.id}
+                                <div className="col-descripcion flex-column">
+                                    {item.extras?.multifocales && <span>Multifocales</span>}
+                                    {item.extras?.antireflex && <span>Anti-reflex</span>}
+                                    {item.extras?.blueblock && <span>Blue-block</span>}
                                 </div>
                                 <div>
-                                    <Form onSubmit={preventSubmit}>
+                                    {item.extras?.filePath && <p><a href={item.extras.filePath} target="_blank">Receta</a></p>}
+                                    {item.producto.idCategoria === 3 && <Form onSubmit={preventSubmit}>
                                         <Form.Row>
                                         <Form.Group as={Col} md="4">
-                                            <Form.Control type="number" min="0" value={item.quantity} onChange={handleChange.bind(item)}/>
+                                            <Form.Control type="number" min="0" value={item.quantity} onChange={(event) => handleChange(event, item)}/>
                                         </Form.Group>
                                         </Form.Row>
-                                    </Form>
+                                    </Form>}
                                 </div>
-                            </div>
-                            <div>
-                                <Button variant="link">Quitar</Button>&nbsp;
-                                <Button variant="link">Guardar para después</Button>
+                                <div>
+                                    <Button variant="link" onClick={() => dispatch(removeFromCart(item.id))}>Quitar</Button>&nbsp;
+                                {false && <Button variant="link">Guardar para después</Button>}
+                                </div>
                             </div>
 
 

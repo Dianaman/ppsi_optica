@@ -9,6 +9,7 @@ const initial_state = {
 export const ADD_CART = 'carrito/ADD_CART';
 export const REMOVE_CART = 'carrito/REMOVE_CART';
 export const CLEAR_CART = 'carrito/CLEAR_CART';
+export const SET_CART = 'carrito/SET_CART';
 
 // Reducer
 export function carritoReducer(state = initial_state, action) { 
@@ -32,6 +33,8 @@ export function carritoReducer(state = initial_state, action) {
                 carritoToAdd.push(item);
             }
 
+            localStorage.setItem('carrito', JSON.stringify(carritoToAdd));
+
             return {
                 ...state,
                 carrito: carritoToAdd
@@ -43,20 +46,28 @@ export function carritoReducer(state = initial_state, action) {
 
             const index = carritoToRemove.findIndex(carritoItem => carritoItem.id === removeId);
             if (index > -1) {
-                carritoToRemove.remove(index);
+                carritoToRemove.splice(index, 1);
             }
 
+            localStorage.setItem('carrito', JSON.stringify(carritoToRemove));
             return {
                 ...state,
                 carrito: carritoToRemove
             };
             
         case CLEAR_CART:
+            localStorage.setItem('carrito', '');
             return {
                 ...state,
                 carrito: []
             };
+        case SET_CART:
+            const { carritoDefault } = action.payload;
 
+            return {
+                ...state,
+                carrito: carritoDefault
+            }
         default:
             return state;
     }
@@ -88,4 +99,13 @@ export function clearCart() {
     return {
         type: CLEAR_CART
     };
+}
+
+export function setCart(carrito) {
+    return {
+        type: SET_CART,
+        payload: {
+            carritoDefault: carrito
+        }
+    }
 }
