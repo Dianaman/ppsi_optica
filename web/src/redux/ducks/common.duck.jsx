@@ -2,12 +2,14 @@
 const initialState = {
     showLoading: false,
     error: null,
+    success: null,
     modalOpen: false
 };
 
 // Types
 export const SHOW_LOADING = 'common/SHOW_LOADING';
 export const SHOW_ERROR = 'common/SHOW_ERROR';
+export const SHOW_SUCCESS = 'common/SHOW_SUCCESS';
 export const SET_MODAL_OPEN = 'common/SET_MODAL_OPEN';
 
 // Reducer
@@ -27,6 +29,14 @@ export function commonReducer(state = initialState, action) {
                     ...state,
                     showLoading: false,
                     error
+                }
+            case SHOW_SUCCESS:
+                const { success } = action.payload;
+
+                return {
+                    ...state,
+                    showLoading: false,
+                    success
                 }
             case SET_MODAL_OPEN:
                 const { open } = action.payload;
@@ -55,6 +65,15 @@ export function showError(error){
         type: SHOW_ERROR,
         payload: {
             error
+        }        
+    }
+}
+
+export function showSuccess(success){
+    return {
+        type: SHOW_SUCCESS,
+        payload: {
+            success
         }        
     }
 }

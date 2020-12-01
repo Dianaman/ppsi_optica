@@ -10,7 +10,7 @@ import {
 import { Navbar, Nav } from 'react-bootstrap';
 import { Switch, Route, Redirect, NavLink } from 'react-router-dom';
 import { Provider, useDispatch, useSelector } from 'react-redux';
-import { Spinner, Error } from './components/atoms';
+import { Spinner, Error, Success } from './components/atoms';
 import { setActualUser } from './redux/ducks/users.duck';
 import { setCart } from './redux/ducks/carrito.duck';
 
@@ -78,6 +78,7 @@ function App() {
     <div>
       <Spinner />
       <Error />
+      <Success />
       
       <Navbar bg="light" expand="lg">
         <Navbar.Brand href="/">Focus</Navbar.Brand>
