@@ -63,7 +63,7 @@ export function AdmProductoNuevo(props) {
                         <label htmlFor="form.producto.articulo">Artículo</label>
                         <Control.text model="form.producto.articulo" id="form.producto.articulo" 
                         errors={{ required: required }}/>
-                        <Errors
+                        <Errors className="danger"
                             model="form.producto.articulo"
                             messages={{
                                 required: 'Debe ingresar el nombre del artículo.'
@@ -73,7 +73,7 @@ export function AdmProductoNuevo(props) {
                         <label htmlFor="form.producto.descripcion">Descripción</label>
                         <Control.text model="form.producto.descripcion" id="form.producto.descripcion" 
                         errors={{ required: required }}/>
-                        <Errors
+                        <Errors className="danger"
                             model="form.producto.descripcion"
                             messages={{
                                 required: 'Debe ingresar una descripción.'
@@ -94,7 +94,7 @@ export function AdmProductoNuevo(props) {
                         <label htmlFor="form.producto.marca">Marca</label>
                         <Control.text model="form.producto.marca" id="form.producto.marca" 
                         errors={{ required: required }}/>
-                        <Errors
+                        <Errors className="danger"
                             model="form.producto.marca"
                             messages={{
                                 required: 'Debe ingresar la marca del artículo.'
@@ -104,7 +104,7 @@ export function AdmProductoNuevo(props) {
                         <label htmlFor="form.producto.modelo">Modelo</label>
                         <Control.text model="form.producto.modelo" id="form.producto.modelo" 
                         errors={{ required: required }}/>
-                        <Errors
+                        <Errors className="danger"
                             model="form.producto.modelo"
                             messages={{
                                 required: 'Debe ingresar el modelo del artículo.'
@@ -114,7 +114,7 @@ export function AdmProductoNuevo(props) {
                         <label htmlFor="form.producto.stock">Stock</label>
                         <Control.text model="form.producto.stock" id="form.producto.stock" 
                         errors={{ quantityFormat: quantityFormat }}/>
-                        <Errors
+                        <Errors className="danger"
                             model="form.producto.stock"
                             messages={{
                                 quantityFormat: 'Debe ingresar un valor entero mayor o igual a 0'
@@ -124,7 +124,7 @@ export function AdmProductoNuevo(props) {
                         <label htmlFor="form.producto.puntoDeReposicion">Punto de reposición</label>
                         <Control.text model="form.producto.puntoDeReposicion" id="form.producto.puntoDeReposicion" 
                         errors={{ quantityFormat: quantityFormat }}/>
-                        <Errors
+                        <Errors className="danger"
                             model="form.producto.puntoDeReposicion"
                             messages={{
                                 quantityFormat: 'Debe ingresar un valor entero mayor o igual a 0'
@@ -134,7 +134,7 @@ export function AdmProductoNuevo(props) {
                         <label htmlFor="form.producto.stockMaximo">Stock máximo</label>
                         <Control.text model="form.producto.stockMaximo" id="form.producto.stockMaximo" 
                         errors={{ quantityFormat: quantityFormat, stockMaximoMenorMinimo: stockMaximoMenorMinimo}}/>
-                        <Errors
+                        <Errors className="danger"
                             model="form.producto.stockMaximo"
                             messages={{
                                 quantityFormat: 'Debe ingresar un valor entero mayor o igual a 0',
@@ -145,7 +145,7 @@ export function AdmProductoNuevo(props) {
                         <label htmlFor="form.producto.precio">Precio</label>
                         <Control.text model="form.producto.precio" id="form.producto.precio" 
                         errors={{ currencyFormat: currencyFormat }}/>
-                        <Errors
+                        <Errors className="danger"
                             model="form.producto.precio"
                             messages={{
                                 currencyFormat: 'Debe ingresar un valor entero mayor o igual a 0'

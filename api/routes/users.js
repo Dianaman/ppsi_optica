@@ -63,4 +63,18 @@ router.post('/add', (req, res) => {
   });
 });
 
+router.post('/validate', (req, res) => {
+  const {user, email} = req.body;
+  const values = [user, email];
+
+  var sql = "SELECT * FROM users WHERE usuario = ? OR email = ?";
+
+  pool.query(sql, values, (error, result) => {
+    if (error) throw error;
+
+    result && result.length ? res.send(false) : res.send(true);
+  });
+
+});
+
 module.exports = router;

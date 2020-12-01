@@ -1,4 +1,4 @@
-import { fetchApi, setModalOpen } from './common.duck';
+import { fetchApi, setModalOpen, showError } from './common.duck';
 
 // State
 const initial_state = {
@@ -130,5 +130,32 @@ export function setActualUser(user) {
     payload: {
       usuarioActual: user
     }
+  }
+}
+
+export function validateNewUser(user, estado) {
+  return (dispatch, getState) => {
+    const data = {
+      user: user.userName,
+      email: user.email
+    }
+
+    dispatch(fetchApi(
+      process.env.REACT_APP_API_URL + '/users/validate', 
+      {
+          method: 'POST',
+          body: JSON.stringify(data),
+          headers:{
+            'Content-Type': 'application/json'
+          }
+      },
+      (json, url) => {
+        if (json) {
+          dispatch(fetchAddUser(user, estado));
+        } else {
+          dispatch(showError('Usuario o mail existente'));
+        }
+      }
+    ));
   }
 }
