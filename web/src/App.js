@@ -9,26 +9,65 @@ import {
 
 import { Navbar, Nav } from 'react-bootstrap';
 import { Switch, Route, Redirect, NavLink } from 'react-router-dom';
-import { Provider } from 'react-redux';
+import { Provider, useDispatch, useSelector } from 'react-redux';
 import { Spinner } from './components/atoms';
+import { setActualUser } from './redux/ducks/users.duck';
 
 function App() {
-
-  const loggedInUser = JSON.parse(localStorage.getItem("user"));
+  const dispatch = useDispatch();
+  const app = useSelector(state => state);
+  const loggedInUser = app.usuariosReducer.usuarioActual;
 
   useEffect(() => {
-    fetch(process.env.REACT_APP_API_URL + '/users')
-    .then(res => res.json())
-    .then(users => {
-      //console.log('users', users);
-      console.log("loggedInUser: ", loggedInUser);
-    })
-  });
+      const storedUser = JSON.parse(localStorage.getItem("user"));
+      if (storedUser) {
+        dispatch(setActualUser(storedUser));
+      }
+  }, []);
 
   /* TODO: 
   -Hacer diferentes navs por rol
   -Agregarle menú hamburguesa
   */
+
+  function renderRoutes() {
+    if (loggedInUser) {
+      switch(loggedInUser.tipo) {
+        case 'admin':
+          return (
+            <>
+              <Nav.Link as={NavLink} to="/ventas">Ventas</Nav.Link>
+              <Nav.Link as={NavLink} to="/productos">Productos</Nav.Link>
+              <Nav.Link as={NavLink} to="/usuarios">Usuarios</Nav.Link>
+            </>
+          );
+        case 'vendedor':
+          return (
+            <>
+              <Nav.Link as={NavLink} to="/ventas">Ventas</Nav.Link>
+              <Nav.Link as={NavLink} to="/productos">Productos</Nav.Link>
+            </>
+          );
+        case 'cliente':
+        default:
+          return (
+            <>
+              <Nav.Link as={NavLink} to="/">Home</Nav.Link>
+              {false && <Nav.Link as={NavLink} to="/probador">Probador</Nav.Link>}
+              <Nav.Link as={NavLink} to="/mis-pedidos">Mis Pedidos</Nav.Link>
+            </>
+          );
+      }
+    } else {
+      return (
+        <>
+          <Nav.Link as={NavLink} to="/">Home</Nav.Link>
+          {false && <Nav.Link as={NavLink} to="/probador">Probador</Nav.Link>}
+        </>
+      );
+    }
+  }
+
   return (
     <div>
       <Spinner />
@@ -38,17 +77,13 @@ function App() {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="mr-auto">
-            <Nav.Link as={NavLink} to="/">Home</Nav.Link>
-            <Nav.Link as={NavLink} to="/probador">Probador</Nav.Link>
-            <Nav.Link as={NavLink} to="/registrar">Registrar</Nav.Link>
-            <Nav.Link as={NavLink} to="/ventas">Ventas</Nav.Link>
-            <Nav.Link as={NavLink} to="/productos">Productos</Nav.Link>
-            <Nav.Link as={NavLink} to="/usuarios">Usuarios</Nav.Link>
-            <Nav.Link as={NavLink} to="/mis-pedidos">Mis Pedidos</Nav.Link>
-   
+            {
+              renderRoutes()
+            }
           </Nav>
           <Nav>
             <Nav.Link as={NavLink} to="/carrito"><CarritoIcono /></Nav.Link>
+            {!loggedInUser && <Nav.Link as={NavLink} to="/registrar">Registro</Nav.Link>}
             {loggedInUser && <Nav.Link as={NavLink} to="/login">Salir</Nav.Link>}
             {!loggedInUser && <Nav.Link as={NavLink} to="/login">Entrar</Nav.Link>}
           </Nav>

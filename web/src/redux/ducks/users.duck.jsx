@@ -3,12 +3,14 @@ import { fetchApi, setModalOpen } from './common.duck';
 // State
 const initial_state = {
     usuarios: [],
-    usuarioMostrado: null
+    usuarioMostrado: null,
+    usuarioActual: null
 }
 
 // Types
 export const GET_USERS = 'usuarios/GET_USERS';
 export const GET_USER = 'usuarios/GET_USER';
+export const SET_USER = 'usuarios/SET_USER';
 
 // Reducer
 export function usuariosReducer(state = initial_state, action) { 
@@ -27,6 +29,13 @@ export function usuariosReducer(state = initial_state, action) {
                 ...state,
                 usuarioMostrado
             } 
+        case SET_USER:
+            const { usuarioActual } = action.payload;
+
+            return {
+              ...state,
+              usuarioActual
+            }
         default:
             return state;
     }
@@ -112,5 +121,14 @@ export function fetchAddUser(user, estado) {
 export function fetchFinishAddUser(json, url) {
   return (dispatch, getState) => {
     dispatch(fetchGetUsers());
+  }
+}
+
+export function setActualUser(user) {
+  return {
+    type: SET_USER,
+    payload: {
+      usuarioActual: user
+    }
   }
 }

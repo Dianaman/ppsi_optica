@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from "react-router-dom";
 import './Login.css';
+import { setActualUser } from '../../redux/ducks/users.duck';
 //import axios from 'axios';
 
 export default function Login() {
@@ -12,12 +14,15 @@ export default function Login() {
     const [user, setUser] = useState();
     const [invalidUser, setInvalidUser] = useState(false);
 
+    const dispatch = useDispatch();
+
+    const app = useSelector(state => state);
+    const usuarioActual = app.usuariosReducer.usuarioActual;
+
     useEffect(() => {
-        const loggedInUser = JSON.parse(localStorage.getItem("user"));
-        console.log("loggedInUser: ", loggedInUser);
-        if (loggedInUser !== false) {
+        if (usuarioActual) {
             console.log('1');
-            setUser(loggedInUser);
+            setUser(usuarioActual);
         }
     }, []);
 
@@ -39,6 +44,7 @@ export default function Login() {
 
             if(userBack !== false){
                 setUser(userBack);
+                dispatch(setActualUser(userBack));
                 setInvalidUser(false);
                 localStorage.setItem('user', JSON.stringify(userBack));
             }else{
@@ -52,15 +58,16 @@ export default function Login() {
         setUser({});
         setUsername("");
         setPassword("");
+        dispatch(setActualUser(null));
         localStorage.clear();
         history.push("/");
     };
 
-    if (user) {
+    if (usuarioActual) {
         return(
             <div className="login-page">
                 <div className="form">
-                    <div> Bienvenido/a {user.nombre} !</div>
+                    <div> Bienvenido/a {usuarioActual.nombre} !</div>
                     <button onClick={handleLogout}>logout</button>
                 </div>
             </div>            
