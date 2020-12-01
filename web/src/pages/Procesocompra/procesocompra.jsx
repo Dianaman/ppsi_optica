@@ -91,14 +91,9 @@ export const Procesocompra = () => {
                     {cantidad.push(item.quantity)}
                     {precUnit.push(item.producto.precio)}
                     {ind++}
-<<<<<<< Updated upstream
-                </div>
-            )
-=======
                 </div>)
 
 
->>>>>>> Stashed changes
         })
 
         if (!noEnvio) { tipoEnv = "Envio a domicilio" }
