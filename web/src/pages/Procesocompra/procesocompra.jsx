@@ -16,6 +16,7 @@ import Col from 'react-bootstrap/Col';
 import If from 'react-bootstrap';
 import Modal from 'react-bootstrap/Modal';
 import 'bootstrap/dist/css/bootstrap.css';
+import {showLoading, showSuccess}  from  '../../redux/ducks/common.duck';
 import { clearCart } from '../../redux/ducks/carrito.duck';
 
 const preventSubmit = (event) => {
@@ -103,6 +104,8 @@ export const Procesocompra = () => {
         if (mercadoPago) { tipoPago = "Mercado Pago" }
 console.log(tipoPago);
 console.log(direccion);
+
+        dispatch(showLoading(true))
         fetch(process.env.REACT_APP_API_URL + '/compra/add',
             {
                 method: 'POST',
@@ -113,7 +116,11 @@ console.log(direccion);
             }
         )
         .then(res => res.json())
-        .then(() => dispatch(clearCart()))
+        .then(() => {
+            dispatch(showSuccess('Pedido realizado con éxito'));
+            dispatch(clearCart());
+            history.push("/mis-pedidos");
+        })
     }
 
 
