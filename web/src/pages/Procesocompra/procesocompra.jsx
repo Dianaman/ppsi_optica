@@ -55,7 +55,7 @@ export const Procesocompra = () => {
       direccion.CP = CP;
       direccion.localidad = localidad;
       direccion.provincia = provincia;
-      
+  
  
     var total = 0;
     var subtotal = 0;
@@ -75,7 +75,7 @@ export const Procesocompra = () => {
         }
         setValidated(true);
 
-  // event.preventDefault();
+   event.preventDefault();
         let productos = [];
         let cantidad = [];
         let precUnit = [];
@@ -205,7 +205,7 @@ console.log(direccion);
                                 </Form.Group>
 
                                 <Form.Group as={Col} >
-                                    <Form.Control required minlength="8" maxlength="8"  type="number" placeholder="DNI" onChange={(e) => setDni(e.target.value)} value={dni} />
+                                    <Form.Control required minLength="8" maxLength="8"  type="text" placeholder="DNI" onChange={(e) => setDni(e.target.value)} value={dni} />
                                 </Form.Group>
 
                             </Form.Row>
@@ -216,7 +216,7 @@ console.log(direccion);
                                 </Form.Group>
                                 
                                 <Form.Group as={Col} >
-                                    <Form.Control required type="number" minlength="10" maxlength="10" placeholder="Celular" onChange={(e) => setCelular(e.target.value)} value={celular}  />
+                                    <Form.Control required type="text" minLength="10" maxLength="10" placeholder="Celular" onChange={(e) => setCelular(e.target.value)} value={celular}  />
                                 </Form.Group>
 
                             </Form.Row>
@@ -246,11 +246,19 @@ console.log(direccion);
                                                 </Form.Group>
 
                                                 <Form.Group as={Col} >
-                                                    <Form.Control required disabled={noEnvio} type="text" placeholder="Piso/Depto" onChange={(e) => setAltura(e.target.value)} value={altura}/>
+                                                
+                                                   <Form.Control required disabled={noEnvio} type="text" placeholder="Piso/Depto" onChange={(e) => setAltura(e.target.value)} value={altura}/>
                                                 </Form.Group>
 
                                                 <Form.Group as={Col} >
-                                                    <Form.Control required disabled={noEnvio} minlength="4" maxlength="4" isValid={CP === 1676 || CP === 1663} type="text" placeholder="Código Postal" onChange={(e) => setCP(e.target.value)} value={CP} />
+                                                <select disabled={noEnvio} onChange={(e) => setCP(e.target.value)} value={CP} class="form-control" >
+                                                        <option >1676</option>
+                                                        <option>1663</option>
+                                                        <option>1002</option>
+                                                         <option>1004</option>
+                                                    </select>
+                                               
+                                                   {/*  <Form.Control required disabled={noEnvio} minlength="4" maxlength="4" isValid={CP === 1676 || CP === 1663} type="text" placeholder="Código Postal" onChange={(e) => setCP(e.target.value)} value={CP} />*/}
                                                 </Form.Group>
 
                                             </Form.Row>
