@@ -49,9 +49,10 @@ export function MiPedidoDetalle(props) {
                     <p>
                         <div>Fecha de compra: {new Date(miPedidoMostrado.fechaCreacion).toLocaleDateString()}</div>
                         <div>Estado: {miPedidoMostrado.estado}</div>
-                        <div>Última actualización: {new Date(miPedidoMostrado.fechaUltimaActualizacion).toLocaleDateString()}</div>
-                        <div>Estado de pago: {miPedidoMostrado.estadoFactura} </div>
+                        {/* <div>Última actualización: {new Date(miPedidoMostrado.fechaUltimaActualizacion).toLocaleDateString()}</div> */}
+                        {/* <div>Estado de pago: {miPedidoMostrado.estadoFactura} </div> */}
                         <div>Tipo de pago: {miPedidoMostrado.tipoPago}</div>
+                        <div>Monto Total: ${miPedidoMostrado.monto}</div>
                     </p>
 
                     <hr />
@@ -78,11 +79,11 @@ export function MiPedidoDetalle(props) {
                                         }/>
                                     </div>
 
-                                    <div>{detalle.idProducto}</div>
+                                    {/* <div>{detalle.idProducto}</div> */}
                                     <div>{detalle.nombre}</div>
                                     <div>$ {detalle.precioUnitario || 0}</div>
                                     <div> {detalle.cantidad}</div>
-                                    <div>$ {detalle.precioTotal || 0}</div>
+                                    <div>$ {(detalle.precioUnitario * detalle.cantidad) || 0}</div>
                                 </div>
                             );
                         })

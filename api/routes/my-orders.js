@@ -20,10 +20,12 @@ router.get('/:userId/:orderId', (request, response) => {
     const userId = request.params.userId;
     const orderId = request.params.orderId;
 
-    let query = 'SELECT dp.*, p.*, df.* FROM detallePedidos as dp ';
-    query += 'LEFT JOIN detalleFactura as df ON dp.idDetalleFactura = df.idDetalleFactura ';
-    query += 'LEFT JOIN productos as p ON dp.idProducto = p.idProducto ';
-    query += 'WHERE dp.idPedido = '+ orderId;
+    // let query = 'SELECT dp.*, p.*, df.* FROM detallePedidos as dp ';
+    // query += 'LEFT JOIN detalleFactura as df ON dp.idDetalleFactura = df.idDetalleFactura ';
+    // query += 'LEFT JOIN productos as p ON dp.idProducto = p.idProducto ';
+    // query += 'WHERE dp.idPedido = '+ orderId;
+
+    let query = 'SELECT dp.*, p.* FROM detallePedidos as dp INNER JOIN productos as p ON dp.idProducto = p.idProducto WHERE idPedido = ' + orderId;
 
     pool.query(query, (error, result) => {
         if (error) throw error;
