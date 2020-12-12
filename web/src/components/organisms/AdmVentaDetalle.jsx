@@ -19,9 +19,9 @@ export function AdmVentaDetalle(props) {
 
     const user = JSON.parse(localStorage.getItem('user'));
 
-    function renderBotones(estado) {
+    function renderBotones(venta) {
 
-        switch(estado) {
+        switch(venta.estado) {
             case 'pendiente':
                 return (
                     <>
@@ -39,7 +39,14 @@ export function AdmVentaDetalle(props) {
             case 'aprobado':
                 return (
                     <>
-                        <Button variant="success" onClick={()=>cambiarEstado('enviando')}>Enviar</Button>
+                        {venta.tipoEnvio === 'Envio a domicilio' && <Button variant="success" onClick={()=>cambiarEstado('enviando')}>Enviar</Button>}
+                        {venta.tipoEnvio === 'Retiro en sucursal' && <Button variant="success" onClick={()=>cambiarEstado('en sucursal')}>En sucursal</Button>}
+                    </>
+                );
+            case 'en sucursal':
+                return (
+                    <>
+                        <Button variant="success" onClick={()=>cambiarEstado('entregado')}>Entregado</Button>
                     </>
                 );
             case 'enviando':
@@ -49,6 +56,7 @@ export function AdmVentaDetalle(props) {
                     </>
                 );
             case 'enviado':
+            case 'entregado':
                 return (
                     <>
                     {
@@ -121,7 +129,7 @@ export function AdmVentaDetalle(props) {
                 </Modal.Body>
                 <Modal.Footer>
                     {
-                        renderBotones(ventaMostrada.estado)
+                        renderBotones(ventaMostrada)
                     }
                 </Modal.Footer>
             </Modal>
