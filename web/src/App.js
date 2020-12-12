@@ -39,6 +39,7 @@ function App() {
   function renderRoutes() {
     if (loggedInUser) {
       switch(loggedInUser.tipo) {
+        case 'superadmin':
         case 'admin':
           return (
             <>

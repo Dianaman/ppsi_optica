@@ -7,18 +7,48 @@ import { validateNewUser } from '../../redux/ducks/users.duck';
 
 export function AdmUsuarioNuevo(props) {
     const app = useSelector(state => state);
-    
+    const {usuarioActual} = app.usuariosReducer;
+
     const dispatch = useDispatch();
 
-    const tipos = [
-        'cliente',
-        'vendedor',
-        'admin'
-    ];
+    let tipos;
+
+    function showTipos() {
+        if (usuarioActual) {
+            switch(usuarioActual.tipo) {
+                case 'admin':
+                    tipos = [
+                        'cliente',
+                        'vendedor'
+                    ];
+                    break;
+                case 'superadmin':
+                    tipos = [
+                        'cliente',
+                        'vendedor',
+                        'admin'
+                    ]
+                    break;
+                default:
+                    tipos = [];
+            }
+        }
+
+        return (
+            tipos && tipos.map((tipo, index) => {
+                return (
+                    <option value={tipo} key={tipo}>
+                        {tipo}
+                    </option>
+                );
+            })
+        );
+    };
+
 
     function handleSubmit() {
         const user = app.user;
-        dispatch(validateNewUser(user, 'activo'));
+        dispatch(validateNewUser(user));
     }
 
     function required(val) {
@@ -93,13 +123,7 @@ export function AdmUsuarioNuevo(props) {
 
                         <label htmlFor="form.user.tipo">Tipo</label>
                         <Control.select model="form.user.tipo" id="form.user.tipo">
-                            {tipos.map((tipo, index) => {
-                                return (
-                                    <option value={tipo} key={tipo}>
-                                        {tipo}
-                                    </option>
-                                );
-                            }) }
+                            {showTipos()}
                         </Control.select><br/>
 
 

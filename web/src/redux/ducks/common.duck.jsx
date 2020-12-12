@@ -107,7 +107,10 @@ export function fetchApiInner(url, options, callback) {
             dispatch(showLoading(false))
             callback(json, url)
         })
-        .catch(error => dispatch(showError(error)))
+        .catch(error => {
+            console.error('error');
+            dispatch(showError(error));
+        });
     }
 }
 

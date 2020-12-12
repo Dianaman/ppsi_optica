@@ -52,7 +52,7 @@ export function AdmVentaDetalle(props) {
                 return (
                     <>
                     {
-                        user.tipo === 'admin' && <Button variant="success" onClick={()=>cambiarEstado('cerrado')}>Finalizar venta</Button>
+                        (user.tipo === 'admin' || user.tipo === 'superadmin') && <Button variant="success" onClick={()=>cambiarEstado('cerrado')}>Finalizar venta</Button>
                     }
                     </>
                 );

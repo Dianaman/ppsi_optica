@@ -92,8 +92,7 @@ class Registrar extends React.Component {
 
   handleSubmit(user) {
       const body = {
-        user,
-        estado: 'pendiente'
+        user
       }
 
       if(this.validarForm()){

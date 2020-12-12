@@ -4,12 +4,21 @@ const pool = require('../config');
 
 /* GET users listing. */
 router.get('/', (request, response) => {
-  pool.query('SELECT * FROM users', (error, result) => {
+  pool.query('SELECT * FROM users WHERE tipo != "admin" AND tipo != "superadmin"', (error, result) => {
       if (error) throw error;
 
       response.send(result);
   });
 });
+
+router.get('/all', (request, response) => {
+  pool.query('SELECT * FROM users WHERE tipo != "superadmin"', (error, result) => {
+      if (error) throw error;
+
+      response.send(result);
+  });
+});
+
 
 router.get('/:id', (req, res) => {
   const id = req.params.id;
@@ -39,7 +48,7 @@ router.post('/add', (req, res) => {
 
   var sql = "";
 
-  const { user, estado } = req.body;
+  const { user } = req.body;
 
   // Consultamos si el usuario ya existe.
   sql = `SELECT * FROM users WHERE usuario='${user.userName}'`;
@@ -49,7 +58,7 @@ router.post('/add', (req, res) => {
     // Si el usuario no existe AGREGAMOS NUEVO USUARIO
     if(result[0] == null){
       sql = 'INSERT INTO users (nombre, apellido, tipo, email, clave, usuario, fechaRegistro, estado)';
-      sql += `VALUES ("${user.firstName}", "${user.lastName}", "${user.tipo}", "${user.email}", "${user.password}", "${user.userName}", CURRENT_TIMESTAMP, "${estado}")`;
+      sql += `VALUES ("${user.firstName}", "${user.lastName}", "${user.tipo}", "${user.email}", "${user.password}", "${user.userName}", CURRENT_TIMESTAMP, "activo")`;
       pool.query(sql, (error, result) => {
         if (error) throw error;
     
@@ -75,6 +84,19 @@ router.post('/validate', (req, res) => {
     result && result.length ? res.send(false) : res.send(true);
   });
 
+});
+
+router.put('/state', (req, res) => {
+  const {user, estado} = req.body;
+  const values = [estado, user.id];
+
+  var sql = "UPDATE users SET estado = ? WHERE id = ?";
+
+  pool.query(sql, values, (error, result) => {
+    if (error) throw error;
+
+    res.send(result);
+  });
 });
 
 module.exports = router;

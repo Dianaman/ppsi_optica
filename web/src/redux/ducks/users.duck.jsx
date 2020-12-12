@@ -45,8 +45,13 @@ export function usuariosReducer(state = initial_state, action) {
 
 export function fetchGetUsers() {
     return (dispatch, getState) => {
+      const usuarioActual = getState().usuariosReducer.usuarioActual;
+
+      if (usuarioActual && (usuarioActual.tipo == 'superadmin' || usuarioActual.tipo == 'admin')) {
+        const showAdmins = usuarioActual.tipo === 'superadmin';
+
         dispatch(fetchApi(
-            process.env.REACT_APP_API_URL + '/users', 
+            process.env.REACT_APP_API_URL + '/users' + (showAdmins ? '/all' : ''), 
             {
                 method: 'GET',
                 headers:{
@@ -55,6 +60,7 @@ export function fetchGetUsers() {
             },
             (json, url) => dispatch(fetchFinishGetUsers(json, url))
         ));
+      }
     }
 }
 
@@ -92,13 +98,10 @@ export function fetchFinishGetUser(json, url) {
   }
 }
 
-export function fetchAddUser(user, estado) {
+export function fetchAddUser(user) {
   return (dispatch, getState) => {
-      console.log('user', user);
-
       const data = {
-        user,
-        estado
+        user
       }
 
     dispatch(fetchApi(
@@ -133,7 +136,7 @@ export function setActualUser(user) {
   }
 }
 
-export function validateNewUser(user, estado) {
+export function validateNewUser(user) {
   return (dispatch, getState) => {
     const data = {
       user: user.userName,
@@ -151,10 +154,34 @@ export function validateNewUser(user, estado) {
       },
       (json, url) => {
         if (json) {
-          dispatch(fetchAddUser(user, estado));
+          dispatch(fetchAddUser(user));
         } else {
           dispatch(showError('Usuario o mail existente'));
         }
+      }
+    ));
+  }
+}
+
+export function fetchChangeStatusUser(user, estado) {
+  return (dispatch, getState) => {
+
+    const data = {
+      user,
+      estado
+    }
+
+    dispatch(fetchApi(
+      process.env.REACT_APP_API_URL + '/users/state', 
+      {
+          method: 'PUT',
+          body: JSON.stringify(data),
+          headers:{
+            'Content-Type': 'application/json'
+          }
+      },
+      (json, url) => {
+        dispatch(fetchGetUsers())
       }
     ));
   }
