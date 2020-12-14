@@ -25,10 +25,20 @@ router.get('/:userId/:orderId', (request, response) => {
     // query += 'LEFT JOIN productos as p ON dp.idProducto = p.idProducto ';
     // query += 'WHERE dp.idPedido = '+ orderId;
 
-    let query = 'SELECT dp.*, p.* FROM detallePedidos as dp INNER JOIN productos as p ON dp.idProducto = p.idProducto WHERE idPedido = ' + orderId;
+    let query = 'SELECT dp.*, p.*, f.* FROM detallePedidos as dp ';
+    query += 'INNER JOIN productos as p ON dp.idProducto = p.idProducto ';
+    query += 'LEFT JOIN facturas as f ON dp.idPedido = f.idPedido ';
+    //query += 'INNER JOIN pedidos as ped ON dp.idPedido = ped.idPedido ';
+    //query += 'INNER JOIN tarjetas as t ON ped.idUsuario = t.idUsuario ';
+    query += 'WHERE dp.idPedido = ' + orderId;
 
     pool.query(query, (error, result) => {
         if (error) throw error;
+
+        console.log("query: ");
+        console.log(query);
+        console.log("result: ");
+        console.log(result);
   
         response.send(result);
     });
