@@ -73,6 +73,22 @@ export function ProductoDetalle(props) {
     dispatch(setExtra(selectedList));
   }
 
+  function mostrarBotonAgregar() {
+    if (productoMostrado.stock > 0) {
+      return (
+        <Form.Group as={Col} md="2">
+          <Button variant="info" onClick={() => agregarAlCarrito()}>Agregar</Button>
+        </Form.Group>                
+      );
+    } else {
+      return (
+        <Form.Group as={Col} md="3">
+          <div className="spaced">Producto sin stock</div>
+        </Form.Group>
+      );
+    }
+  }
+
   return (
     <>
       {productoMostrado && <Modal
@@ -128,16 +144,16 @@ export function ProductoDetalle(props) {
 
 
               <Row className="flex-row justify-end">
-                <Form.Group as={Col} md="2">
+                <Form.Group as={Col} md="4">
                 {
                   productoMostrado.idCategoria === 3 &&
-                    <Form.Control type="number" defaultValue={cantidad} onChange={changeCantidad} style={{'width':'50px'}}/>
-                  
+                    <div className="flex-row">
+                      <Form.Control type="number" defaultValue={cantidad} max={productoMostrado.stock} onChange={changeCantidad} style={{'width':'50px'}}/>
+                      <div className="spaced">{productoMostrado.stock} disponibles</div>
+                    </div>
                 }
                 </Form.Group>
-                <Form.Group as={Col} md="2">
-                  <Button variant="info" onClick={() => agregarAlCarrito()}>Agregar</Button>
-                </Form.Group>                
+                {mostrarBotonAgregar()}   
               </Row>
 
             </Form>

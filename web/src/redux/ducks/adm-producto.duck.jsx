@@ -5,7 +5,8 @@ const initial_state = {
     productos: [],
     productoParaVer: {},
     addProduct: false,
-    modificandoPrecio: false
+    modificandoPrecio: false,
+    modificandoStock: false
 }
 
 // Types
@@ -18,6 +19,7 @@ export const REMOVE_PRODUCT = 'adm_producto/REMOVE_PRODUCT';
 export const SEE_ADM_PRODUCT = 'adm_producto/SEE_PRODUCT';
 export const EDITING_PRICE_PRODUCT = 'adm_producto/EDITING_PRICE_PRODUCT';
 export const SHOW_ADD_PRODUCT = 'adm_producto/SHOW_ADD_PRODUCT';
+export const EDITING_STOCK_PRODUCT = 'adm_producto/EDITING_STOCK_PRODUCT';
 
 // Reducer
 export function admProductoReducer(state = initial_state, action) { 
@@ -80,6 +82,13 @@ export function admProductoReducer(state = initial_state, action) {
             return {
                 ...state,
                 modificandoPrecio: editingPrice
+            }
+        case EDITING_STOCK_PRODUCT:
+            const {editingStock} = action.payload;
+
+            return {
+                ...state,
+                modificandoStock: editingStock
             }
         default:
             return state;
@@ -165,6 +174,15 @@ export function editPrice(priceProdId, newPrice) {
                 dispatch(fetchGetProducts())
             }
         ));
+    }
+}
+
+export function switchEditingStock(modificando) {
+    return {
+        type: EDITING_STOCK_PRODUCT,
+        payload: {
+            editingStock: modificando
+        }
     }
 }
 
