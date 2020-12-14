@@ -9,7 +9,7 @@ import Image from 'react-bootstrap/Image';
 import { addToCart, setExtra } from '../../redux/ducks/carrito.duck';
 import { ImageUploader } from './images/ImageUploader';
 import { clearImages } from '../../redux/ducks/files.duck';
-import { setModalOpen } from '../../redux/ducks/common.duck';
+import { setModalOpen, showSuccess } from '../../redux/ducks/common.duck';
 import { Multiselect } from 'multiselect-react-dropdown';
 
 export function ProductoDetalle(props) {
@@ -61,6 +61,7 @@ export function ProductoDetalle(props) {
     }
 
     dispatch(addToCart(productoMostrado.idProducto, cantidad, productoMostrado, productoAgregar));
+    dispatch(showSuccess('El producto fue agregado al carrito.'))
     dispatch(setModalOpen(false));
 
   }

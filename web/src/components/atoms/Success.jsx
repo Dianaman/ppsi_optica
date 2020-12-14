@@ -32,7 +32,7 @@ export function Success() {
                 
             }}>
                 <div style={{
-                    'backgroundColor': '#7AFF33',
+                    'backgroundColor': '#76b852',
                     'color': 'white',
                     'width': '500px',
                     'height': '100px',

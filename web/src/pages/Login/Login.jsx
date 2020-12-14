@@ -4,6 +4,7 @@ import { useHistory } from "react-router-dom";
 import './Login.css';
 import { setActualUser } from '../../redux/ducks/users.duck';
 import { clearCart } from '../../redux/ducks/carrito.duck';
+import { showError, showLoading } from '../../redux/ducks/common.duck';
 
 export default function Login() {
 
@@ -26,31 +27,41 @@ export default function Login() {
         }
     }, []);
 
-    function mensajeEnviado() {
+    /*function mensajeEnviado() {
 
         if (invalidUser === true){
             return {
                 __html: '<div class="alert alert-danger mt-3" role="alert">Usuario y/o contraseña invalidos!</div>'
             };
         }
-    };
+    };*/
 
     const handleSubmit = (e) => {
+        dispatch(showLoading(true));
         e.preventDefault();
 
         fetch(process.env.REACT_APP_API_URL + '/users/byUsername/' + username + '/' + password)
         .then(res => res.json())
         .then(userBack => {
-
-            if(userBack !== false){
+            console.log(userBack);
+            if(userBack !== false && userBack.estado === 'activo'){
                 setUser(userBack);
                 dispatch(setActualUser(userBack));
                 setInvalidUser(false);
                 localStorage.setItem('user', JSON.stringify(userBack));
-            }else{
+                dispatch(showLoading(false));
+            } else if(userBack !== false && userBack.estado === 'bloqueado') {
                 localStorage.setItem('user', false);
                 setInvalidUser(true);
+                dispatch(showLoading(false));
+                dispatch(showError('El usuario se encuentra bloqueado por el administrador.'));
+            } else{
+                localStorage.setItem('user', false);
+                setInvalidUser(true);
+                dispatch(showLoading(false));
+                dispatch(showError('Usuario y/o contraseña invalidos!'));
             }
+
         })
     };
 
@@ -84,7 +95,6 @@ export default function Login() {
                 <button>Iniciar</button>
                 <p className="message">Nuevo usuario? <a href="/registrar">Crear cuenta</a></p>
                 </form>
-                <div className="msgok" dangerouslySetInnerHTML={mensajeEnviado()} /> 
             </div>
         </div>
     );    
