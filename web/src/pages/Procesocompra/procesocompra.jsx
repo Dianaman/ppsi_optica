@@ -40,7 +40,8 @@ export const Procesocompra = () => {
     direccion.CP = CP;
     direccion.localidad = localidad;
     direccion.provincia = provincia;
-
+    dni = loggedInUser["dni"];
+    celular = loggedInUser["celular"];
 
 
     let [ver2, setVer2] = useState({});
@@ -271,6 +272,7 @@ export const Procesocompra = () => {
         setTarjCreb(false);
         setMercadoPago(false);
         traerTarjDeb();
+        setTarNueva(true);
         setIdTarjeta(999999999);
 
     }
@@ -281,6 +283,7 @@ export const Procesocompra = () => {
         setTarjCreb(true);
         setMercadoPago(false);
         traerTarjCred();
+        setTarNueva(true);
         setIdTarjeta(999999999);
 
     }
@@ -288,6 +291,7 @@ export const Procesocompra = () => {
         setTarjDeb(false);
         setTarjCreb(false);
         setMercadoPago(true);
+        setTarNueva(true);
         setIdTarjeta(0);
         
     }
@@ -390,7 +394,6 @@ export const Procesocompra = () => {
                                                     {verDir && verDir.map((item) => {
 
                                                         return (
-
                                                             <option value={item.id}>{item.calleAltura}, {item.ciudad}</option>
                                                         )
                                                     })
