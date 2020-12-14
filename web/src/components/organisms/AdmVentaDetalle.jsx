@@ -90,6 +90,7 @@ export function AdmVentaDetalle(props) {
                         <div>Última actualización: {new Date(ventaMostrada.fechaUltimaActualizacion).toLocaleDateString()}</div>
                         <div>Estado de pago: {ventaMostrada.estadoFactura} </div>
                         <div>Tipo de pago: {ventaMostrada.tipoPago}</div>
+                        <div>Monto total: $ {ventaMostrada.monto}</div>
                     </p>
 
                     <hr />
@@ -120,7 +121,7 @@ export function AdmVentaDetalle(props) {
                                     <div>{detalle.nombre}</div>
                                     <div>$ {detalle.precioUnitario || 0}</div>
                                     <div> {detalle.cantidad}</div>
-                                    <div>$ {detalle.precioTotal || 0}</div>
+                                    <div>$ {detalle.precioTotal || detalle.precioUnitario * detalle.cantidad}</div>
                                 </div>
                             );
                         })
