@@ -2,13 +2,7 @@ var express = require('express');
 var router = express.Router();
 const pool = require('../config');
 
-router.get('/', (request, response) => {
-  pool.query('SELECT * FROM categorias', (error, result) => {
-      if (error) throw error;
 
-      response.send(result);
-  });
-});
 
 router.get('/:id', (request, response) => {
     const id = request.params.id;
@@ -50,5 +44,13 @@ router.post('/', (req, res) => {
     res.send(result);
     });
 });
+
+router.get('/', (request, response) => {
+    pool.query('SELECT * FROM categorias', (error, result) => {
+        if (error) throw error;
+  
+        response.send(result);
+    });
+  });
 
 module.exports = router;

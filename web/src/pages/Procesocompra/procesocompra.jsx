@@ -7,7 +7,6 @@ import { Pago } from './Pago';
 import { Confirmarcompra } from './Confirmarcompra';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from "react-router-dom";
-
 import Button from 'react-bootstrap/Button';
 import ModalHeader from 'react-bootstrap/ModalHeader';
 import ModalBody from 'react-bootstrap/ModalBody';
@@ -16,8 +15,9 @@ import Col from 'react-bootstrap/Col';
 import If from 'react-bootstrap';
 import Modal from 'react-bootstrap/Modal';
 import 'bootstrap/dist/css/bootstrap.css';
-import {showLoading, showSuccess}  from  '../../redux/ducks/common.duck';
+import { showLoading, showSuccess } from '../../redux/ducks/common.duck';
 import { clearCart } from '../../redux/ducks/carrito.duck';
+import { Control } from 'react-redux-form';
 
 const preventSubmit = (event) => {
     event.preventDefault();
@@ -30,61 +30,63 @@ const handleChange = (event) => {
     // dispatch(addToCart(item.id, nuevaCantidad, {}));
 }
 
-
+let ver = [];
+let verDir = [];
+let verTarjetas = [];
 
 export const Procesocompra = () => {
-    const dispatch = useDispatch();
 
+    // definicion de variables
+    const dispatch = useDispatch();
     const app = useSelector(state => state);
     const { carrito } = app.carritoReducer;
     const [costoenvio, setcostoenvio] = useState(false);
     const loggedInUser = JSON.parse(localStorage.getItem("user"));
     const nomyape = loggedInUser["nombre"] + ' ' + loggedInUser["apellido"];
     const email = loggedInUser["email"];
-
     let [dni, setDni] = useState('');
     let [celular, setCelular] = useState('');
-   
     let [calle, setCalle] = useState('');
     let [altura, setAltura] = useState('');
     let [CP, setCP] = useState('');
-    let [localidad, setLocalidad] = useState(""); 
+    let [localidad, setLocalidad] = useState("");
     let [provincia, setProvincia] = useState("");
     let direccion = new Object();
-      direccion.calle = calle;
-      direccion.altura = altura;
-      direccion.CP = CP;
-      direccion.localidad = localidad;
-      direccion.provincia = provincia;
-  
- 
+    direccion.calle = calle;
+    direccion.altura = altura;
+    direccion.CP = CP;
+    direccion.localidad = localidad;
+    direccion.provincia = provincia;
+
+
+
+    let [ver2, setVer2] = useState({});
     var total = 0;
     var subtotal = 0;
     let history = useHistory();
     const [validated, setValidated] = useState(false);
 
 
-
-
+    //handleSubmit. Realiza el alta de la compra en la BD
     const handleSubmit = (event, item) => {
-     
-
         const form = event.currentTarget;
         if (form.checkValidity() === false) {
-          event.preventDefault();
-          event.stopPropagation();
+            event.preventDefault();
+            event.stopPropagation();
         }
         setValidated(true);
 
-   event.preventDefault();
+        event.preventDefault();
         let productos = [];
         let cantidad = [];
         let precUnit = [];
+
+
         let ind = 0;
         let tipoEnv = "";
-         let tipoPago = "";
-         
+        let tipoPago = "";
 
+        //**en este parrafo me traigo los datos por producto seleccionado
         carrito && carrito.map((item) => {
             return (
                 <div className="col-descripcion">
@@ -93,37 +95,37 @@ export const Procesocompra = () => {
                     {precUnit.push(item.producto.precio)}
                     {ind++}
                 </div>)
-
-
         })
-
+        //**tomo el tipo de envio/retiro y el tipo de pago seleccionado
         if (!noEnvio) { tipoEnv = "Envio a domicilio" }
         if (!noRetiro) { tipoEnv = "Retiro en sucursal" }
         if (tarjDeb) { tipoPago = "Tarjeta de débito" }
         if (tarjCred) { tipoPago = "Tarjeta de crédito" }
         if (mercadoPago) { tipoPago = "Mercado Pago" }
-console.log(tipoPago);
-console.log(direccion);
+        console.log('datos tarjetas', tarjeta)
+        console.log('idDire:', idDire)
+
+
 
         dispatch(showLoading(true))
         fetch(process.env.REACT_APP_API_URL + '/compra/add',
             {
                 method: 'POST',
-                body: JSON.stringify({ idusuario: loggedInUser["id"], idproductos: productos, precioUnitario: precUnit, cantprod: cantidad, tipoEnvio: tipoEnv, monto: total, TipoPago: tipoPago, dir: direccion }),
+                body: JSON.stringify({ idusuario: loggedInUser["id"], idproductos: productos, precioUnitario: precUnit, cantprod: cantidad, tipoEnvio: tipoEnv, monto: total, TipoPago: tipoPago, dir: direccion, idDireccion: idDire, idTarj: idTarjeta, Tarjeta: tarjeta}),
                 headers: {
                     'Content-Type': 'application/json'
                 }
             }
         )
-        .then(res => res.json())
-        .then(() => {
-            dispatch(showSuccess('Pedido realizado con éxito'));
-            dispatch(clearCart());
-            history.push("/mis-pedidos");
-        })
+            .then(res => res.json())
+            .then(() => {
+                dispatch(showSuccess('Pedido realizado con éxito'));
+                dispatch(clearCart());
+                history.push("/mis-pedidos");
+            })
     }
 
-
+    //trae el precio del envio por CP
     const calcularEnvio = (event, item) => {
         event.preventDefault();
         fetch(process.env.REACT_APP_API_URL + '/compra/' + `${CP}`,
@@ -142,58 +144,183 @@ console.log(direccion);
             })
     }
 
+    //trae todos los CPs
+    const traerCpes = () => {
+        fetch(process.env.REACT_APP_API_URL + '/compra/envio',
+            {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }
+        )
+            .then(res => res.json())
+            .then(listacps => {
+                ver = listacps;
+                setVer2(ver);
+                console.log('ver', ver[0]);
+                console.log('ver2', ver2);
+                console.log(listacps[0].codigoPostal);
+            })
+    }
+    //trae direcciones por usuario
+    const traerDirUsu = () => {
+        fetch(process.env.REACT_APP_API_URL + '/direcciones/' + `${loggedInUser["id"]}`,
 
-    function Cancelar() {
-        history.push("/")
+            {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }
+        )
+            .then(res => res.json())
+            .then(listaDir => {
+                verDir = listaDir;
+                console.log('verDir', verDir);
+            })
     }
 
 
-    const [show, setShow] = useState(false);
-    const handleShow = () => 
-    { if (validated)
-    setShow(true);}
-    const handleClose = () => {
-        setShow(false);
-        Cancelar();
+
+    //traer tarjetas por usuario
+    const traerTarjUsu = () => {
+        fetch(process.env.REACT_APP_API_URL + '/tarjetas/' + `${loggedInUser["id"]}`,
+            {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }
+        )
+            .then(res => res.json())
+            .then(listaTarjetas => {
+                verTarjetas = listaTarjetas;
+                console.log('verTarjetas: ', verTarjetas)
+            })
     }
 
+
+    //**** DATOS ENVIO *******/
+
+    //para manejar la vista al seleccionar envio o retiro 
+    const [dirNueva, setDirNueva] = useState(true);
     const [noEnvio, setNoEnvio] = useState(true);
     const [noRetiro, setNoRetiro] = useState(false);
+    let [accionBtnEnvio, setaccionBtnEnvio] = useState("Seleccionar de mis direcciones");
+    let [idDire, setIdDire] = useState(0);
+
     const handleNoEnvio = () => {
         setNoEnvio(false);
         setNoRetiro(true);
-       
+      //  setIdDire(0);
+        traerCpes();
+        traerDirUsu();
     }
 
     const handleNoRetiro = () => {
         setNoEnvio(true);
         setNoRetiro(false);
-         setcostoenvio(0);
+        setcostoenvio(0);
+        setIdDire(0);
     }
 
-    const [tarjDeb, setTarjDeb] = useState(true);
+    const buscarDirecciones = () => {
+        if (dirNueva) {
+            console.log('id dire', idDire)
+            setDirNueva(false);
+            setaccionBtnEnvio("Cargar una dirección nueva");
+
+        }
+        else {
+            setDirNueva(true);
+            setaccionBtnEnvio("Ver mis direcciones");
+            setIdDire(999999999);
+            console.log('id dire no ', idDire)
+        }
+
+    }
+
+    //**** MEDIO DE PAGO *******/
+
+    //para definir el tipo de pago seleccionado
+    const [tarjDeb, setTarjDeb] = useState(false);
     const [tarjCred, setTarjCreb] = useState(false);
-    const [mercadoPago, setMercadoPago] = useState(false);
+    const [mercadoPago, setMercadoPago] = useState(true);
+
+    let [btnTarjetas, setBtnTarjetas] = useState("Seleccionar de mis tarjetas");
+    let [nroTarjeta, setNroTarjeta] = useState("");
+    let [titular, setTitular] = useState("");
+    let [fechaVto, setFechaVto] = useState("");
+    let [idTarjeta, setIdTarjeta] = useState(0);
+    const [tarNueva, setTarNueva] = useState(true);
+
+    let tarjeta = new Object();
+    tarjeta.nroTarjeta = nroTarjeta;
+    tarjeta.titular = titular;
+    tarjeta.fechaVto = fechaVto;
+
     const handleTD = () => {
+        //setIdTarjeta(0);
         setTarjDeb(true);
         setTarjCreb(false);
         setMercadoPago(false);
+        traerTarjUsu();
+
+
     }
 
     const handleTC = () => {
+    //    setIdTarjeta(0);
         setTarjDeb(false);
         setTarjCreb(true);
         setMercadoPago(false);
+        traerTarjUsu();
+      
     }
     const handleMC = () => {
         setTarjDeb(false);
         setTarjCreb(false);
         setMercadoPago(true);
+        setIdTarjeta(0);
+    }
+
+    const buscarTarjetas = () => {
+        if (tarNueva) {
+           // console.log('id dire', idDire)
+           setTarNueva(false);
+            setBtnTarjetas("Cargar una tarjeta nueva");
+
+        }
+        else {
+            setTarNueva(true);
+            setBtnTarjetas("Ver mis tarjetas");
+            setIdTarjeta(999999999);
+          //  console.log('id dire no ', idDire)
+        }
+
+    }
+
+    //**** CIERRE DE COMPRA *******/
+
+    //boton cancelar transaccion. Vuelve al inicio
+    function Cancelar() {
+        history.push("/")
+    }
+
+    //para manejar el mensaje de compra exitosa 
+    const [show, setShow] = useState(false);
+    const handleShow = () => {
+        if (validated)
+            setShow(true);
+    }
+    const handleClose = () => {
+        setShow(false);
+        Cancelar();
     }
 
 
-
-
+    //**** FRONT DE PROCESO DE COMPRA *******/
     return (
 
         <div className="row" style={{ margin: '10px' }}>
@@ -212,7 +339,7 @@ console.log(direccion);
                                 </Form.Group>
 
                                 <Form.Group as={Col} >
-                                    <Form.Control required minLength="8" maxLength="8"  type="text" placeholder="DNI" onChange={(e) => setDni(e.target.value)} value={dni} />
+                                    <Form.Control required minLength="8" maxLength="8" type="text" placeholder="DNI" onChange={(e) => setDni(e.target.value)} value={dni} />
                                 </Form.Group>
 
                             </Form.Row>
@@ -221,14 +348,14 @@ console.log(direccion);
                                 <Form.Group as={Col} >
                                     <Form.Control disabled="true" type="email" placeholder="Correo Electrónico" value={email} />
                                 </Form.Group>
-                                
+
                                 <Form.Group as={Col} >
-                                    <Form.Control required type="text" minLength="10" maxLength="10" placeholder="Celular" onChange={(e) => setCelular(e.target.value)} value={celular}  />
+                                    <Form.Control required type="text" minLength="10" maxLength="10" placeholder="Celular" onChange={(e) => setCelular(e.target.value)} value={celular} />
                                 </Form.Group>
 
                             </Form.Row>
 
- 
+
                             <label class="font-weight-bold" style={{ margin: '10px' }}>Elegir forma de envío:</label>
                             <div class="card horizontal">
                                 <Form onSubmit={preventSubmit}>
@@ -244,58 +371,88 @@ console.log(direccion);
                             </div>
                             <div className="container" style={{ width: '30rem', backgroundColor: '#eceef0', width: 'auto' }}>
                                 <ul className="list-group" >
-                                    <label class="font-weight-bold" style={{ margin: '10px' }}>Envío a domicilio:</label>
-                                    <div class="card horizontal">
-                                        <Form onSubmit={preventSubmit}>
-                                            <Form.Row style={{ margin: '15px' }}>
-                                                <Form.Group as={Col} >
-                                                    <Form.Control required disabled={noEnvio} type="text" placeholder="Calle y altura" onChange={(e) => setCalle(e.target.value)} value={calle} />
-                                                </Form.Group>
 
-                                                <Form.Group as={Col} >
-                                                
-                                                   <Form.Control required disabled={noEnvio} type="text" placeholder="Piso/Depto" onChange={(e) => setAltura(e.target.value)} value={altura}/>
-                                                </Form.Group>
+                                    {!noEnvio && <div class="card horizontal">
+                                        <label class="font-weight-bold" style={{ margin: '10px' }}>Envío a domicilio:</label>
 
-                                                <Form.Group as={Col} >
+                                        <Form.Row style={{ margin: '15px' }}><Button variant="info" onClick={buscarDirecciones} >{accionBtnEnvio}</Button>  </Form.Row>
+                                        <Form.Row style={{ margin: '15px' }}>
+                                            {!dirNueva && <Form.Group as={Col}>
+
+                                                <select disabled={noEnvio} onChange={(e) => setIdDire(e.target.value)} value={idDire} class="form-control" >
+
+                                                    <option >Direcciones guardadas</option>
+                                                    {verDir && verDir.map((item) => {
+
+                                                        return (
+
+                                                            <option value={item.id}>{item.calleAltura}, {item.ciudad}</option>
+                                                        )
+                                                    })
+                                                    }
+
+                                                </select>
+                                            </Form.Group>}
+
+                                        </Form.Row>
+                                        {dirNueva && <Form.Row style={{ margin: '15px' }}>
+
+
+                                            <Form.Group as={Col}  >
+                                                <Form.Control required disabled={noEnvio} type="text" placeholder="Calle y altura" onChange={(e) => setCalle(e.target.value)} value={calle} />
+                                            </Form.Group>
+
+                                            <Form.Group as={Col} >
+
+                                                <Form.Control required disabled={noEnvio} type="text" placeholder="Piso/Depto" onChange={(e) => setAltura(e.target.value)} value={altura} />
+                                            </Form.Group>
+
+
+                                            <Form.Group as={Col}>
+
                                                 <select disabled={noEnvio} onChange={(e) => setCP(e.target.value)} value={CP} class="form-control" >
-                                                        <option >1676</option>
-                                                        <option>1663</option>
-                                                        <option>1002</option>
-                                                         <option>1004</option>
-                                                    </select>
-                                               
-                                                   {/*  <Form.Control required disabled={noEnvio} minlength="4" maxlength="4" isValid={CP === 1676 || CP === 1663} type="text" placeholder="Código Postal" onChange={(e) => setCP(e.target.value)} value={CP} />*/}
-                                                </Form.Group>
 
-                                            </Form.Row>
+                                                    <option disabled={true}>Seleccione un Código Postal...</option>
+                                                    {ver && ver.map((item) => {
 
-                                            <Form.Row style={{ margin: '15px' }}>
-                                                <Form.Group as={Col} >
-                                                    <Form.Control required disabled={noEnvio} type="text" placeholder="Localidad" onChange={(e) => setLocalidad(e.target.value)} value={localidad}/>
-                                                </Form.Group>
+                                                        return (
+                                                            <option value={item.codigoPostal}>{item.codigoPostal}</option>
+                                                        )
+                                                    })
+                                                    }
 
-                                                <Form.Group as={Col} >
-                                                    <Form.Control required disabled={noEnvio} type="text" placeholder="Provincia" onChange={(e) => setProvincia(e.target.value)} value={provincia} />
-                                                </Form.Group>
-                                            </Form.Row>
+                                                </select>
+                                            </Form.Group>
 
-                                            <Form.Row style={{ margin: '15px' }}>
-                                                <Form.Group as={Col} >
-                                                    <Button disabled={noEnvio} variant="info" onClick={calcularEnvio} >Calcular Envio</Button>
-                                                    <label show={noEnvio} class="font-weight-bold" style={{ margin: '10px' }}>Costo de envío: $  {costoenvio}</label>
 
-                                                </Form.Group>
-                                            </Form.Row>
-                                        </Form>
+                                        </Form.Row>}
 
-                                    </div>
+                                        {dirNueva && <Form.Row style={{ margin: '15px' }}>
+                                            <Form.Group as={Col} >
+                                                <Form.Control required disabled={noEnvio} type="text" placeholder="Localidad" onChange={(e) => setLocalidad(e.target.value)} value={localidad} />
+                                            </Form.Group>
 
-                                    <label class="font-weight-bold" style={{ margin: '10px' }}>Retirar por sucursal:</label>
+                                            <Form.Group as={Col} >
+                                                <Form.Control required disabled={noEnvio} type="text" placeholder="Provincia" onChange={(e) => setProvincia(e.target.value)} value={provincia} />
+                                            </Form.Group>
+                                        </Form.Row>}
+
+                                        <Form.Row style={{ margin: '15px' }}>
+                                            <Form.Group as={Col} >
+                                                <Button disabled={noEnvio} variant="info" onClick={calcularEnvio} >Calcular Envio</Button>
+                                                <label show={noEnvio} class="font-weight-bold" style={{ margin: '10px' }}>Costo de envío: $  {costoenvio}</label>
+
+                                            </Form.Group>
+                                        </Form.Row>
+
+                                    </div>}
+
 
 
                                     <Form onSubmit={preventSubmit} >
-                                        <div class="card horizontal">
+                                        {!noRetiro && <div class="card horizontal">
+                                            <label class="font-weight-bold" style={{ margin: '10px' }}>Retirar por sucursal:</label>
+
                                             <Form.Row style={{ margin: '15px' }}>
                                                 <Form.Group as={Col}  >
 
@@ -311,11 +468,11 @@ console.log(direccion);
                                             </Form.Row>
                                             <Form.Row style={{ margin: '15px' }}>
                                                 {/*<label  style={{ margin: '10px' }} class="text-dark">Elegir sucursal del mapa:</label>*/}
-
-                                                <Form.Group as={Col} >
+                                                {/*
+                                                <Form.Group disabled={noRetiro} as={Col} >
                                                     <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d3284.1316028454944!2d-58.54251486611325!3d-34.60083354592867!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1ses!2sar!4v1604874798531!5m2!1ses!2sar" ></iframe>
                                                 </Form.Group>
-                                                {/*
+                                               
                                     estilos de google maps:style={{width="200" height="200" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"}}
                                     <div id="map-container-google-1" class="z-depth-1-half map-container" style="height: 20px">
                                         <iframe src="https://maps.google.com" frameborder="0"
@@ -323,7 +480,7 @@ console.log(direccion);
                                     </div>*/}
 
                                             </Form.Row>
-                                        </div>
+                                        </div>}
 
                                         <label class="font-weight-bold" style={{ margin: '10px' }}>Elegir Método de pago:</label>
                                         <div class="card horizontal">
@@ -331,12 +488,53 @@ console.log(direccion);
                                                 <Form.Row style={{ margin: '15px' }}>
                                                     {['radio'].map((type) => (
                                                         <div class="custom-control custom-radio custom-control-inline">
-                                                            <Form.Check type="radio" inline label="Tarjeta de Crédito" id="customRadioInline2" name="customRadioInline1" class="custom-control-input" checked={tarjDeb} onChange={handleTD}  />
-                                                            <Form.Check type="radio" inline label="Tarjeta de débito" id="customRadioInline2" name="customRadioInline1" class="custom-control-input"  checked={tarjCred} onChange={handleTC} />
-                                                            <Form.Check type="radio" inline label="Mercado Pago" id="customRadioInline2" name="customRadioInline1" class="custom-control-input" checked={mercadoPago} onChange={handleMC}  />
+                                                            <Form.Check type="radio" inline label="Tarjeta de Crédito" id="customRadioInline2" name="customRadioInline1" class="custom-control-input" checked={tarjDeb} onChange={handleTD} />
+                                                            <Form.Check type="radio" inline label="Tarjeta de débito" id="customRadioInline2" name="customRadioInline1" class="custom-control-input" checked={tarjCred} onChange={handleTC} />
+                                                            <Form.Check type="radio" inline label="Mercado Pago" id="customRadioInline2" name="customRadioInline1" class="custom-control-input" checked={mercadoPago} onChange={handleMC} />
                                                         </div>
                                                     ))}
+
+                                                    {(tarjDeb || tarjCred) && <div className="container" style={{ backgroundColor: '#eceef0', width: 'auto' }}>
+                                                    <Form.Row style={{ margin: '15px' }}><Button variant="info" onClick={buscarTarjetas} >{btnTarjetas}</Button>  </Form.Row>
+                                                        {!tarNueva && <Form.Group as={Col}>
+                                                            <select onChange={(e) => setIdTarjeta(e.target.value)} value={idTarjeta} class="form-control" >
+                                                                <option >Tarjetas guardadas</option>
+                                                                {verTarjetas && verTarjetas.map((item) => {
+
+                                                                    return (
+
+                                                                        <option value={item.idTarjeta}>{(item.numero)}</option>
+                                                                    )
+                                                                })
+                                                                }
+
+                                                            </select>
+                                                        </Form.Group>}
+
+                                                        {tarNueva &&
+                                                        <Form.Row style={{ margin: '10px' }}>
+                                                            <Form.Group as={Col} >
+                                                                <Form.Control type="text" placeholder="Número" onChange={(e) => setNroTarjeta(e.target.value)} value={nroTarjeta} />
+                                                            </Form.Group>
+
+                                                            <Form.Group as={Col} >
+                                                                <Form.Control type="text" placeholder="Titular" onChange={(e) => setTitular(e.target.value)} value={titular} />
+                                                            </Form.Group>
+                                                        </Form.Row>}
+                                                        {tarNueva &&
+                                                        <Form.Row style={{ margin: '10px' }}>
+                                                            <Form.Group as={Col} >
+                                                                <Form.Control type="text" placeholder="Fec vto" onChange={(e) => setFechaVto(e.target.value)} value={fechaVto} />
+                                                            </Form.Group>
+
+                                                            <Form.Group as={Col} >
+                                                                <Form.Control type="text" placeholder="Código" />
+                                                            </Form.Group>
+                                                        </Form.Row>}
+
+                                                    </div>}
                                                 </Form.Row>
+
                                             </Form>
                                         </div>
 
@@ -384,7 +582,7 @@ console.log(direccion);
                                             );
                                         })
                                         }
-                               
+
 
                                         <h3 className="col-descripcion" style={{ margin: '10px' }}>
 
