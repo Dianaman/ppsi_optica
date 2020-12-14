@@ -6,7 +6,9 @@ const pool = require('../config');
 router.get('/:userId', (request, response) => {
     const userId = request.params.userId;
 
-    let query = 'SELECT * FROM pedidos as p ';
+    let query = 'SELECT p.*, p.estado as estadoPedido, f.*, f.estado as estadoFactura ';
+    query += 'FROM pedidos as p ';
+    query += 'INNER JOIN facturas as f ON p.idPedido = f.idPedido ';
     query += 'WHERE idUsuario = ' + userId;
 
     pool.query(query, (error, result) => {
@@ -25,9 +27,8 @@ router.get('/:userId/:orderId', (request, response) => {
     // query += 'LEFT JOIN productos as p ON dp.idProducto = p.idProducto ';
     // query += 'WHERE dp.idPedido = '+ orderId;
 
-    let query = 'SELECT dp.*, p.*, f.* FROM detallePedidos as dp ';
+    let query = 'SELECT dp.*, p.* FROM detallePedidos as dp ';
     query += 'INNER JOIN productos as p ON dp.idProducto = p.idProducto ';
-    query += 'LEFT JOIN facturas as f ON dp.idPedido = f.idPedido ';
     //query += 'INNER JOIN pedidos as ped ON dp.idPedido = ped.idPedido ';
     //query += 'INNER JOIN tarjetas as t ON ped.idUsuario = t.idUsuario ';
     query += 'WHERE dp.idPedido = ' + orderId;

@@ -60,7 +60,7 @@ export function MisPedidos() {
                                         <td>{pedido.idPedido}</td>
                                         <td>{new Date(pedido.fechaCreacion).toLocaleDateString()}</td>
                                         <td>$ {pedido.monto}</td>
-                                        <td>{pedido.estado}</td>
+                                        <td>{pedido.estadoPedido}</td>
                                         <td><Button variant="info" onClick={() => mostrarPedido(pedido)}>Ver</Button></td>
                                     </tr>
                                 );
