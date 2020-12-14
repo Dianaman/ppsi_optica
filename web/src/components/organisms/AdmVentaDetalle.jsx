@@ -19,6 +19,20 @@ export function AdmVentaDetalle(props) {
 
     const user = JSON.parse(localStorage.getItem('user'));
 
+    function mostrarMontoEnvio() {
+        let montoSinEnvio = 0;
+
+        detalles.map(detalle => {
+            montoSinEnvio += detalle.precioUnitario * detalle.cantidad;
+        });
+
+        const montoEnvio = ventaMostrada.monto - montoSinEnvio;
+
+        return (
+            <span>&nbsp;(${montoEnvio})</span>
+        )
+    }
+
     function renderBotones(venta) {
 
         switch(venta.estado) {
@@ -94,7 +108,11 @@ export function AdmVentaDetalle(props) {
                     </p>
 
                     <hr />
-                        <div>Tipo de envío: {ventaMostrada.tipoEnvio}</div>
+                        <div>Tipo de envío: {ventaMostrada.tipoEnvio}
+                            {
+                                mostrarMontoEnvio()
+                            }
+                        </div>
 
                         {
                             ventaMostrada.idDomicilio &&

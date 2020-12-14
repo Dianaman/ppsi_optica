@@ -34,6 +34,20 @@ export function MiPedidoDetalle(props) {
         }
     }
 
+    function mostrarMontoEnvio() {
+        let montoSinEnvio = 0;
+
+        detalles.map(detalle => {
+            montoSinEnvio += detalle.precioUnitario * detalle.cantidad;
+        });
+
+        const montoEnvio = miPedidoMostrado.monto - montoSinEnvio;
+
+        return (
+            <span>&nbsp;(${montoEnvio})</span>
+        )
+    }
+
     return (
         <>
             { miPedidoMostrado && <Modal
@@ -57,7 +71,11 @@ export function MiPedidoDetalle(props) {
                     </p>
 
                     <hr />
-                        <div>Tipo de envío: {miPedidoMostrado.tipoEnvio}</div>
+                        <div>Tipo de envío: {miPedidoMostrado.tipoEnvio}
+                        {
+                            mostrarMontoEnvio()
+                        }
+                        </div>
 
                         {
                             miPedidoMostrado.idDomicilio &&
