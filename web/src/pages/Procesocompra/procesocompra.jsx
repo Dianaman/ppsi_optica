@@ -168,15 +168,9 @@ export const Procesocompra = () => {
 
 
 
-<<<<<<< Updated upstream
-    //traer tarjetas por usuario
-    const traerTarjUsu = () => {
-        fetch(process.env.REACT_APP_API_URL + '/tarjetas/' + loggedInUser["id"],
-=======
     //traer tarjetas debito por usuario
     const traerTarjDeb = () => {
         fetch(process.env.REACT_APP_API_URL + '/tarjetas/debito/' + `${loggedInUser["id"]}`,
->>>>>>> Stashed changes
             {
                 method: 'GET',
                 headers: {
@@ -366,23 +360,6 @@ export const Procesocompra = () => {
 
                             </Form.Row>
 
-<<<<<<< Updated upstream
-
-                            <label class="font-weight-bold" style={{ margin: '10px' }}>Elegir forma de envío:</label>
-                            <div class="card horizontal">
-                                <Form onSubmit={preventSubmit}>
-                                    <Form.Row style={{ margin: '15px' }}>
-                                        {['radio'].map((type) => (
-                                            <div class="custom-control custom-radio custom-control-inline">
-                                                <Form.Check type="radio" inline label="Envio a Domicilio" id="customRadioInline0" name="customRadioInline1" class="custom-control-input" checked={noRetiro} onChange={handleNoEnvio} />
-                                                <Form.Check type="radio" inline label="Retirar en Sucursal" id="customRadioInline1" name="customRadioInline1" class="custom-control-input" checked={noEnvio} onChange={handleNoRetiro} />
-                                            </div>
-                                        ))}
-                                    </Form.Row>
-                                </Form>
-                            </div>
-                            <div className="container" style={{ width: 'auto', backgroundColor: '#eceef0'}}>
-=======
                             <div className="container" style={{ width: '30rem', backgroundColor: '#eceef0', width: 'auto' }}>
 
                                 <label class="font-weight-bold" style={{ margin: '10px' }}>Elegir forma de envío:</label>
@@ -398,7 +375,6 @@ export const Procesocompra = () => {
                                         </Form.Row>
                                     </Form>
                                 </div>
->>>>>>> Stashed changes
                                 <ul className="list-group" >
 
                                     {!noEnvio && <div class="card horizontal">
