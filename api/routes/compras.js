@@ -28,7 +28,7 @@ router.post('/add', (req, res) => {
      let idTarjeta = req.body.idTarj;
      var sqlTarj =""
      if (idTarjeta === 999999999){
-      sqlTarj = `INSERT INTO tarjetas (idUsuario, numero, titular, fechaVto) VALUES ('${req.body.idusuario}','${req.body.Tarjeta.nroTarjeta}', '${req.body.Tarjeta.titular}', '${req.body.Tarjeta.fechaVto}')`;
+      sqlTarj = `INSERT INTO tarjetas (idUsuario, numero, titular, fechaVto,tipo) VALUES ('${req.body.idusuario}','${req.body.Tarjeta.nroTarjeta}', '${req.body.Tarjeta.titular}', '${req.body.Tarjeta.fechaVto}', '${req.body.Tarjeta.tipo}')`;
      }
      console.log('query Tarjeta', sqlTarj);
      pool.query(sqlTarj, (error, result) => {

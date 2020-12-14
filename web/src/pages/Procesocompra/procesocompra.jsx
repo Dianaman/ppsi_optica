@@ -68,6 +68,7 @@ export const Procesocompra = () => {
         let ind = 0;
         let tipoEnv = "";
         let tipoPago = "";
+        let tipoTarj = "";
 
         //**en este parrafo me traigo los datos por producto seleccionado
         carrito && carrito.map((item) => {
@@ -82,9 +83,10 @@ export const Procesocompra = () => {
         //**tomo el tipo de envio/retiro y el tipo de pago seleccionado
         if (!noEnvio) { tipoEnv = "Envio a domicilio" }
         if (!noRetiro) { tipoEnv = "Retiro en sucursal" }
-        if (tarjDeb) { tipoPago = "Tarjeta de débito" }
-        if (tarjCred) { tipoPago = "Tarjeta de crédito" }
+        if (tarjDeb) { tipoPago = "Tarjeta de débito"; tipoTarj  = "TD" }
+        if (tarjCred) { tipoPago = "Tarjeta de crédito"; tipoTarj = "TC" }
         if (mercadoPago) { tipoPago = "Mercado Pago" }
+        tarjeta.tipo = tipoTarj;
         console.log('datos tarjetas', tarjeta)
         console.log('idDire:', idDire)
 
@@ -94,7 +96,7 @@ export const Procesocompra = () => {
         fetch(process.env.REACT_APP_API_URL + '/compra/add',
             {
                 method: 'POST',
-                body: JSON.stringify({ idusuario: loggedInUser["id"], idproductos: productos, precioUnitario: precUnit, cantprod: cantidad, tipoEnvio: tipoEnv, monto: total, TipoPago: tipoPago, dir: direccion, idDireccion: idDire, idTarj: idTarjeta, Tarjeta: tarjeta}),
+                body: JSON.stringify({ idusuario: loggedInUser["id"], idproductos: productos, precioUnitario: precUnit, cantprod: cantidad, tipoEnvio: tipoEnv, monto: total, TipoPago: tipoPago, dir: direccion, idDireccion: idDire, idTarj: idTarjeta, Tarjeta: tarjeta }),
                 headers: {
                     'Content-Type': 'application/json'
                 }
@@ -166,9 +168,15 @@ export const Procesocompra = () => {
 
 
 
+<<<<<<< Updated upstream
     //traer tarjetas por usuario
     const traerTarjUsu = () => {
         fetch(process.env.REACT_APP_API_URL + '/tarjetas/' + loggedInUser["id"],
+=======
+    //traer tarjetas debito por usuario
+    const traerTarjDeb = () => {
+        fetch(process.env.REACT_APP_API_URL + '/tarjetas/debito/' + `${loggedInUser["id"]}`,
+>>>>>>> Stashed changes
             {
                 method: 'GET',
                 headers: {
@@ -183,6 +191,24 @@ export const Procesocompra = () => {
             })
     }
 
+        //traer tarjetas credito por usuario
+        const traerTarjCred = () => {
+            fetch(process.env.REACT_APP_API_URL + '/tarjetas/credito/' + `${loggedInUser["id"]}`,
+                {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }
+            )
+                .then(res => res.json())
+                .then(listaTarjetas => {
+                    verTarjetas = listaTarjetas;
+                    console.log('verTarjetas: ', verTarjetas)
+                })
+        }
+    
+
 
     //**** DATOS ENVIO *******/
 
@@ -196,7 +222,7 @@ export const Procesocompra = () => {
     const handleNoEnvio = () => {
         setNoEnvio(false);
         setNoRetiro(true);
-      //  setIdDire(0);
+        //  setIdDire(0);
         traerCpes();
         traerDirUsu();
     }
@@ -236,42 +262,45 @@ export const Procesocompra = () => {
     let [titular, setTitular] = useState("");
     let [fechaVto, setFechaVto] = useState("");
     let [idTarjeta, setIdTarjeta] = useState(0);
+    let [tipoTar, setTipoTar] = useState("");
     const [tarNueva, setTarNueva] = useState(true);
 
     let tarjeta = {};
     tarjeta.nroTarjeta = nroTarjeta;
     tarjeta.titular = titular;
     tarjeta.fechaVto = fechaVto;
+    tarjeta.tipo = tipoTar;
 
     const handleTD = () => {
         //setIdTarjeta(0);
         setTarjDeb(true);
         setTarjCreb(false);
         setMercadoPago(false);
-        traerTarjUsu();
-
+        traerTarjDeb();
+        setIdTarjeta(999999999);
 
     }
 
     const handleTC = () => {
-    //    setIdTarjeta(0);
+        //    setIdTarjeta(0);
         setTarjDeb(false);
         setTarjCreb(true);
         setMercadoPago(false);
-        traerTarjUsu();
-      
+        traerTarjCred();
+        setIdTarjeta(999999999);
+
     }
     const handleMC = () => {
         setTarjDeb(false);
         setTarjCreb(false);
         setMercadoPago(true);
         setIdTarjeta(0);
+        
     }
 
     const buscarTarjetas = () => {
         if (tarNueva) {
-           // console.log('id dire', idDire)
-           setTarNueva(false);
+            setTarNueva(false);
             setBtnTarjetas("Cargar una tarjeta nueva");
 
         }
@@ -279,7 +308,6 @@ export const Procesocompra = () => {
             setTarNueva(true);
             setBtnTarjetas("Ver mis tarjetas");
             setIdTarjeta(999999999);
-          //  console.log('id dire no ', idDire)
         }
 
     }
@@ -338,6 +366,7 @@ export const Procesocompra = () => {
 
                             </Form.Row>
 
+<<<<<<< Updated upstream
 
                             <label class="font-weight-bold" style={{ margin: '10px' }}>Elegir forma de envío:</label>
                             <div class="card horizontal">
@@ -353,18 +382,35 @@ export const Procesocompra = () => {
                                 </Form>
                             </div>
                             <div className="container" style={{ width: 'auto', backgroundColor: '#eceef0'}}>
+=======
+                            <div className="container" style={{ width: '30rem', backgroundColor: '#eceef0', width: 'auto' }}>
+
+                                <label class="font-weight-bold" style={{ margin: '10px' }}>Elegir forma de envío:</label>
+                                <div class="card horizontal">
+                                    <Form onSubmit={preventSubmit}>
+                                        <Form.Row style={{ margin: '15px' }}>
+                                            {['radio'].map((type) => (
+                                                <div class="custom-control custom-radio custom-control-inline">
+                                                    <Form.Check type="radio" inline label="Envio a Domicilio" id="customRadioInline0" name="customRadioInline1" class="custom-control-input" checked={noRetiro} onChange={handleNoEnvio} />
+                                                    <Form.Check type="radio" inline label="Retirar en Sucursal" id="customRadioInline1" name="customRadioInline1" class="custom-control-input" checked={noEnvio} onChange={handleNoRetiro} />
+                                                </div>
+                                            ))}
+                                        </Form.Row>
+                                    </Form>
+                                </div>
+>>>>>>> Stashed changes
                                 <ul className="list-group" >
 
                                     {!noEnvio && <div class="card horizontal">
                                         <label class="font-weight-bold" style={{ margin: '10px' }}>Envío a domicilio:</label>
 
-                                        <Form.Row style={{ margin: '15px' }}><Button variant="info" onClick={buscarDirecciones} >{accionBtnEnvio}</Button>  </Form.Row>
-                                        <Form.Row style={{ margin: '15px' }}>
+                                        <Form.Row style={{ margin: '10px' }}><Button variant="info" onClick={buscarDirecciones} >{accionBtnEnvio}</Button>  </Form.Row>
+                                        <Form.Row style={{ margin: '10px' }}>
                                             {!dirNueva && <Form.Group as={Col}>
 
-                                                <select disabled={noEnvio} onChange={(e) => setIdDire(e.target.value)} value={idDire} class="form-control" >
+                                                <select required onChange={(e) => setIdDire(e.target.value)} value={idDire} class="form-control" >
 
-                                                    <option >Direcciones guardadas</option>
+                                                    <option value="" >Direcciones guardadas</option>
                                                     {verDir && verDir.map((item) => {
 
                                                         return (
@@ -378,7 +424,7 @@ export const Procesocompra = () => {
                                             </Form.Group>}
 
                                         </Form.Row>
-                                        {dirNueva && <Form.Row style={{ margin: '15px' }}>
+                                        {dirNueva && <Form.Row style={{ margin: '2px' }}>
 
 
                                             <Form.Group as={Col}  >
@@ -393,9 +439,9 @@ export const Procesocompra = () => {
 
                                             <Form.Group as={Col}>
 
-                                                <select disabled={noEnvio} onChange={(e) => setCP(e.target.value)} value={CP} class="form-control" >
+                                                <select required onChange={(e) => setCP(e.target.value)} value={CP} class="form-control" >
 
-                                                    <option disabled={true}>Seleccione un Código Postal...</option>
+                                                    <option value="" >Seleccione un Código Postal...</option>
                                                     {ver && ver.map((item) => {
 
                                                         return (
@@ -410,7 +456,7 @@ export const Procesocompra = () => {
 
                                         </Form.Row>}
 
-                                        {dirNueva && <Form.Row style={{ margin: '15px' }}>
+                                        {dirNueva && <Form.Row style={{ margin: '2px' }}>
                                             <Form.Group as={Col} >
                                                 <Form.Control required disabled={noEnvio} type="text" placeholder="Localidad" onChange={(e) => setLocalidad(e.target.value)} value={localidad} />
                                             </Form.Group>
@@ -420,7 +466,7 @@ export const Procesocompra = () => {
                                             </Form.Group>
                                         </Form.Row>}
 
-                                        <Form.Row style={{ margin: '15px' }}>
+                                        <Form.Row style={{ margin: '2px' }}>
                                             <Form.Group as={Col} >
                                                 <Button disabled={noEnvio} variant="info" onClick={calcularEnvio} >Calcular Envio</Button>
                                                 <label show={noEnvio} class="font-weight-bold" style={{ margin: '10px' }}>Costo de envío: $  {costoenvio}</label>
@@ -440,9 +486,9 @@ export const Procesocompra = () => {
                                                 <Form.Group as={Col}  >
 
                                                     <label style={{ margin: '10px' }} class="text-dark">Elegir sucursal más cercana:</label>
-                                                    <select disabled={noRetiro} class="form-control" >
+                                                    <select disabled={noRetiro} placeholder="Sucursales" class="form-control" >
                                                         <option >Sucursal 1</option>
-                                                        <option>Sucursal 2</option>
+                                                        <option >Sucursal 2</option>
                                                         <option>Sucursal 3</option>
                                                     </select>
                                                 </Form.Group>
@@ -471,17 +517,17 @@ export const Procesocompra = () => {
                                                 <Form.Row style={{ margin: '15px' }}>
                                                     {['radio'].map((type) => (
                                                         <div class="custom-control custom-radio custom-control-inline">
-                                                            <Form.Check type="radio" inline label="Tarjeta de Crédito" id="customRadioInline2" name="customRadioInline1" class="custom-control-input" checked={tarjDeb} onChange={handleTD} />
-                                                            <Form.Check type="radio" inline label="Tarjeta de débito" id="customRadioInline2" name="customRadioInline1" class="custom-control-input" checked={tarjCred} onChange={handleTC} />
+                                                            <Form.Check type="radio" inline label="Tarjeta de Débito" id="customRadioInline2" name="customRadioInline1" class="custom-control-input" checked={tarjDeb} onChange={handleTD} />
+                                                            <Form.Check type="radio" inline label="Tarjeta de Crédito" id="customRadioInline2" name="customRadioInline1" class="custom-control-input" checked={tarjCred} onChange={handleTC} />
                                                             <Form.Check type="radio" inline label="Mercado Pago" id="customRadioInline2" name="customRadioInline1" class="custom-control-input" checked={mercadoPago} onChange={handleMC} />
                                                         </div>
                                                     ))}
 
                                                     {(tarjDeb || tarjCred) && <div className="container" style={{ backgroundColor: '#eceef0', width: 'auto' }}>
-                                                    <Form.Row style={{ margin: '15px' }}><Button variant="info" onClick={buscarTarjetas} >{btnTarjetas}</Button>  </Form.Row>
+                                                        <Form.Row style={{ margin: '15px' }}><Button variant="info" onClick={buscarTarjetas} >{btnTarjetas}</Button>  </Form.Row>
                                                         {!tarNueva && <Form.Group as={Col}>
-                                                            <select onChange={(e) => setIdTarjeta(e.target.value)} value={idTarjeta} class="form-control" >
-                                                                <option >Tarjetas guardadas</option>
+                                                            <select required onChange={(e) => setIdTarjeta(e.target.value)} value={idTarjeta} class="form-control" >
+                                                                <option value="" >Tarjetas guardadas</option>
                                                                 {verTarjetas && verTarjetas.map((item) => {
 
                                                                     return (
@@ -495,25 +541,25 @@ export const Procesocompra = () => {
                                                         </Form.Group>}
 
                                                         {tarNueva &&
-                                                        <Form.Row style={{ margin: '10px' }}>
-                                                            <Form.Group as={Col} >
-                                                                <Form.Control type="text" placeholder="Número" onChange={(e) => setNroTarjeta(e.target.value)} value={nroTarjeta} />
-                                                            </Form.Group>
+                                                            <Form.Row style={{ margin: '10px' }}>
+                                                                <Form.Group as={Col} >
+                                                                    <Form.Control type="text" placeholder="Número" onChange={(e) => setNroTarjeta(e.target.value)} value={nroTarjeta} />
+                                                                </Form.Group>
 
-                                                            <Form.Group as={Col} >
-                                                                <Form.Control type="text" placeholder="Titular" onChange={(e) => setTitular(e.target.value)} value={titular} />
-                                                            </Form.Group>
-                                                        </Form.Row>}
+                                                                <Form.Group as={Col} >
+                                                                    <Form.Control type="text" placeholder="Titular" onChange={(e) => setTitular(e.target.value)} value={titular} />
+                                                                </Form.Group>
+                                                            </Form.Row>}
                                                         {tarNueva &&
-                                                        <Form.Row style={{ margin: '10px' }}>
-                                                            <Form.Group as={Col} >
-                                                                <Form.Control type="text" placeholder="Fec vto" onChange={(e) => setFechaVto(e.target.value)} value={fechaVto} />
-                                                            </Form.Group>
+                                                            <Form.Row style={{ margin: '10px' }}>
+                                                                <Form.Group as={Col} >
+                                                                    <Form.Control type="text" placeholder="Fec vto" onChange={(e) => setFechaVto(e.target.value)} value={fechaVto} />
+                                                                </Form.Group>
 
-                                                            <Form.Group as={Col} >
-                                                                <Form.Control type="text" placeholder="Código" />
-                                                            </Form.Group>
-                                                        </Form.Row>}
+                                                                <Form.Group as={Col} >
+                                                                    <Form.Control type="text" placeholder="Código" />
+                                                                </Form.Group>
+                                                            </Form.Row>}
 
                                                     </div>}
                                                 </Form.Row>
