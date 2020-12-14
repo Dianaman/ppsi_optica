@@ -1,36 +1,19 @@
 import React from 'react'
-import { Link } from "react-router-dom";
+
+export const Menucompra = () => {
+
+return (
+    <div>
 
 
-function videos(a){
-    
-    ('div a').click(function(a) {
-          //e.preventDefault();
-          var $this = (this);
-          this.closest('ul').find('div.active,a.active').removeClass('active');
-          this.addClass('active');
-          this.parent().addClass('active');
-    
-      });
-      
-    }
-    
-    export const Menucompra = () => {
+        <nav className="nav nav-tabs nav-justified"  >
+            <a className="nav-item nav-link " href="/Procesocompra">Datos Facturación</a>
+            <a className="nav-item nav-link"  href="/Envio"   >Elegir envío</a>
+            <a className="nav-item nav-link " href="/Pago">Realizar Pago</a>
+            <a className="nav-item nav-link " href="/Confirmarcompra">Confirmar Compra</a>
 
+        </nav>
 
-
-    return (
-        <div>
-
-
-            <nav className="nav nav-tabs nav-justified"  >
-                <a className="nav-item nav-link " href="/Procesocompra">Datos Facturación</a>
-                <a className="nav-item nav-link"  href="/Envio"   >Elegir envío</a>
-                <a className="nav-item nav-link " href="/Pago">Realizar Pago</a>
-                <a className="nav-item nav-link " href="/Confirmarcompra">Confirmar Compra</a>
-
-            </nav>
-
-            </div>
-            )
-            }
+        </div>
+    )
+}

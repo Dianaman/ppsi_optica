@@ -5,7 +5,7 @@ export function IconNumber(props) {
 
     return (
         <div className="icon-number">
-            <img src={icon} />
+            <img src={icon} alt={icon}/>
             {
                 number > 0 && 
                 <div className="popup-number">

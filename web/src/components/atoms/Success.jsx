@@ -14,7 +14,7 @@ export function Success() {
                 dispatch(showSuccess(null));
             }, 2000);
         }
-    }, success);
+    }, [success, dispatch]);
 
     return (
         <>

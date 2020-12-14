@@ -1,22 +1,10 @@
-import React from 'react'
-import { Link } from "react-router-dom";
-import { Menucompra } from './Menucompra';
-import Button from 'react-bootstrap/Button';
-
-
+import React from 'react';
 import Form from 'react-bootstrap/Form';
 import Col from 'react-bootstrap/Col';
-
-
 
 const preventSubmit = (event) => {
     event.preventDefault();
 }
-
-const handleChange = (event, item) => {
-
-}
-
 
 export const Pago = () => {
 
@@ -65,7 +53,4 @@ export const Pago = () => {
         </div>
 
     )
-
-
-
 }

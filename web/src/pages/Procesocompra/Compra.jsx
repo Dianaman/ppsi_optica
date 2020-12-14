@@ -1,10 +1,7 @@
-import React from 'react'
-import { Link } from "react-router-dom";
-import { Menucompra } from './Menucompra';
+import React from 'react';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Col from 'react-bootstrap/Col';
-import { Control,  actions } from 'react-redux-form';
 
 
 

@@ -28,7 +28,7 @@ export function Categoria () {
         if(!modalOpen) {
             setModalShow(false);
         }
-    }, [dispatch, modalOpen]);
+    }, [dispatch, modalOpen, id]);
 
 
     function mostrarProducto(producto) {

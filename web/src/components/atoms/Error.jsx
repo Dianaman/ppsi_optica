@@ -14,7 +14,7 @@ export function Error() {
                 dispatch(showError(null));
             }, 2000);
         }
-    }, error);
+    }, [error, dispatch]);
 
     return (
         <>

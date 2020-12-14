@@ -22,7 +22,7 @@ export function AdmVentaDetalle(props) {
     function mostrarMontoEnvio() {
         let montoSinEnvio = 0;
 
-        detalles.map(detalle => {
+        detalles.forEach(detalle => {
             montoSinEnvio += detalle.precioUnitario * detalle.cantidad;
         });
 
@@ -130,7 +130,7 @@ export function AdmVentaDetalle(props) {
                                 <div className="flex-row justify-between align-items-center"
                                     key={detalle.idDetallePedido}>
                                     <div className="img">
-                                        <img src={detalle.pathImagen} style={
+                                        <img src={detalle.pathImagen} alt={detalle.nombre} style={
                                             {'width': '30px', 'height': '30px'}
                                         }/>
                                     </div>

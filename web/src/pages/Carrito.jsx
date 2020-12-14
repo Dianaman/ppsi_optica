@@ -22,9 +22,7 @@ export function Carrito() {
         }else{
             history.push("/login")
         }
-     }
-
-    let subtotal = 0;
+    }
 
     const {carrito} = app.carritoReducer;
 
@@ -42,7 +40,7 @@ export function Carrito() {
     function renderSubtotal() {
         let subtotal = 0;
         if (carrito && carrito.length) {
-            carrito.map(item => {subtotal += item.producto.precio * item.quantity});
+            carrito.forEach(item => {subtotal += item.producto.precio * item.quantity});
         }
         return (
             <div>$ {subtotal}</div>
@@ -53,7 +51,7 @@ export function Carrito() {
         <div className="container">
             <div className="seccion">
                 <div>Carrito</div>
-                <img src={carritoIcon} />
+                <img src={carritoIcon} alt="carrito"/>
             </div>
 
             <div className="flex-column">
@@ -62,7 +60,7 @@ export function Carrito() {
                     return (
                     <div className="app-card" key={item.id}>
                         <div className="img">
-                            <img src={item.producto.pathImagen} style={
+                            <img src={item.producto.pathImagen} alt={item.producto.nombre} style={
                                 {'width': '130px', 'height': '130px', 'margin': '10px'}
                                 }/>
                         </div>
@@ -80,7 +78,7 @@ export function Carrito() {
                                 </div>
                                 <div className="flex-column">
                                     <div>$ {item.producto.precio}</div>
-                                    {item.extras?.filePath && <p><a href={item.extras.filePath} target="_blank">Receta</a></p>}
+                                    {item.extras?.filePath && <p><a href={item.extras.filePath} target="_blank" rel="noopener noreferrer">Receta</a></p>}
                                     {item.producto.idCategoria === 3 && <Form onSubmit={preventSubmit}>
                                         <Form.Row>
                                         <Form.Group as={Col} md="4">

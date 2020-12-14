@@ -13,7 +13,6 @@ export function AdmProductos () {
 
     const app = useSelector(state => state);
     const { productos } = app.admProductoReducer;
-    const { categorias } = app.categoriaReducer;
     const { modalOpen } = app.commonReducer;
 
     const [modalAddShow, setModalAddShow] = React.useState(false);

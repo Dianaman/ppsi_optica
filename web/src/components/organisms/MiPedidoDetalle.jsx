@@ -16,8 +16,6 @@ export function MiPedidoDetalle(props) {
         dispatch(changeStateMyOrder(id, nuevoEstado));
     }
 
-    const user = JSON.parse(localStorage.getItem('user'));
-
     function renderBotones(estado) {
 
         switch(estado) {
@@ -37,7 +35,7 @@ export function MiPedidoDetalle(props) {
     function mostrarMontoEnvio() {
         let montoSinEnvio = 0;
 
-        detalles.map(detalle => {
+        detalles.forEach(detalle => {
             montoSinEnvio += detalle.precioUnitario * detalle.cantidad;
         });
 
@@ -73,7 +71,7 @@ export function MiPedidoDetalle(props) {
                     <hr />
                         <div>Tipo de envío: {miPedidoMostrado.tipoEnvio}
                         {
-                            mostrarMontoEnvio()
+                            miPedidoMostrado.tipoEnvio === 'Envio a domicilio' && mostrarMontoEnvio()
                         }
                         </div>
 
@@ -93,7 +91,7 @@ export function MiPedidoDetalle(props) {
                                 <div className="flex-row justify-between align-items-center"
                                     key={detalle.idDetallePedido}>
                                     <div className="img">
-                                        <img src={detalle.pathImagen} style={
+                                        <img src={detalle.pathImagen} alt={detalle.nombre} style={
                                             {'width': '30px', 'height': '30px'}
                                         }/>
                                     </div>

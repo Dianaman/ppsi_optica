@@ -29,12 +29,7 @@ function App() {
       if (carrito) {
         dispatch(setCart(carrito));
       }
-  }, []);
-
-  /* TODO: 
-  -Hacer diferentes navs por rol
-  -Agregarle menú hamburguesa
-  */
+  }, [dispatch]);
 
   function renderRoutes() {
     if (loggedInUser) {

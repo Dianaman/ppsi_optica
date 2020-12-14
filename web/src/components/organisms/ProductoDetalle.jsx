@@ -22,6 +22,7 @@ export function ProductoDetalle(props) {
   carrito = props.carrito;
 
   prodEnCarrito = carrito?.find(item => item.id === productoMostrado?.idProducto);
+  cantidad = prodEnCarrito ? prodEnCarrito.quantity : 1;
 
   let data = [
     { value: 'multifocales', desc: 'Multifocales' },
@@ -34,9 +35,7 @@ export function ProductoDetalle(props) {
   React.useEffect(() => {
     dispatch(clearImages());
     dispatch(setExtra([]));
-
-    cantidad = 1;
-  }, []);
+  }, [dispatch]);
 
 
   const files = app.filesReducer.files;
@@ -78,7 +77,7 @@ export function ProductoDetalle(props) {
     if (productoMostrado.stock > 0) {
       return (
         <Form.Group as={Col} md="2">
-          <Button variant="info" onClick={() => agregarAlCarrito()}>Agregar</Button>
+          <Button variant="info" onClick={() => agregarAlCarrito()}>{prodEnCarrito ? 'Modificar' : 'Agregar'}</Button>
         </Form.Group>                
       );
     } else {
@@ -149,7 +148,7 @@ export function ProductoDetalle(props) {
                 {
                   productoMostrado.idCategoria === 3 &&
                     <div className="flex-row">
-                      <Form.Control type="number" defaultValue={cantidad} max={productoMostrado.stock} onChange={changeCantidad} style={{'width':'50px'}}/>
+                      <Form.Control type="number" defaultValue={cantidad} min={1} max={productoMostrado.stock} onChange={changeCantidad} style={{'width':'75px'}}/>
                       <div className="spaced">{productoMostrado.stock} disponibles</div>
                     </div>
                 }

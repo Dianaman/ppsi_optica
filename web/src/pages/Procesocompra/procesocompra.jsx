@@ -1,33 +1,16 @@
-import React, { useEffect, useState } from 'react'
-import { Link } from "react-router-dom";
-import { Menucompra } from './Menucompra';
-import { Compra } from './Compra';
-import { Envio } from './Envio';
-import { Pago } from './Pago';
-import { Confirmarcompra } from './Confirmarcompra';
+import React, {  useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from "react-router-dom";
 import Button from 'react-bootstrap/Button';
-import ModalHeader from 'react-bootstrap/ModalHeader';
-import ModalBody from 'react-bootstrap/ModalBody';
 import Form from 'react-bootstrap/Form';
 import Col from 'react-bootstrap/Col';
-import If from 'react-bootstrap';
 import Modal from 'react-bootstrap/Modal';
 import 'bootstrap/dist/css/bootstrap.css';
 import { showLoading, showSuccess } from '../../redux/ducks/common.duck';
 import { clearCart } from '../../redux/ducks/carrito.duck';
-import { Control } from 'react-redux-form';
 
 const preventSubmit = (event) => {
     event.preventDefault();
-}
-
-const handleChange = (event) => {
-    //const nuevaCantidad = parseInt(event.target.value, 10);
-    //  item.quantity = nuevaCantidad;
-
-    // dispatch(addToCart(item.id, nuevaCantidad, {}));
 }
 
 let ver = [];
@@ -51,7 +34,7 @@ export const Procesocompra = () => {
     let [CP, setCP] = useState('');
     let [localidad, setLocalidad] = useState("");
     let [provincia, setProvincia] = useState("");
-    let direccion = new Object();
+    let direccion = {};
     direccion.calle = calle;
     direccion.altura = altura;
     direccion.CP = CP;
@@ -128,7 +111,7 @@ export const Procesocompra = () => {
     //trae el precio del envio por CP
     const calcularEnvio = (event, item) => {
         event.preventDefault();
-        fetch(process.env.REACT_APP_API_URL + '/compra/' + `${CP}`,
+        fetch(process.env.REACT_APP_API_URL + '/compra/' + CP,
             {
                 method: 'GET',
                 headers: {
@@ -165,7 +148,7 @@ export const Procesocompra = () => {
     }
     //trae direcciones por usuario
     const traerDirUsu = () => {
-        fetch(process.env.REACT_APP_API_URL + '/direcciones/' + `${loggedInUser["id"]}`,
+        fetch(process.env.REACT_APP_API_URL + '/direcciones/' + loggedInUser["id"],
 
             {
                 method: 'GET',
@@ -185,7 +168,7 @@ export const Procesocompra = () => {
 
     //traer tarjetas por usuario
     const traerTarjUsu = () => {
-        fetch(process.env.REACT_APP_API_URL + '/tarjetas/' + `${loggedInUser["id"]}`,
+        fetch(process.env.REACT_APP_API_URL + '/tarjetas/' + loggedInUser["id"],
             {
                 method: 'GET',
                 headers: {
@@ -255,7 +238,7 @@ export const Procesocompra = () => {
     let [idTarjeta, setIdTarjeta] = useState(0);
     const [tarNueva, setTarNueva] = useState(true);
 
-    let tarjeta = new Object();
+    let tarjeta = {};
     tarjeta.nroTarjeta = nroTarjeta;
     tarjeta.titular = titular;
     tarjeta.fechaVto = fechaVto;
@@ -369,7 +352,7 @@ export const Procesocompra = () => {
                                     </Form.Row>
                                 </Form>
                             </div>
-                            <div className="container" style={{ width: '30rem', backgroundColor: '#eceef0', width: 'auto' }}>
+                            <div className="container" style={{ width: 'auto', backgroundColor: '#eceef0'}}>
                                 <ul className="list-group" >
 
                                     {!noEnvio && <div class="card horizontal">
@@ -544,7 +527,7 @@ export const Procesocompra = () => {
                                                 <div className="app-card" key={item.id}>
 
                                                     <div className="img">
-                                                        <img src={item.producto.pathImagen} style={
+                                                        <img src={item.producto.pathImagen} alt={item.producto.nombre} style={
                                                             { 'width': '130px', 'height': '130px', 'margin': '10px' }
                                                         } />
                                                     </div>
@@ -565,7 +548,7 @@ export const Procesocompra = () => {
                                                                 <Form onSubmit={preventSubmit}>
                                                                     <Form.Row>
                                                                         <Form.Group as={Col} md="4">
-                                                                            <Form.Control type="number" min="0" value={item.quantity} onChange={handleChange.bind(item)} />
+                                                                            <Form.Control type="number" min="0" value={item.quantity} readOnly />
                                                                         </Form.Group>
                                                                     </Form.Row>
                                                                 </Form>

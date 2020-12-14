@@ -47,7 +47,7 @@ export function fetchGetUsers() {
     return (dispatch, getState) => {
       const usuarioActual = getState().usuariosReducer.usuarioActual;
 
-      if (usuarioActual && (usuarioActual.tipo == 'superadmin' || usuarioActual.tipo == 'admin')) {
+      if (usuarioActual && (usuarioActual.tipo === 'superadmin' || usuarioActual.tipo === 'admin')) {
         const showAdmins = usuarioActual.tipo === 'superadmin';
 
         dispatch(fetchApi(
