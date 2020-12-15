@@ -103,7 +103,13 @@ export function AdmVentaDetalle(props) {
                         <div>Estado: {ventaMostrada.estado}</div>
                         <div>Última actualización: {new Date(ventaMostrada.fechaUltimaActualizacion).toLocaleDateString()}</div>
                         <div>Estado de pago: {ventaMostrada.estadoFactura} </div>
-                        <div>Tipo de pago: {ventaMostrada.tipoPago}</div>
+                        {/* <div>Tipo de pago: {ventaMostrada.tipoPago}</div> */}
+                        {
+                             ventaMostrada.numTarjeta == null && <div>Tipo de pago: {ventaMostrada.tipoPago}</div>
+                        }
+                        {
+                             ventaMostrada.numTarjeta != null && <div>Tipo de pago: {ventaMostrada.tipoPago}: ********-{ventaMostrada.numTarjeta.substr(-4)}</div>
+                        }
                         <div>Monto total: $ {ventaMostrada.monto}</div>
                     </p>
 
@@ -117,7 +123,7 @@ export function AdmVentaDetalle(props) {
                         {
                             ventaMostrada.idDomicilio &&
                             <div>
-                                
+                                Dirección: {ventaMostrada.calleAltura}, {ventaMostrada.ciudad}, {ventaMostrada.provincia}
                             </div>
                         }
 

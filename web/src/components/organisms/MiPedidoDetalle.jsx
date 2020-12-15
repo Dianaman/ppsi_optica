@@ -93,7 +93,7 @@ export function MiPedidoDetalle(props) {
                         {
                             miPedidoMostrado.idDomicilio &&
                             <div>
-                                <div>Dirección: {miPedidoMostrado.calleAltura}, {miPedidoMostrado.ciudad}, {miPedidoMostrado.provincia}</div>
+                                Dirección: {miPedidoMostrado.calleAltura}, {miPedidoMostrado.ciudad}, {miPedidoMostrado.provincia}
                             </div>
                         }
 
