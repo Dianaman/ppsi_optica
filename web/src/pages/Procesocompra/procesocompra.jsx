@@ -217,7 +217,7 @@ export const Procesocompra = () => {
     const handleNoEnvio = () => {
         setNoEnvio(false);
         setNoRetiro(true);
-        //  setIdDire(0);
+        setIdDire(999999999);
         traerCpes();
         traerDirUsu();
     }
@@ -420,7 +420,7 @@ export const Procesocompra = () => {
 
                                                 <select required onChange={(e) => setCP(e.target.value)} value={CP} class="form-control" >
 
-                                                    <option value="" >Seleccione un Código Postal...</option>
+                                                    <option selected value="" >Seleccione un Código Postal...</option>
                                                     {ver && ver.map((item) => {
 
                                                         return (
@@ -548,6 +548,8 @@ export const Procesocompra = () => {
 
 
                                         {carrito && carrito.map((item) => {
+                                             {subtotal = item.producto.precio * item.quantity}
+                                             {total = total + subtotal}
                                             return (
                                                 <div className="app-card" key={item.id}>
 
@@ -562,8 +564,7 @@ export const Procesocompra = () => {
                                                             <h3>{item.producto.nombre}</h3>
                                                             <h3>$ {item.producto.precio}</h3>
 
-                                                            {subtotal = item.producto.precio * item.quantity}
-                                                            {total = total + subtotal}
+                                                           
                                                         </div>
                                                         <div className="flex-row justify-between">
                                                             <div className="col-descripcion">
