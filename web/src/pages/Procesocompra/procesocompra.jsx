@@ -7,7 +7,7 @@ import Col from 'react-bootstrap/Col';
 import Modal from 'react-bootstrap/Modal';
 import 'bootstrap/dist/css/bootstrap.css';
 import { showError, showLoading, showSuccess } from '../../redux/ducks/common.duck';
-import { clearCart } from '../../redux/ducks/carrito.duck';
+import { addToCart, clearCart } from '../../redux/ducks/carrito.duck';
 
 const preventSubmit = (event) => {
     event.preventDefault();
@@ -94,7 +94,6 @@ export const Procesocompra = () => {
     }
 
     function valCelular(val) {
-        console.log(val);
         return(!val || val.length !== 10 || !isNumber(val));
     }
 
@@ -122,28 +121,40 @@ export const Procesocompra = () => {
         return ((tarjDeb || tarjCred) && (!val || val.length !== 3 || !isNumber(val)));
     }
 
-    //handleSubmit. Realiza el alta de la compra en la BD
-    const handleSubmit = (event, item) => {
-        valForm();
-        if (errors.length > 0) {
-            event.preventDefault();
-            event.stopPropagation();
-            dispatch(showError('Faltan datos o hay datos incorrectos'));
-            return;
-        }
+    let [errorStock, setErrorStock] = useState([]);
 
-        const form = event.currentTarget;
-        if (form.checkValidity() === false) {
-            event.preventDefault();
-            event.stopPropagation();
-            dispatch(showError('Faltan datos o hay datos incorrectos'));
-            return;
-        }
-        setValidated(true);
+    function chequearStock(event) {
 
-        event.preventDefault();
+        dispatch(showLoading(true));
 
+        let arrStock = new Array(carrito.length);
+        let errorStock = [];
 
+        fetch(process.env.REACT_APP_API_URL + '/products')
+        .then(res => res.json())
+        .then((productos) => {
+            console.log('productos', productos);
+            carrito && carrito.map((item, index) => {
+                const producto = productos.find(r => r.idProducto === item.producto.idProducto);
+                if (producto.stock < item.quantity) {
+                    errorStock.push(item.id);
+                    setErrorStock(errorStock);
+                    console.error('producto sin stock', errorStock);
+
+                    dispatch(addToCart(item.id, item.quantity, producto, item.extras));
+                }
+            });
+            if (errorStock.length === 0) {
+                realizarCompra(event);
+            } else {
+                dispatch(showLoading(false));
+                dispatch(showError('Uno o más producto se encuentran sin stock'));
+            }
+
+        })
+    }
+
+    function realizarCompra(event) {
         let productos = [];
         let cantidad = [];
         let precUnit = [];
@@ -177,24 +188,44 @@ export const Procesocompra = () => {
         }
         console.log('idDire:', idDire)
 
-
-
-        dispatch(showLoading(true))
         fetch(process.env.REACT_APP_API_URL + '/compra/add',
             {
                 method: 'POST',
-                body: JSON.stringify({ idusuario: loggedInUser["id"], idproductos: productos, precioUnitario: precUnit, cantprod: cantidad, tipoEnvio: tipoEnv, monto: total, TipoPago: tipoPago, dir: direccion, idDireccion: idDire, idTarj: idTarjeta, Tarjeta: tarjeta }),
+                body: JSON.stringify({ idusuario: loggedInUser["id"], dni, celular, idproductos: productos, precioUnitario: precUnit, cantprod: cantidad, tipoEnvio: tipoEnv, monto: total, TipoPago: tipoPago, dir: direccion, idDireccion: idDire, idTarj: idTarjeta, Tarjeta: tarjeta }),
                 headers: {
                     'Content-Type': 'application/json'
                 }
             }
         )
-            .then(res => res.json())
-            .then(() => {
-                dispatch(showSuccess('Pedido realizado con éxito'));
-                dispatch(clearCart());
-                history.push("/mis-pedidos");
-            })
+        .then(res => res.json())
+        .then(() => {
+            dispatch(showLoading(false));
+            dispatch(showSuccess('Pedido realizado con éxito'));
+            dispatch(clearCart());
+            history.push("/mis-pedidos");
+        })
+    }
+
+    //handleSubmit. Realiza el alta de la compra en la BD
+    const handleSubmit = (event, item) => {
+        event.preventDefault();
+        event.stopPropagation();
+
+        valForm();
+        if (errors.length > 0) {
+            dispatch(showError('Faltan datos o hay datos incorrectos'));
+            return;
+        }
+
+        const form = event.currentTarget;
+        if (form.checkValidity() === false) {
+            dispatch(showError('Faltan datos o hay datos incorrectos'));
+            return;
+        }
+        setValidated(true);
+
+        chequearStock(event);
+
     }
 
     //trae el precio del envio por CP
@@ -416,6 +447,10 @@ export const Procesocompra = () => {
                 }
             </>
         )
+    }
+
+    function readOnlyQuantity(item) {
+        return errorStock.indexOf(item.id) === -1 || item.producto.stock <= 0;
     }
 
     //**** CIERRE DE COMPRA *******/
@@ -736,8 +771,14 @@ export const Procesocompra = () => {
                                                             <div>
                                                                 <Form onSubmit={preventSubmit}>
                                                                     <Form.Row>
-                                                                        <Form.Group as={Col} md="4">
-                                                                            <Form.Control type="number" min="0" value={item.quantity} readOnly />
+                                                                        <Form.Group as={Col} md="6">
+                                                                            
+                                                                            <Form.Control type="number" min={1} max={item.producto.stock} value={item.quantity} readOnly={readOnlyQuantity(item)}
+                                                                            onChange={(e)=> e.target.value && dispatch(addToCart(item.id, parseInt(e.target.value, 10), item.producto, item.extras))} 
+                                                                            className={errorStock.indexOf(item.id) > -1
+                                                                            ? "form-control is-invalid"
+                                                                            : "form-control"} style={{'width':'75px'}}/>
+                                                                            {item.producto.stock <= 0 ? <div className="danger" style={{'width':'150px'}}>No disponible</div> : <div style={{'width':'150px'}}>{item.producto.stock} disponible</div> }
                                                                         </Form.Group>
                                                                     </Form.Row>
                                                                 </Form>

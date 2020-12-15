@@ -21,6 +21,18 @@ router.get('/', (request, response) => {
     });
 });
 
+router.get('/stock', (req, res) => {
+    var query = 'SELECT stock, idProducto FROM productos';
+    
+    console.log('query', query)
+    pool.query(query, (error, result) => {
+        console.log('error', error)
+        console.log('resukt', result)
+        if (error) throw error;
+        res.send(result);
+    });
+});
+
 router.get('/:id', (req, res) => {
     const id = req.params.id;
     pool.query('SELECT * FROM productos WHERE idProducto = '+ id , (error, result) => {
@@ -29,6 +41,7 @@ router.get('/:id', (req, res) => {
         res.send(result);
     });
 });
+
 
 router.put('/change-stock', (req, res) => {
     const data = req.body;

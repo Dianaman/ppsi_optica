@@ -23,6 +23,7 @@ export function carritoReducer(state = initial_state, action) {
             const itemEnCarrito = carritoToAdd.find(carritoItem => carritoItem.id === addId);
             if (itemEnCarrito) {
                 itemEnCarrito.quantity = newQuantity;
+                itemEnCarrito.producto = producto;
                 itemEnCarrito.extras = extras;
             } else {
                 const item = {

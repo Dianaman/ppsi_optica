@@ -100,6 +100,8 @@ export function AdmVentaDetalle(props) {
                     <p>
                         <div>Fecha de compra: {new Date(ventaMostrada.fechaCreacion).toLocaleDateString()}</div>
                         <div>Email: {ventaMostrada.email} </div>
+                        <div>Celular: {ventaMostrada.celular} </div>
+                        <div>DNI: {ventaMostrada.dni} </div>
                         <div>Estado: {ventaMostrada.estado}</div>
                         <div>Última actualización: {new Date(ventaMostrada.fechaUltimaActualizacion).toLocaleDateString()}</div>
                         <div>Estado de pago: {ventaMostrada.estadoFactura} </div>
