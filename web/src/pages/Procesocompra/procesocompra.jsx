@@ -57,14 +57,16 @@ export const Procesocompra = () => {
     function valForm() {
         validate(() => valCelular(celular), 'celular');
         validate(() => valDni(dni), 'dni');
+        if(dirNueva){
         validate(() => valDireccion(calle), 'calle');
         validate(() => valDireccion(localidad), 'localidad');
         validate(() => valDireccion(provincia), 'provincia');
-        validate(() => valDireccion(CP), 'cp');
+        validate(() => valDireccion(CP), 'cp');}
+        if(tarNueva){
         validate(() => valTarjetaNro(nroTarjeta), 'nrotarjeta');
         validate(() => valTarjetaTitular(titular), 'titulartarjeta');
         validate(() => valTarjetaVto(fechaVto), 'vtotarjeta');
-        validate(() => valTarjetaCod(codTar), 'codtarjeta');            
+        validate(() => valTarjetaCod(codTar), 'codtarjeta');   }         
     }
 
     function isNumber(val) {
@@ -140,6 +142,8 @@ export const Procesocompra = () => {
         setValidated(true);
 
         event.preventDefault();
+
+
         let productos = [];
         let cantidad = [];
         let precUnit = [];
@@ -167,7 +171,10 @@ export const Procesocompra = () => {
         if (tarjCred) { tipoPago = "Tarjeta de crédito"; tipoTarj = "TC" }
         if (mercadoPago) { tipoPago = "Mercado Pago" }
         tarjeta.tipo = tipoTarj;
-        console.log('datos tarjetas', tarjeta)
+        console.log('datos tarjetas', tarjeta);
+        if(!tarNueva){
+
+        }
         console.log('idDire:', idDire)
 
 
@@ -192,7 +199,7 @@ export const Procesocompra = () => {
 
     //trae el precio del envio por CP
     const calcularEnvio = (event, item) => {
-        event.preventDefault();
+      //  event.preventDefault();
         fetch(process.env.REACT_APP_API_URL + '/compra/' + CP,
             {
                 method: 'GET',
@@ -223,9 +230,7 @@ export const Procesocompra = () => {
             .then(listacps => {
                 ver = listacps;
                 setVer2(ver);
-                console.log('ver', ver[0]);
-                console.log('ver2', ver2);
-                console.log(listacps[0].codigoPostal);
+              
             })
     }
     //trae direcciones por usuario
@@ -242,7 +247,7 @@ export const Procesocompra = () => {
             .then(res => res.json())
             .then(listaDir => {
                 verDir = listaDir;
-                console.log('verDir', verDir);
+               
             })
     }
 
@@ -261,7 +266,7 @@ export const Procesocompra = () => {
             .then(res => res.json())
             .then(listaTarjetas => {
                 verTarjetas = listaTarjetas;
-                console.log('verTarjetas: ', verTarjetas)
+               
             })
     }
 
@@ -278,7 +283,7 @@ export const Procesocompra = () => {
                 .then(res => res.json())
                 .then(listaTarjetas => {
                     verTarjetas = listaTarjetas;
-                    console.log('verTarjetas: ', verTarjetas)
+                    
                 })
         }
     
@@ -292,6 +297,7 @@ export const Procesocompra = () => {
     const [noRetiro, setNoRetiro] = useState(false);
     let [accionBtnEnvio, setaccionBtnEnvio] = useState("Seleccionar de mis direcciones");
     let [idDire, setIdDire] = useState(0);
+    let [direSelec, setDireSelec] = useState([0]);
 
     const handleNoEnvio = () => {
         setNoEnvio(false);
@@ -307,22 +313,35 @@ export const Procesocompra = () => {
         setcostoenvio(0);
         setIdDire(0);
     }
-
+    let codpost = 0;
     const buscarDirecciones = () => {
-        if (dirNueva) {
-            console.log('id dire', idDire)
-            setDirNueva(false);
+        if (dirNueva) { 
+            setDirNueva(false); 
             setaccionBtnEnvio("Cargar una dirección nueva");
+            //console.log('idDire', JSON.parse(idDire));
+            
+            //setIdDire(JSON.parse(direSelec).id);
+            //codpost = JSON.parse(direSelec).codPostal;
+            //console.log('CodPost:', codpost);
+            //console.log('id dir selec:', JSON.parse(direSelec).id);
+            //setCP(codpost) ; 
 
         }
         else {
             setDirNueva(true);
             setaccionBtnEnvio("Ver mis direcciones");
             setIdDire(999999999);
-            console.log('id dire no ', idDire)
+            
+         
+
+             //codpost = JSON.parse(direSelec).codPostal;
+             //setCP(codpost) ;
+            //console.log('CodPost:', codpost);
+     
         }
 
     }
+    
 
     //**** MEDIO DE PAGO *******/
 
@@ -414,6 +433,20 @@ export const Procesocompra = () => {
     }
 
 
+    function SelecDireFun(a) {
+        setDireSelec(a);
+        console.log("id sale?:", JSON.parse(direSelec));
+
+        setIdDire(JSON.parse(direSelec).id);
+        console.log("id dire?:", idDire);
+
+        setcostoenvio(JSON.parse(direSelec).Precio);
+        console.log("costo envio:", costoenvio);
+
+        setCP(JSON.parse(direSelec).codPostal);
+        console.log("cod postal:", CP);
+    }
+
     //**** FRONT DE PROCESO DE COMPRA *******/
     return (
 
@@ -482,13 +515,13 @@ export const Procesocompra = () => {
                                         <Form.Row style={{ margin: '10px' }}>
                                             {!dirNueva && <Form.Group as={Col}>
 
-                                            <select required onChange={(e) => setIdDire(e.target.value)} value={idDire} class="form-control" >
+                                            <select required onClick={(e) => SelecDireFun(e.target.value)} onChange={(e) => SelecDireFun(e.target.value)} value={direSelec} class="form-control" >
 
-                                                    <option value="" >Direcciones guardadas</option>
+                                                    <option value=""  >Direcciones guardadas</option>
                                                     {verDir && verDir.map((item) => {
 
                                                         return (
-                                                            <option value={item.id}>{item.calleAltura}, {item.ciudad}</option>
+                                                            <option eventkey={item.id} value={JSON.stringify(item)}>{item.calleAltura}, {item.ciudad}</option>
                                                         )
                                                     })
                                                     }
@@ -594,8 +627,7 @@ export const Procesocompra = () => {
                                         <iframe src="https://maps.google.com" frameborder="0"
                                             style="border:0" allowfullscreen></iframe>
                                     </div>*/}
-
-                                            </Form.Row>
+ </Form.Row>
                                         </div>}
 
                                         <label class="font-weight-bold" style={{ margin: '10px' }}>Elegir Método de pago:</label>
