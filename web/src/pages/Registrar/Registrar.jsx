@@ -60,12 +60,15 @@ class Registrar extends React.Component {
         return formularioValido;
     };
 
-
     mensajeEnviado() {
         const enviado = this.state.enviado;
         const existe = this.state.existe;
 
         if (enviado === true) {
+
+            setTimeout(() => {
+                window.location.replace("/login");
+            },2500)
  
             return {
                 __html: '<div class="alert alert-success mt-3" role="alert">Usuario Registrado Correctamente!</div>'
