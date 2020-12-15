@@ -32,6 +32,18 @@ export function MiPedidoDetalle(props) {
         }
     }
 
+    // function getCard(){
+    //     var card;
+    //     detalles.forEach(detalle => {
+    //         card = detalle.numero;
+    //     });
+
+    //     if(card != null)
+    //         card = card.substr(-4);
+
+    //     return card;
+    // }
+
     function mostrarMontoEnvio() {
         let montoSinEnvio = 0;
 
@@ -61,9 +73,12 @@ export function MiPedidoDetalle(props) {
                     <p>
                         <div>Fecha de compra: {new Date(miPedidoMostrado.fechaCreacion).toLocaleDateString()}</div>
                         <div>Estado del pedido: {miPedidoMostrado.estadoPedido}</div>
-                        {/* <div>Última actualización: {new Date(miPedidoMostrado.fechaUltimaActualizacion).toLocaleDateString()}</div> */}
-                        {/* <div>Estado de pago: {miPedidoMostrado.estadoFactura} </div> */}
-                        <div>Tipo de pago: {miPedidoMostrado.tipoPago}</div>
+                        {
+                             miPedidoMostrado.numTarjeta == null && <div>Tipo de pago: {miPedidoMostrado.tipoPago}</div>
+                        }
+                        {
+                             miPedidoMostrado.numTarjeta != null && <div>Tipo de pago: {miPedidoMostrado.tipoPago}: ********-{miPedidoMostrado.numTarjeta.substr(-4)}</div>
+                        }
                         <div>Estado de pago: {miPedidoMostrado.estadoFactura}</div>
                         <div>Monto Total: ${miPedidoMostrado.monto}</div>
                     </p>
@@ -78,7 +93,7 @@ export function MiPedidoDetalle(props) {
                         {
                             miPedidoMostrado.idDomicilio &&
                             <div>
-                                
+                                <div>Dirección: {miPedidoMostrado.calleAltura}, {miPedidoMostrado.ciudad}, {miPedidoMostrado.provincia}</div>
                             </div>
                         }
 
