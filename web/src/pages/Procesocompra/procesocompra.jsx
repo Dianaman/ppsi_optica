@@ -107,11 +107,7 @@ export const Procesocompra = () => {
     function valDireccion(val) {
         return (!noEnvio && !val);
     }
-    function valTarjetaId(val) {
-        console.log("val id tarjeta:",val)
-            console.log("entro aca");
-        return ((tarjDeb || tarjCred) && (!val || !isNumber(val)));
-    }
+
     function valTarjetaNro(val) {
         return ((tarjDeb || tarjCred) && (!val || val.length !== 16 || !isNumber(val)));
     }
@@ -346,6 +342,7 @@ export const Procesocompra = () => {
         setIdDire(999999999);
         traerCpes();
         traerDirUsu();
+        setNumSuc(0);
     }
 
     const handleNoRetiro = () => {
@@ -353,7 +350,7 @@ export const Procesocompra = () => {
         setNoRetiro(false);
         setcostoenvio(0);
         setIdDire(0);
-        setNumSuc(0);
+     
     }
     let codpost = 0;
     const buscarDirecciones = () => {
@@ -695,10 +692,8 @@ export const Procesocompra = () => {
                                                         <Form.Row style={{ margin: '15px' }}><Button variant="info" onClick={buscarTarjetas} >{btnTarjetas}</Button>  </Form.Row>
                                                        
                                                         {!tarNueva && <Form.Group as={Col}>
-                                                            <select required onClick={(e) => setIdTarjeta(e.target.value)} onChange={(e) => setIdTarjeta(e.target.value)} value={idTarjeta} 
-                                                            className={hasError("idtarjeta")
-                                                            ? "form-control is-invalid"
-                                                            : "form-control"} >
+                                                            <select required  onChange={(e) => setIdTarjeta(e.target.value)} value={idTarjeta} 
+                                                            className="form-control" >
                                                                 <option value="" >Tarjetas guardadas</option>
                                                                 {verTarjetas && verTarjetas.map((item) => {
 
