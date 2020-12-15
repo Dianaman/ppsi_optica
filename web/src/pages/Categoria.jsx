@@ -55,6 +55,7 @@ export function Categoria () {
                                             <Card.Title>{prod.nombre}</Card.Title>
                                             <Card.Text>{prod.descripcion}</Card.Text>
                                             <Card.Title>$ {prod.precio}</Card.Title>
+                                            {prod.stock <= 0 && <Card.Text className="danger">Sin stock</Card.Text>}
                                         </Card.Body>
                                     </Card>                        
                                 );
