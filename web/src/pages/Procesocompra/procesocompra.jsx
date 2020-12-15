@@ -390,6 +390,22 @@ export const Procesocompra = () => {
 
     }
 
+    function calcTotal() {
+        total = 0;
+        carrito.forEach(item => {
+            total += item.quantity * item.producto.precio;
+        });
+        total += (costoenvio || 0); 
+    
+        return (
+            <>
+                {
+                    total
+                }
+            </>
+        )
+    }
+
     //**** CIERRE DE COMPRA *******/
 
     //boton cancelar transaccion. Vuelve al inicio
@@ -657,8 +673,6 @@ export const Procesocompra = () => {
 
 
                                         {carrito && carrito.map((item) => {
-                                             {subtotal = item.producto.precio * item.quantity}
-                                             {total = total + subtotal}
                                             return (
                                                 <div className="app-card" key={item.id}>
 
@@ -691,7 +705,7 @@ export const Procesocompra = () => {
                                                         </div>
 
                                                         <div className="col-descripcion">
-                                                            SUBTOTAL        {subtotal}
+                                                            SUBTOTAL        ${item.producto.precio * item.quantity}
                                                         </div>
 
 
@@ -704,7 +718,7 @@ export const Procesocompra = () => {
 
                                         <h3 className="col-descripcion" style={{ margin: '10px' }}>
 
-                                            TOTAL                                $ {total = total + costoenvio}
+                                            TOTAL                                $ {calcTotal()}
                                         </h3>
 
 
@@ -715,7 +729,7 @@ export const Procesocompra = () => {
                                             </Form.Group>
 
                                             <Form.Group as={Col} >
-                                                <Button variant="info" type="submit" >Confirmar</Button>
+                                                <Button variant="info" type="submit" disabled={errors.length > 1 || !carrito.length}>Confirmar</Button>
                                             </Form.Group>
                                         </Form.Row>
 
