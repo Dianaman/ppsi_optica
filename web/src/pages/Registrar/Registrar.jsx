@@ -66,9 +66,9 @@ class Registrar extends React.Component {
 
         if (enviado === true) {
 
-            setTimeout(() => {
-                window.location.replace("/login");
-            },2500)
+            // setTimeout(() => {
+            //     window.location.replace("/login");
+            // },2500)
  
             return {
                 __html: '<div class="alert alert-success mt-3" role="alert">Usuario Registrado Correctamente!</div>'
