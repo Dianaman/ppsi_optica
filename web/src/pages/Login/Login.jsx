@@ -30,6 +30,7 @@ export default function Login() {
                 dispatch(setActualUser(userBack));
                 localStorage.setItem('user', JSON.stringify(userBack));
                 dispatch(showLoading(false));
+                history.push("/");
             } else if(userBack !== false && userBack.estado === 'bloqueado') {
                 localStorage.setItem('user', false);
                 dispatch(showLoading(false));
@@ -56,8 +57,8 @@ export default function Login() {
         return(
             <div className="login-page">
                 <div className="form">
-                    <div> Bienvenido/a {usuarioActual.nombre} !</div>
-                    <button onClick={handleLogout}>logout</button>
+                    <div>{usuarioActual.nombre}, seguro que deseas salir?</div>
+                    <button onClick={handleLogout}>Cerrar Sesión</button>
                 </div>
             </div>            
         );
