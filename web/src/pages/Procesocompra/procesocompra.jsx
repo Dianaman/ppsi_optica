@@ -62,11 +62,13 @@ export const Procesocompra = () => {
         validate(() => valDireccion(localidad), 'localidad');
         validate(() => valDireccion(provincia), 'provincia');
         validate(() => valDireccion(CP), 'cp');}
+        
         if(tarNueva){
         validate(() => valTarjetaNro(nroTarjeta), 'nrotarjeta');
         validate(() => valTarjetaTitular(titular), 'titulartarjeta');
         validate(() => valTarjetaVto(fechaVto), 'vtotarjeta');
-        validate(() => valTarjetaCod(codTar), 'codtarjeta');   }         
+        validate(() => valTarjetaCod(codTar), 'codtarjeta');   }
+             
     }
 
     function isNumber(val) {
@@ -99,12 +101,17 @@ export const Procesocompra = () => {
 
     function valDni(val) {
         return (!val || val.length !== 8 || !isNumber(val));
+    
     }
 
     function valDireccion(val) {
         return (!noEnvio && !val);
     }
-
+    function valTarjetaId(val) {
+        console.log("val id tarjeta:",val)
+            console.log("entro aca");
+        return ((tarjDeb || tarjCred) && (!val || !isNumber(val)));
+    }
     function valTarjetaNro(val) {
         return ((tarjDeb || tarjCred) && (!val || val.length !== 16 || !isNumber(val)));
     }
@@ -186,12 +193,12 @@ export const Procesocompra = () => {
         if(!tarNueva){
 
         }
-        console.log('idDire:', idDire)
+       
 
         fetch(process.env.REACT_APP_API_URL + '/compra/add',
             {
                 method: 'POST',
-                body: JSON.stringify({ idusuario: loggedInUser["id"], dni, celular, idproductos: productos, precioUnitario: precUnit, cantprod: cantidad, tipoEnvio: tipoEnv, monto: total, TipoPago: tipoPago, dir: direccion, idDireccion: idDire, idTarj: idTarjeta, Tarjeta: tarjeta }),
+                body: JSON.stringify({ idusuario: loggedInUser["id"], dni, celular, idproductos: productos, precioUnitario: precUnit, cantprod: cantidad, tipoEnvio: tipoEnv, monto: total, TipoPago: tipoPago, dir: direccion, idDireccion: idDire, idTarj: idTarjeta, Tarjeta: tarjeta, nroSuc: numSuc }),
                 headers: {
                     'Content-Type': 'application/json'
                 }
@@ -330,6 +337,8 @@ export const Procesocompra = () => {
     let [idDire, setIdDire] = useState(0);
     let [direSelec, setDireSelec] = useState([0]);
     let [cpSelec, setCpSelec] = useState([0]);
+    let [numSuc, setNumSuc] = useState(1);
+
 
     const handleNoEnvio = () => {
         setNoEnvio(false);
@@ -344,6 +353,7 @@ export const Procesocompra = () => {
         setNoRetiro(false);
         setcostoenvio(0);
         setIdDire(0);
+        setNumSuc(0);
     }
     let codpost = 0;
     const buscarDirecciones = () => {
@@ -645,10 +655,10 @@ export const Procesocompra = () => {
                                                 <Form.Group as={Col}  >
 
                                                     <label style={{ margin: '10px' }} className="text-dark">Elegir sucursal más cercana:</label>
-                                                    <select disabled={noRetiro} placeholder="Sucursales" className="form-control" >
-                                                        <option >Sucursal 1, Av. Alcorta 2334, CABA</option>
-                                                        <option >Sucursal 2, Av. Bicentenario 4321, CABA</option>
-                                                        <option>Sucursal 3, Avellaneda 5432, CABA</option>
+                                                    <select disabled={noRetiro} onChange={(e) =>{  setNumSuc(e.target.value)}} onClick={(e) =>{setNumSuc(e.target.value)}} value={numSuc} placeholder="Sucursales" className="form-control" >
+                                                        <option value={1}>Sucursal 1, Av. Alcorta 2334, CABA</option>
+                                                        <option value={2}>Sucursal 2, Av. Bicentenario 4321, CABA</option>
+                                                        <option value={3}>Sucursal 3, Avellaneda 5432, CABA</option>
                                                     </select>
                                                 </Form.Group>
 
@@ -683,14 +693,18 @@ export const Procesocompra = () => {
 
                                                     {(tarjDeb || tarjCred) && <div className="container" style={{ backgroundColor: '#eceef0', width: 'auto' }}>
                                                         <Form.Row style={{ margin: '15px' }}><Button variant="info" onClick={buscarTarjetas} >{btnTarjetas}</Button>  </Form.Row>
+                                                       
                                                         {!tarNueva && <Form.Group as={Col}>
-                                                            <select required onChange={(e) => setIdTarjeta(e.target.value)} value={idTarjeta} className="form-control" >
+                                                            <select required onClick={(e) => setIdTarjeta(e.target.value)} onChange={(e) => setIdTarjeta(e.target.value)} value={idTarjeta} 
+                                                            className={hasError("idtarjeta")
+                                                            ? "form-control is-invalid"
+                                                            : "form-control"} >
                                                                 <option value="" >Tarjetas guardadas</option>
                                                                 {verTarjetas && verTarjetas.map((item) => {
 
                                                                     return (
 
-                                                                        <option value={item.idTarjeta}>{(item.numero)}</option>
+                                                                        <option eventkey={item.id} value={item.idTarjeta}>{(item.numero)}</option>
                                                                     )
                                                                 })
                                                                 }
