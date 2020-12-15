@@ -298,6 +298,7 @@ export const Procesocompra = () => {
     let [accionBtnEnvio, setaccionBtnEnvio] = useState("Seleccionar de mis direcciones");
     let [idDire, setIdDire] = useState(0);
     let [direSelec, setDireSelec] = useState([0]);
+    let [cpSelec, setCpSelec] = useState([0]);
 
     const handleNoEnvio = () => {
         setNoEnvio(false);
@@ -318,25 +319,14 @@ export const Procesocompra = () => {
         if (dirNueva) { 
             setDirNueva(false); 
             setaccionBtnEnvio("Cargar una dirección nueva");
-            //console.log('idDire', JSON.parse(idDire));
-            
-            //setIdDire(JSON.parse(direSelec).id);
-            //codpost = JSON.parse(direSelec).codPostal;
-            //console.log('CodPost:', codpost);
-            //console.log('id dir selec:', JSON.parse(direSelec).id);
-            //setCP(codpost) ; 
+            setcostoenvio(0);
 
         }
         else {
             setDirNueva(true);
             setaccionBtnEnvio("Ver mis direcciones");
             setIdDire(999999999);
-            
-         
-
-             //codpost = JSON.parse(direSelec).codPostal;
-             //setCP(codpost) ;
-            //console.log('CodPost:', codpost);
+            setcostoenvio(0);
      
         }
 
@@ -447,6 +437,17 @@ export const Procesocompra = () => {
         console.log("cod postal:", CP);
     }
 
+    function SelecCpFun(a) {
+        setCpSelec(a);
+        console.log("CP ?:", JSON.parse(cpSelec));
+
+        setcostoenvio(JSON.parse(cpSelec).Precio);
+        console.log("costo envio:", costoenvio);
+
+        setCP(JSON.parse(cpSelec).codigoPostal);
+        console.log("cod postal:", CP);
+    }
+
     //**** FRONT DE PROCESO DE COMPRA *******/
     return (
 
@@ -549,7 +550,7 @@ export const Procesocompra = () => {
 
                                             <Form.Group as={Col}>
 
-                                                <select required onChange={(e) => setCP(e.target.value)} value={CP} 
+                                                <select required onClick={(e) => SelecCpFun(e.target.value)} onChange={(e) => SelecCpFun(e.target.value)} value={cpSelec} 
                                                 className={hasError("cp")
                                                     ? "form-control is-invalid"
                                                     : "form-control"}>
@@ -558,7 +559,7 @@ export const Procesocompra = () => {
                                                     {ver && ver.map((item) => {
 
                                                         return (
-                                                            <option value={item.codigoPostal}>{item.codigoPostal}</option>
+                                                            <option eventkey={item.id} value={JSON.stringify(item)}>{item.codigoPostal}</option>
                                                         )
                                                     })
                                                     }
@@ -590,7 +591,7 @@ export const Procesocompra = () => {
 
                                         <Form.Row style={{ margin: '2px' }}>
                                             <Form.Group as={Col} >
-                                                <Button disabled={noEnvio} variant="info" onClick={calcularEnvio} >Calcular Envio</Button>
+                                                {/*<Button disabled={noEnvio} variant="info" onClick={calcularEnvio} >Calcular Envio</Button>*/}
                                                 <label show={noEnvio} class="font-weight-bold" style={{ margin: '10px' }}>Costo de envío: $  {costoenvio}</label>
 
                                             </Form.Group>
