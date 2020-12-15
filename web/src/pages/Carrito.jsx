@@ -23,6 +23,9 @@ export function Carrito() {
             history.push("/login")
         }
     }
+    function irAProductos(){
+        history.push("/")
+    }
 
     const {carrito} = app.carritoReducer;
 
@@ -112,7 +115,7 @@ export function Carrito() {
             <br />
             
             <div className="flex-row justify-between">
-                <Button variant="info">Ver más productos</Button>
+                <Button variant="info"  onClick={irAProductos} >Ver más productos</Button>
                 <Button variant="info"   onClick={handleClick}>Comprar</Button>
             </div>
         </div>
