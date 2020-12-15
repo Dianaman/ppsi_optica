@@ -10,6 +10,7 @@ router.get('/', (request, response) => {
     query += 'FROM pedidos as p ';
     query += 'LEFT JOIN users as u ON p.idUsuario = u.id ';
     query += 'LEFT JOIN facturas as f ON p.idPedido = f.idPedido ';
+    query += 'ORDER BY p.estado DESC, p.fechaUltimaActualizacion DESC';
 
 
     // let query = 'SELECT dp.*, p.*, f.*, u.email FROM detallePedidos as dp ';
@@ -20,11 +21,6 @@ router.get('/', (request, response) => {
 
     pool.query(query, (error, result) => {
         if (error) throw error;
-
-        console.log("query: ");
-        console.log(query);
-        console.log("result: ");
-        console.log(result);
 
         response.send(result);
     });

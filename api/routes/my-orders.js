@@ -12,6 +12,7 @@ router.get('/:userId', (request, response) => {
     query += 'LEFT JOIN tarjetas as t ON f.idTarjeta = t.idTarjeta ';
     query += 'LEFT JOIN direccion as d ON p.idDirEnvio = d.id ';
     query += 'WHERE p.idUsuario = ' + userId;
+    query += ' ORDER BY p.fechaUltimaActualizacion DESC';
 
     pool.query(query, (error, result) => {
         if (error) throw error;
