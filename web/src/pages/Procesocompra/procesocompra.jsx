@@ -324,7 +324,7 @@ export const Procesocompra = () => {
         }
         else {
             setDirNueva(true);
-            setaccionBtnEnvio("Ver mis direcciones");
+            setaccionBtnEnvio("Seleccionar de mis direcciones");
             setIdDire(999999999);
             setcostoenvio(0);
      
@@ -363,6 +363,7 @@ export const Procesocompra = () => {
         traerTarjDeb();
         setTarNueva(true);
         setIdTarjeta(999999999);
+        setBtnTarjetas("Seleccionar de mis tarjetas");
 
     }
 
@@ -374,6 +375,7 @@ export const Procesocompra = () => {
         traerTarjCred();
         setTarNueva(true);
         setIdTarjeta(999999999);
+        setBtnTarjetas("Seleccionar de mis tarjetas");
 
     }
     const handleMC = () => {
@@ -382,6 +384,7 @@ export const Procesocompra = () => {
         setMercadoPago(true);
         setTarNueva(true);
         setIdTarjeta(0);
+        
         
     }
 
@@ -393,7 +396,7 @@ export const Procesocompra = () => {
         }
         else {
             setTarNueva(true);
-            setBtnTarjetas("Ver mis tarjetas");
+            setBtnTarjetas("Seleccionar de mis tarjetas");
             setIdTarjeta(999999999);
         }
 
@@ -608,9 +611,9 @@ export const Procesocompra = () => {
 
                                                     <label style={{ margin: '10px' }} className="text-dark">Elegir sucursal más cercana:</label>
                                                     <select disabled={noRetiro} placeholder="Sucursales" className="form-control" >
-                                                        <option >Sucursal 1</option>
-                                                        <option >Sucursal 2</option>
-                                                        <option>Sucursal 3</option>
+                                                        <option >Sucursal 1, Av. Alcorta 2334, CABA</option>
+                                                        <option >Sucursal 2, Av. Bicentenario 4321, CABA</option>
+                                                        <option>Sucursal 3, Avellaneda 5432, CABA</option>
                                                     </select>
                                                 </Form.Group>
 
@@ -662,6 +665,7 @@ export const Procesocompra = () => {
 
                                                         {tarNueva &&
                                                             <Form.Row style={{ margin: '10px' }}>
+                                                                <Form.Control plaintext readOnly defaultValue=" (Formato 16 dig sin espacios)" />
                                                                 <Form.Group as={Col} >
                                                                     <Form.Control type="text" placeholder="Número" maxLength={16} value={nroTarjeta}
                                                                     className={hasError("nrotarjeta")
@@ -671,6 +675,7 @@ export const Procesocompra = () => {
                                                                 </Form.Group>
 
                                                                 <Form.Group as={Col} >
+                                                                    
                                                                     <Form.Control type="text" placeholder="Titular" 
                                                                     className={hasError("titulartarjeta")
                                                                     ? "form-control is-invalid"
@@ -681,8 +686,10 @@ export const Procesocompra = () => {
                                                             </Form.Row>}
                                                         {tarNueva &&
                                                             <Form.Row style={{ margin: '10px' }}>
+                                                                <Form.Control plaintext readOnly defaultValue=" (Formato MM/AA)" />
                                                                 <Form.Group as={Col} >
-                                                                    <Form.Control type="text" placeholder="Fec vto" maxLength={5} 
+                                                                
+                                                                    <Form.Control type="text" placeholder="Fecha Vto" maxLength={5} 
                                                                     className={hasError("vtotarjeta")
                                                                     ? "form-control is-invalid"
                                                                     : "form-control"}
