@@ -6,7 +6,7 @@ import Form from 'react-bootstrap/Form';
 import Col from 'react-bootstrap/Col';
 import Modal from 'react-bootstrap/Modal';
 import 'bootstrap/dist/css/bootstrap.css';
-import { showLoading, showSuccess } from '../../redux/ducks/common.duck';
+import { showError, showLoading, showSuccess } from '../../redux/ducks/common.duck';
 import { clearCart } from '../../redux/ducks/carrito.duck';
 
 const preventSubmit = (event) => {
@@ -40,9 +40,13 @@ export const Procesocompra = () => {
     direccion.CP = CP;
     direccion.localidad = localidad;
     direccion.provincia = provincia;
-    dni = loggedInUser["dni"];
-    celular = loggedInUser["celular"];
 
+    React.useEffect(() => {
+        setDni(loggedInUser["dni"] || '');
+        setCelular(loggedInUser["celular"] || '');
+
+        valForm();
+    }, []);
 
     let [ver2, setVer2] = useState({});
     var total = 0;
@@ -50,13 +54,88 @@ export const Procesocompra = () => {
     let history = useHistory();
     const [validated, setValidated] = useState(false);
 
+    function valForm() {
+        validate(() => valCelular(celular), 'celular');
+        validate(() => valDni(dni), 'dni');
+        validate(() => valDireccion(calle), 'calle');
+        validate(() => valDireccion(localidad), 'localidad');
+        validate(() => valDireccion(provincia), 'provincia');
+        validate(() => valDireccion(CP), 'cp');
+        validate(() => valTarjetaNro(nroTarjeta), 'nrotarjeta');
+        validate(() => valTarjetaTitular(titular), 'titulartarjeta');
+        validate(() => valTarjetaVto(fechaVto), 'vtotarjeta');
+        validate(() => valTarjetaCod(codTar), 'codtarjeta');            
+    }
+
+    function isNumber(val) {
+        return val.match('^[0-9]+$');
+    }
+
+    let [errors, setErrors] = useState([]);
+    function validate(cb, field) {
+        if (field) {
+            if(cb()) {
+                if (errors.indexOf(field) === -1) {
+                    errors.push(field);
+                }
+            } else {
+                if(errors.indexOf(field) > -1) {
+                    errors.splice(errors.indexOf(field), 1);
+                }
+            }            
+        }
+
+    }
+
+    function hasError(field){
+        return errors.indexOf(field) > -1;
+    }
+
+    function valCelular(val) {
+        console.log(val);
+        return(!val || val.length !== 10 || !isNumber(val));
+    }
+
+    function valDni(val) {
+        return (!val || val.length !== 8 || !isNumber(val));
+    }
+
+    function valDireccion(val) {
+        return (!noEnvio && !val);
+    }
+
+    function valTarjetaNro(val) {
+        return ((tarjDeb || tarjCred) && (!val || val.length !== 16 || !isNumber(val)));
+    }
+
+    function valTarjetaTitular(val) {
+        return ((tarjDeb || tarjCred) && !val);
+    }
+
+    function valTarjetaVto(val) {
+        return ((tarjDeb || tarjCred) && (!val || val.length !== 5 || !val.match('^((0[1-9])|(1[0-2]))\/(([2-3])([0-9]))$')));
+    }
+
+    function valTarjetaCod(val) {
+        return ((tarjDeb || tarjCred) && (!val || val.length !== 3 || !isNumber(val)));
+    }
 
     //handleSubmit. Realiza el alta de la compra en la BD
     const handleSubmit = (event, item) => {
+        valForm();
+        if (errors.length > 0) {
+            event.preventDefault();
+            event.stopPropagation();
+            dispatch(showError('Faltan datos o hay datos incorrectos'));
+            return;
+        }
+
         const form = event.currentTarget;
         if (form.checkValidity() === false) {
             event.preventDefault();
             event.stopPropagation();
+            dispatch(showError('Faltan datos o hay datos incorrectos'));
+            return;
         }
         setValidated(true);
 
@@ -257,6 +336,7 @@ export const Procesocompra = () => {
     let [titular, setTitular] = useState("");
     let [fechaVto, setFechaVto] = useState("");
     let [idTarjeta, setIdTarjeta] = useState(0);
+    let [codTar, setCodTar] = useState("");
     let [tipoTar, setTipoTar] = useState("");
     const [tarNueva, setTarNueva] = useState(true);
 
@@ -317,17 +397,6 @@ export const Procesocompra = () => {
         history.push("/")
     }
 
-    //para manejar el mensaje de compra exitosa 
-    const [show, setShow] = useState(false);
-    const handleShow = () => {
-        if (validated)
-            setShow(true);
-    }
-    const handleClose = () => {
-        setShow(false);
-        Cancelar();
-    }
-
 
     //**** FRONT DE PROCESO DE COMPRA *******/
     return (
@@ -340,26 +409,35 @@ export const Procesocompra = () => {
 
                 <div className="comprar-page">
                     <ul className="list-group" >
-                        <Form model="pedido" noValidate validated={validated} onSubmit={handleSubmit} >
+                        <Form model="pedido" noValidate validated={validated} onSubmit={handleSubmit} onChange={valForm}>
                             <Form.Row style={{ margin: '15px' }}>
                                 <Form.Group as={Col} controlId="validationCustom02" >
-
-                                    <Form.Control disabled="true" type="text" model="pedido.idusuario" placeholder="Nombre y Apellido" value={nomyape} />
+                                    <Form.Control disabled={true} type="text" model="pedido.idusuario" placeholder="Nombre y Apellido" value={nomyape} />
                                 </Form.Group>
 
                                 <Form.Group as={Col} >
-                                    <Form.Control required minLength="8" maxLength="8" type="text" placeholder="DNI" onChange={(e) => setDni(e.target.value)} value={dni} />
+                                    <Form.Control required minLength="8" maxLength="8" type="text" placeholder="DNI" 
+                                    className={hasError("dni")
+                                    ? "form-control is-invalid"
+                                    : "form-control"}
+                                    onChange={(e) =>{  setDni(e.target.value)}}
+                                    value={dni}/>
                                 </Form.Group>
 
                             </Form.Row>
 
                             <Form.Row style={{ margin: '15px' }}>
                                 <Form.Group as={Col} >
-                                    <Form.Control disabled="true" type="email" placeholder="Correo Electrónico" value={email} />
+                                    <Form.Control disabled={true} type="email" placeholder="Correo Electrónico" value={email}/>
                                 </Form.Group>
 
                                 <Form.Group as={Col} >
-                                    <Form.Control required type="text" minLength="10" maxLength="10" placeholder="Celular" onChange={(e) => setCelular(e.target.value)} value={celular} />
+                                    <Form.Control required type="text" minLength="10" maxLength="10" placeholder="Celular"
+                                    className={hasError("celular")
+                                    ? "form-control is-invalid"
+                                    : "form-control"}
+                                    onChange={(e) =>{  setCelular(e.target.value)}}
+                                    value={celular} />
                                 </Form.Group>
 
                             </Form.Row>
@@ -388,7 +466,7 @@ export const Procesocompra = () => {
                                         <Form.Row style={{ margin: '10px' }}>
                                             {!dirNueva && <Form.Group as={Col}>
 
-                                                <select required onChange={(e) => setIdDire(e.target.value)} value={idDire} class="form-control" >
+                                            <select required onChange={(e) => setIdDire(e.target.value)} value={idDire} class="form-control" >
 
                                                     <option value="" >Direcciones guardadas</option>
                                                     {verDir && verDir.map((item) => {
@@ -407,20 +485,27 @@ export const Procesocompra = () => {
 
 
                                             <Form.Group as={Col}  >
-                                                <Form.Control required disabled={noEnvio} type="text" placeholder="Calle y altura" onChange={(e) => setCalle(e.target.value)} value={calle} />
+                                                <Form.Control className={hasError("calle")
+                                                    ? "form-control is-invalid"
+                                                    : "form-control"}
+                                                    onChange={(e) =>{  setCalle(e.target.value)}}
+                                                    disabled={noEnvio} type="text" placeholder="Calle y altura" value={calle} />
                                             </Form.Group>
 
                                             <Form.Group as={Col} >
 
-                                                <Form.Control required disabled={noEnvio} type="text" placeholder="Piso/Depto" onChange={(e) => setAltura(e.target.value)} value={altura} />
+                                                <Form.Control disabled={noEnvio} type="text" placeholder="Piso/Depto" onChange={(e) => setAltura(e.target.value)} value={altura} />
                                             </Form.Group>
 
 
                                             <Form.Group as={Col}>
 
-                                                <select required onChange={(e) => setCP(e.target.value)} value={CP} class="form-control" >
+                                                <select required onChange={(e) => setCP(e.target.value)} value={CP} 
+                                                className={hasError("cp")
+                                                    ? "form-control is-invalid"
+                                                    : "form-control"}>
 
-                                                    <option selected value="" >Seleccione un Código Postal...</option>
+                                                    <option selected value="" >Código Postal</option>
                                                     {ver && ver.map((item) => {
 
                                                         return (
@@ -437,11 +522,20 @@ export const Procesocompra = () => {
 
                                         {dirNueva && <Form.Row style={{ margin: '2px' }}>
                                             <Form.Group as={Col} >
-                                                <Form.Control required disabled={noEnvio} type="text" placeholder="Localidad" onChange={(e) => setLocalidad(e.target.value)} value={localidad} />
+                                                <Form.Control className={hasError("localidad")
+                                                    ? "form-control is-invalid"
+                                                    : "form-control"}
+                                                    onChange={(e) =>{  setLocalidad(e.target.value)}}
+                                                    value={localidad}
+                                                    disabled={noEnvio} type="text" placeholder="Localidad" />
                                             </Form.Group>
 
                                             <Form.Group as={Col} >
-                                                <Form.Control required disabled={noEnvio} type="text" placeholder="Provincia" onChange={(e) => setProvincia(e.target.value)} value={provincia} />
+                                                <Form.Control  className={hasError("provincia")
+                                                    ? "form-control is-invalid"
+                                                    : "form-control"}
+                                                    onChange={(e) =>{  setProvincia(e.target.value)}}
+                                                     disabled={noEnvio} type="text" placeholder="Provincia" value={provincia} />
                                             </Form.Group>
                                         </Form.Row>}
 
@@ -456,16 +550,14 @@ export const Procesocompra = () => {
                                     </div>}
 
 
-
-                                    <Form onSubmit={preventSubmit} >
-                                        {!noRetiro && <div class="card horizontal">
-                                            <label class="font-weight-bold" style={{ margin: '10px' }}>Retirar por sucursal:</label>
+                                        {!noRetiro && <div className="card horizontal">
+                                            <label className="font-weight-bold" style={{ margin: '10px' }}>Retirar por sucursal:</label>
 
                                             <Form.Row style={{ margin: '15px' }}>
                                                 <Form.Group as={Col}  >
 
-                                                    <label style={{ margin: '10px' }} class="text-dark">Elegir sucursal más cercana:</label>
-                                                    <select disabled={noRetiro} placeholder="Sucursales" class="form-control" >
+                                                    <label style={{ margin: '10px' }} className="text-dark">Elegir sucursal más cercana:</label>
+                                                    <select disabled={noRetiro} placeholder="Sucursales" className="form-control" >
                                                         <option >Sucursal 1</option>
                                                         <option >Sucursal 2</option>
                                                         <option>Sucursal 3</option>
@@ -475,14 +567,14 @@ export const Procesocompra = () => {
 
                                             </Form.Row>
                                             <Form.Row style={{ margin: '15px' }}>
-                                                {/*<label  style={{ margin: '10px' }} class="text-dark">Elegir sucursal del mapa:</label>*/}
+                                                {/*<label  style={{ margin: '10px' }} className="text-dark">Elegir sucursal del mapa:</label>*/}
                                                 {/*
                                                 <Form.Group disabled={noRetiro} as={Col} >
                                                     <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d3284.1316028454944!2d-58.54251486611325!3d-34.60083354592867!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1ses!2sar!4v1604874798531!5m2!1ses!2sar" ></iframe>
                                                 </Form.Group>
                                                
                                     estilos de google maps:style={{width="200" height="200" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"}}
-                                    <div id="map-container-google-1" class="z-depth-1-half map-container" style="height: 20px">
+                                    <div id="map-container-google-1" className="z-depth-1-half map-container" style="height: 20px">
                                         <iframe src="https://maps.google.com" frameborder="0"
                                             style="border:0" allowfullscreen></iframe>
                                     </div>*/}
@@ -505,7 +597,7 @@ export const Procesocompra = () => {
                                                     {(tarjDeb || tarjCred) && <div className="container" style={{ backgroundColor: '#eceef0', width: 'auto' }}>
                                                         <Form.Row style={{ margin: '15px' }}><Button variant="info" onClick={buscarTarjetas} >{btnTarjetas}</Button>  </Form.Row>
                                                         {!tarNueva && <Form.Group as={Col}>
-                                                            <select required onChange={(e) => setIdTarjeta(e.target.value)} value={idTarjeta} class="form-control" >
+                                                            <select required onChange={(e) => setIdTarjeta(e.target.value)} value={idTarjeta} className="form-control" >
                                                                 <option value="" >Tarjetas guardadas</option>
                                                                 {verTarjetas && verTarjetas.map((item) => {
 
@@ -522,21 +614,38 @@ export const Procesocompra = () => {
                                                         {tarNueva &&
                                                             <Form.Row style={{ margin: '10px' }}>
                                                                 <Form.Group as={Col} >
-                                                                    <Form.Control type="text" placeholder="Número" onChange={(e) => setNroTarjeta(e.target.value)} value={nroTarjeta} />
+                                                                    <Form.Control type="text" placeholder="Número" maxLength={16} value={nroTarjeta}
+                                                                    className={hasError("nrotarjeta")
+                                                                    ? "form-control is-invalid"
+                                                                    : "form-control"}
+                                                                    onChange={(e) =>{  setNroTarjeta(e.target.value)}} />
                                                                 </Form.Group>
 
                                                                 <Form.Group as={Col} >
-                                                                    <Form.Control type="text" placeholder="Titular" onChange={(e) => setTitular(e.target.value)} value={titular} />
+                                                                    <Form.Control type="text" placeholder="Titular" 
+                                                                    className={hasError("titulartarjeta")
+                                                                    ? "form-control is-invalid"
+                                                                    : "form-control"}
+                                                                    onChange={(e) =>{  setTitular(e.target.value)}}
+                                                                     value={titular} />
                                                                 </Form.Group>
                                                             </Form.Row>}
                                                         {tarNueva &&
                                                             <Form.Row style={{ margin: '10px' }}>
                                                                 <Form.Group as={Col} >
-                                                                    <Form.Control type="text" placeholder="Fec vto" onChange={(e) => setFechaVto(e.target.value)} value={fechaVto} />
+                                                                    <Form.Control type="text" placeholder="Fec vto" maxLength={5} 
+                                                                    className={hasError("vtotarjeta")
+                                                                    ? "form-control is-invalid"
+                                                                    : "form-control"}
+                                                                    onChange={(e) =>{  setFechaVto(e.target.value)}}
+                                                                     value={fechaVto} />
                                                                 </Form.Group>
 
                                                                 <Form.Group as={Col} >
-                                                                    <Form.Control type="text" placeholder="Código" />
+                                                                    <Form.Control type="text" placeholder="Código" maxLength={3} value={codTar} onChange={e => setCodTar(e.target.value)}
+                                                                    className={hasError("codtarjeta")
+                                                                    ? "form-control is-invalid"
+                                                                    : "form-control"}/>
                                                                 </Form.Group>
                                                             </Form.Row>}
 
@@ -606,28 +715,10 @@ export const Procesocompra = () => {
                                             </Form.Group>
 
                                             <Form.Group as={Col} >
-                                                <Button variant="info" type="submit" onClick={handleShow} >Confirmar</Button>
-
-
+                                                <Button variant="info" type="submit" >Confirmar</Button>
                                             </Form.Group>
                                         </Form.Row>
 
-                                        <Modal show={show} onHide={handleClose}>
-                                            <Modal.Header closeButton>
-                                                <Modal.Title>Estado de Compra</Modal.Title>
-                                            </Modal.Header>
-
-                                            <Modal.Body>
-                                                <p>¡Compra exitosa!.</p>
-                                            </Modal.Body>
-
-                                            <Modal.Footer>
-                                                <Button variant="secondary" onClick={handleClose}> Close</Button>
-
-                                            </Modal.Footer>
-                                        </Modal>
-
-                                    </Form>
 
                                 </ul>
 
