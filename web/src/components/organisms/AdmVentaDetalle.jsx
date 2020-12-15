@@ -123,6 +123,13 @@ export function AdmVentaDetalle(props) {
                         </div>
 
                         {
+                           ventaMostrada.idSucursal &&
+                            <div>
+                                { ventaMostrada.nombreSucursal } - {ventaMostrada.direccionSucursal}
+                            </div>
+                        }
+
+                        {
                             ventaMostrada.idDomicilio &&
                             <div>
                                 Dirección: {ventaMostrada.calleAltura}, {ventaMostrada.ciudad}, {ventaMostrada.provincia}

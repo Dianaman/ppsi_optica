@@ -91,6 +91,13 @@ export function MiPedidoDetalle(props) {
                         </div>
 
                         {
+                           miPedidoMostrado.idSucursal &&
+                            <div>
+                                { miPedidoMostrado.nombreSucursal } - {miPedidoMostrado.direccionSucursal}
+                            </div>
+                        }
+
+                        {
                             miPedidoMostrado.idDomicilio &&
                             <div>
                                 Dirección: {miPedidoMostrado.calleAltura}, {miPedidoMostrado.ciudad}, {miPedidoMostrado.provincia}

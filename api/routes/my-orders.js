@@ -6,11 +6,12 @@ const pool = require('../config');
 router.get('/:userId', (request, response) => {
     const userId = request.params.userId;
 
-    let query = 'SELECT p.*, p.estado as estadoPedido, f.*, f.estado as estadoFactura, t.numero as numTarjeta, d.id as idDomicilio, d.* ';
+    let query = 'SELECT p.*, p.estado as estadoPedido, f.*, f.estado as estadoFactura, t.numero as numTarjeta, d.id as idDomicilio, d.*, s.* ';
     query += 'FROM pedidos as p ';
     query += 'INNER JOIN facturas as f ON p.idPedido = f.idPedido ';
     query += 'LEFT JOIN tarjetas as t ON f.idTarjeta = t.idTarjeta ';
     query += 'LEFT JOIN direccion as d ON p.idDirEnvio = d.id ';
+    query += 'LEFT JOIN sucursales as s ON p.idSucursal = s.idSucursal ';
     query += 'WHERE p.idUsuario = ' + userId;
     query += ' ORDER BY p.fechaUltimaActualizacion DESC';
 

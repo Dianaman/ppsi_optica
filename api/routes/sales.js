@@ -6,12 +6,13 @@ const pool = require('../config');
 router.get('/', (request, response) => {
     let query = 'SELECT p.*, f.*, u.email, u.nombre, u.apellido, u.celular, u.dni, p.idPedido as idPedido, ';
     query += 'p.monto as monto, f.monto as montoTotal, ';
-    query += 'p.estado as estado, f.estado as estadoFactura, t.numero as numTarjeta, d.id as idDomicilio, d.* ';
+    query += 'p.estado as estado, f.estado as estadoFactura, t.numero as numTarjeta, d.id as idDomicilio, d.*, s.* ';
     query += 'FROM pedidos as p ';
     query += 'LEFT JOIN users as u ON p.idUsuario = u.id ';
     query += 'LEFT JOIN facturas as f ON p.idPedido = f.idPedido ';
     query += 'LEFT JOIN tarjetas as t ON f.idTarjeta = t.idTarjeta ';
     query += 'LEFT JOIN direccion as d ON p.idDirEnvio = d.id ';
+    query += 'LEFT JOIN sucursales as s ON p.idSucursal = s.idSucursal ';
     query += 'ORDER BY p.estado DESC, p.fechaUltimaActualizacion DESC';
 
     pool.query(query, (error, result) => {
